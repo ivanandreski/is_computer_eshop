@@ -20,6 +20,9 @@ namespace Eshop.Repository.Configuration
                 .HasForeignKey(x => x.CategoryId);
 
             builder.OwnsOne(x => x.Price);
+
+            builder.Navigation(x => x.Category).AutoInclude();
+
         }
     }
 }

@@ -22,6 +22,9 @@ namespace Eshop.Repository.Configuration
             builder.HasOne(x => x.ForumPost)
                 .WithMany(x => x.Comments)
                 .HasForeignKey(x => x.ForumPostId);
+
+            builder.Navigation(x => x.User).AutoInclude();
+            builder.Navigation(x => x.ForumPost).AutoInclude();
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Eshop.Repository.Configuration
             builder.HasKey(user => user.Id);
 
             builder.OwnsOne(x => x.Address);
+
         }
     }
 }

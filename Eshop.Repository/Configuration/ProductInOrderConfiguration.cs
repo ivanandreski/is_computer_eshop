@@ -22,6 +22,9 @@ namespace Eshop.Repository.Configuration
             builder.HasOne(x => x.Product)
                 .WithMany(x => x.ProductsInOrder)
                 .HasForeignKey(x => x.ProductId);
+
+            builder.Navigation(x => x.Order).AutoInclude();
+            builder.Navigation(x => x.Product).AutoInclude();
         }
     }
 }

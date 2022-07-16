@@ -139,9 +139,6 @@ namespace Eshop.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Completed")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("Delivery")
                         .HasColumnType("INTEGER");
 
@@ -251,13 +248,13 @@ namespace Eshop.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long>("OrderId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -275,10 +272,10 @@ namespace Eshop.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Amount")
+                    b.Property<long>("ProductId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ProductId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("ShoppingCartId")
@@ -299,10 +296,10 @@ namespace Eshop.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Amount")
+                    b.Property<long>("ProductId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ProductId")
+                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("StoreId")
@@ -432,6 +429,28 @@ namespace Eshop.Repository.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
                         });
+
+                    b.OwnsOne("Eshop.Domain.ValueObjects.OrderStatus", "Status", b1 =>
+                        {
+                            b1.Property<long>("OrderId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Status")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("StatusMessage")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
+                    b.Navigation("Status")
+                        .IsRequired();
 
                     b.Navigation("Store");
 

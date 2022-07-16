@@ -14,6 +14,8 @@ namespace Eshop.Repository.Configuration
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasKey(x => x.Id);
+
+            builder.Navigation(x => x.Products).AutoInclude();
         }
     }
 }

@@ -18,6 +18,7 @@ using Eshop.Repository.Interface;
 using Eshop.Repository.Implementation;
 using Eshop.Service.Interface;
 using Eshop.Service.Implementation;
+using HashidsNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,10 +49,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite
 
 // Dependency Injection
 // Repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // Services
+builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
 var app = builder.Build();
 

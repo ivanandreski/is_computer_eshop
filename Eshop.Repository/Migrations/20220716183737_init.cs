@@ -110,7 +110,7 @@ namespace Eshop.Repository.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<long>(type: "INTEGER", nullable: false),
                     StoreId = table.Column<long>(type: "INTEGER", nullable: false)
                 },
@@ -137,7 +137,7 @@ namespace Eshop.Repository.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<long>(type: "INTEGER", nullable: false),
                     ShoppingCartId = table.Column<long>(type: "INTEGER", nullable: false)
                 },
@@ -226,7 +226,8 @@ namespace Eshop.Repository.Migrations
                     TotalPrice_Amount = table.Column<double>(type: "REAL", nullable: true),
                     TotalPrice_Currency = table.Column<string>(type: "TEXT", nullable: true),
                     TotalPrice_AmountInMKD = table.Column<double>(type: "REAL", nullable: true),
-                    Completed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Status_Status = table.Column<string>(type: "TEXT", nullable: true),
+                    Status_StatusMessage = table.Column<string>(type: "TEXT", nullable: true),
                     Delivery = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserId = table.Column<long>(type: "INTEGER", nullable: false),
                     StoreId = table.Column<long>(type: "INTEGER", nullable: false)
@@ -283,7 +284,7 @@ namespace Eshop.Repository.Migrations
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<long>(type: "INTEGER", nullable: false),
                     OrderId = table.Column<long>(type: "INTEGER", nullable: false)
                 },

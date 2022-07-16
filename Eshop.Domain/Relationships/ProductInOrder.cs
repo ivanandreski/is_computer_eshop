@@ -9,7 +9,7 @@ namespace Eshop.Domain.Relationships
 {
     public class ProductInOrder : BaseEntity
     {
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         // Relatiionships
 
@@ -21,9 +21,9 @@ namespace Eshop.Domain.Relationships
 
         public ProductInOrder() { }
 
-        public ProductInOrder(int amount, Product product, Order order)
+        public ProductInOrder(int quantity, Product product, Order order)
         {
-            Amount = amount;
+            Quantity = quantity;
             Product = product;
             Order = order;
             ProductId = product.Id;
@@ -32,7 +32,7 @@ namespace Eshop.Domain.Relationships
 
         public ProductInOrder(ProductInShoppingCart product, Order order)
         {
-            Amount = product.Amount;
+            Quantity = product.Quantity;
             Product = product.Product;
             ProductId = product.ProductId;
             Order = order;

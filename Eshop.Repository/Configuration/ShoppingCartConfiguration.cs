@@ -21,6 +21,10 @@ namespace Eshop.Repository.Configuration
                 .HasForeignKey<EshopUser>(x => x.ShoppingCartId);
 
             builder.OwnsOne(x => x.TotalPrice);
+
+            builder.Navigation(x => x.User).AutoInclude();
+            builder.Navigation(x => x.Store).AutoInclude();
+            builder.Navigation(x => x.Products).AutoInclude();
         }
     }
 }

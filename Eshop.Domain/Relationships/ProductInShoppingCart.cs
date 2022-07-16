@@ -9,7 +9,7 @@ namespace Eshop.Domain.Relationships
 {
     public class ProductInShoppingCart : BaseEntity
     {
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         // Relatiionships
 
