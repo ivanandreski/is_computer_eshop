@@ -8,48 +8,68 @@ namespace Eshop.Web.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IHashService _hashService;
 
-        // TODO: change methods from void to bool and objects
-
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IHashService hashService)
         {
             _categoryService = categoryService;
+            _hashService = hashService;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult> GetAll()
         {
-            return Ok(_categoryService.GetAll());
+            return Ok(await _categoryService.GetAll());
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        [HttpGet("{hashId}")]
+        public async Task<ActionResult> Get(string hashId)
         {
-            return Ok(_categoryService.Get(id));
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Category not found");
+
+            var category = await _categoryService.Get(rawId.Value);
+            if (category == null)
+                return NotFound("Category not found");
+
+            return Ok(category);
         }
 
         [HttpPost]
-        public IActionResult Create([FromForm] string name)
+        public async Task<ActionResult> Create([FromForm] string name)
         {
-            _categoryService.Create(name);
+            var category = await _categoryService.Create(name);
 
-            return Ok();
+            return category != null ? Ok(category) : BadRequest();
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(string id, [FromForm] string name)
+        [HttpPut("{hashId}")]
+        public async Task<ActionResult> Update(string hashId, [FromForm] string name)
         {
-            _categoryService.Update(id, name);
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Category not found");
 
-            return Ok();
+            var category = await _categoryService.Update(rawId.Value, name);
+            if (category == null)
+                return NotFound("Category not found");
+
+            return Ok(category);
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Remove(string id)
+        [HttpDelete("{hashId}")]
+        public async Task<ActionResult> Remove(string hashId)
         {
-            _categoryService.Remove(id);
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Category not found");
 
-            return Ok();
+            var category = await _categoryService.Remove(rawId.Value);
+            if (category == null)
+                return NotFound("Category not found");
+
+            return Ok(category);
         }
     }
 }

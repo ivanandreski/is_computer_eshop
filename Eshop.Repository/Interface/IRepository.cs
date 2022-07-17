@@ -8,14 +8,14 @@ namespace Eshop.Repository.Interface
 {
     public interface IRepository<T>
     {
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
-        T Get(long id);
+        Task<T> Get(long id);
 
-        void Create(T entity);
+        Task<T> Create(T entity);
 
-        void Update(T entity);
+        Task<T> Update(T entity);
 
-        void Remove(T entity);
+        Task<T> Remove(T entity);
     }
 }

@@ -20,32 +20,38 @@ namespace Eshop.Repository.Implementation
             _entities = _context.Set<T>();
         }
 
-        public void Create(T entity)
+        public async Task<T> Create(T entity)
         {
             _entities.Add(entity);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
-        public T Get(long id)
+        public async Task<T> Get(long id)
         {
-            return _entities.FirstOrDefault(e => e.Id == id);
+            return await _entities.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return _entities.ToList();
+            return await _entities.ToListAsync();
         }
 
-        public void Remove(T entity)
+        public async Task<T> Remove(T entity)
         {
             _entities.Remove(entity);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
-        public void Update(T entity)
+        public async Task<T> Update(T entity)
         {
             _entities.Update(entity);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
     }
 }

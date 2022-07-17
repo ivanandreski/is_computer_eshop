@@ -9,14 +9,14 @@ namespace Eshop.Service.Interface
 {
     public interface ICategoryService
     {
-        List<Category> GetAll();
+        Task<IEnumerable<Category>> GetAll();
 
-        Category? Get(string hashedId);
+        Task<Category?> Get(long id);
 
-        void Create(string name);
+        Task<Category> Create(string name);
 
-        void Update(string hashedId, string name);
+        Task<Category?> Update(long id, string name);
 
-        void Remove(string hashedId);
+        Task<Category?> Remove(long id);
     }
 }

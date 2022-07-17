@@ -192,6 +192,9 @@ namespace Eshop.Repository.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("BLOB");
 
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -416,7 +419,7 @@ namespace Eshop.Repository.Migrations
                             b1.Property<double>("Amount")
                                 .HasColumnType("REAL");
 
-                            b1.Property<double>("AmountInMKD")
+                            b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.Property<string>("Currency")
@@ -475,7 +478,7 @@ namespace Eshop.Repository.Migrations
                             b1.Property<double>("Amount")
                                 .HasColumnType("REAL");
 
-                            b1.Property<double>("AmountInMKD")
+                            b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.Property<string>("Currency")
@@ -510,7 +513,7 @@ namespace Eshop.Repository.Migrations
                             b1.Property<double>("Amount")
                                 .HasColumnType("REAL");
 
-                            b1.Property<double>("AmountInMKD")
+                            b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.Property<string>("Currency")

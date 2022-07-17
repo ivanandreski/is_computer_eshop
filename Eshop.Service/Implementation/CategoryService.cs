@@ -22,59 +22,42 @@ namespace Eshop.Service.Implementation
             _hashService = hashService;
         }
 
-        public void Create(string name)
+        public async Task<Category> Create(string name)
         {
             var category = new Category();
             category.Name = name;
 
-            _categoryRepository.Create(category);
+            return await _categoryRepository.Create(category);
         }
 
-        public Category? Get(string hashedId)
+        public async Task<Category?> Get(long id)
         {
-            var rawId = _hashService.GetRawId(hashedId);
-
-            if (rawId != null)
-            {
-                var category = _categoryRepository.Get(rawId.Value);
-                category.HashId = hashedId;
-
-                return category;
-            }
-
-            return null;
+            return await _categoryRepository.Get(id);
         }
 
-        public List<Category> GetAll()
+        public async Task<IEnumerable<Category>> GetAll()
         {
-            var categories = _categoryRepository.GetAll().ToList();
-            categories.ForEach(c => c.HashId = _hashService.GetHashedId(c.Id));
-
-            return categories;
+            return await _categoryRepository.GetAll();
         }
 
-        public void Remove(string hashedId)
+        public async Task<Category?> Remove(long id)
         {
-            var rawId = _hashService.GetRawId(hashedId);
+            var category = await _categoryRepository.Get(id);
+            if (category == null)
+                return null;
 
-            if (rawId != null)
-            {
-                var category = _categoryRepository.Get(rawId.Value);
-                _categoryRepository.Remove(category);
-            }
-
+            return await _categoryRepository.Remove(category);
         }
 
-        public void Update(string hashedId, string name)
+        public async Task<Category?> Update(long id, string name)
         {
-            var rawId = _hashService.GetRawId(hashedId);
+            var category = await _categoryRepository.Get(id);
+            if (category == null)
+                return null;
 
-            if (rawId != null)
-            {
-                var category = _categoryRepository.Get(rawId.Value);
-                category.Name = name;
-                _categoryRepository.Update(category);
-            }
+            category.Name = name;
+
+            return await _categoryRepository.Update(category);
         }
     }
 }

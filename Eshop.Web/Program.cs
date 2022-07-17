@@ -55,6 +55,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
