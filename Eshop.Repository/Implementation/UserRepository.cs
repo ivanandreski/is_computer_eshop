@@ -22,7 +22,8 @@ namespace Eshop.Repository.Implementation
 
         public void Create(EshopUser user)
         {
-            throw new NotImplementedException();
+            _entities.Add(user);
+            _context.SaveChanges();
         }
 
         public void Delete(EshopUser user)

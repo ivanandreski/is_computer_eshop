@@ -17,6 +17,8 @@ namespace Eshop.Domain.Model
         [Required]
         public Address Address { get; set; }
 
+        // TODO: add working time, working days, bool opened property, delet should change the bool and not delete the entity, same for product
+
         // Relationships
 
         public virtual IEnumerable<ProductInStore> Products { get; set; }

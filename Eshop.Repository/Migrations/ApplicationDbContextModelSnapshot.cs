@@ -58,12 +58,6 @@ namespace Eshop.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PCBuildId")
-                        .IsUnique();
-
-                    b.HasIndex("ShoppingCartId")
-                        .IsUnique();
-
                     b.ToTable("Users");
                 });
 
@@ -171,6 +165,9 @@ namespace Eshop.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("PCBuilds");
                 });
 
@@ -226,6 +223,9 @@ namespace Eshop.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StoreId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("ShoppingCarts");
                 });
@@ -319,18 +319,6 @@ namespace Eshop.Repository.Migrations
 
             modelBuilder.Entity("Eshop.Domain.Identity.EshopUser", b =>
                 {
-                    b.HasOne("Eshop.Domain.Model.PCBuild", "PCBuild")
-                        .WithOne("User")
-                        .HasForeignKey("Eshop.Domain.Identity.EshopUser", "PCBuildId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Eshop.Domain.Model.ShoppingCart", "ShoppingCart")
-                        .WithOne("User")
-                        .HasForeignKey("Eshop.Domain.Identity.EshopUser", "ShoppingCartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("Eshop.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<long>("EshopUserId")
@@ -359,12 +347,7 @@ namespace Eshop.Repository.Migrations
                                 .HasForeignKey("EshopUserId");
                         });
 
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("PCBuild");
-
-                    b.Navigation("ShoppingCart");
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Comment", b =>
@@ -416,14 +399,8 @@ namespace Eshop.Repository.Migrations
                             b1.Property<long>("OrderId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("Amount")
-                                .HasColumnType("REAL");
-
                             b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
-
-                            b1.Property<string>("Currency")
-                                .HasColumnType("TEXT");
 
                             b1.HasKey("OrderId");
 
@@ -462,6 +439,17 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Eshop.Domain.Model.PCBuild", b =>
+                {
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
+                        .WithOne("PCBuild")
+                        .HasForeignKey("Eshop.Domain.Model.PCBuild", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Eshop.Domain.Model.Product", b =>
                 {
                     b.HasOne("Eshop.Domain.Model.Category", "Category")
@@ -475,14 +463,8 @@ namespace Eshop.Repository.Migrations
                             b1.Property<long>("ProductId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("Amount")
-                                .HasColumnType("REAL");
-
                             b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
-
-                            b1.Property<string>("Currency")
-                                .HasColumnType("TEXT");
 
                             b1.HasKey("ProductId");
 
@@ -505,19 +487,19 @@ namespace Eshop.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
+                        .WithOne("ShoppingCart")
+                        .HasForeignKey("Eshop.Domain.Model.ShoppingCart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
                         {
                             b1.Property<long>("ShoppingCartId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("Amount")
-                                .HasColumnType("REAL");
-
                             b1.Property<double>("BasePrice")
                                 .HasColumnType("REAL");
-
-                            b1.Property<string>("Currency")
-                                .HasColumnType("TEXT");
 
                             b1.HasKey("ShoppingCartId");
 
@@ -530,6 +512,8 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("Store");
 
                     b.Navigation("TotalPrice");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Store", b =>
@@ -630,6 +614,10 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("ForumPosts");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("PCBuild");
+
+                    b.Navigation("ShoppingCart");
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Category", b =>
@@ -647,11 +635,6 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Eshop.Domain.Model.PCBuild", b =>
-                {
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Eshop.Domain.Model.Product", b =>
                 {
                     b.Navigation("ProductsInOrder");
@@ -664,8 +647,6 @@ namespace Eshop.Repository.Migrations
             modelBuilder.Entity("Eshop.Domain.Model.ShoppingCart", b =>
                 {
                     b.Navigation("Products");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Store", b =>

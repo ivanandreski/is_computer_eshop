@@ -16,10 +16,6 @@ namespace Eshop.Repository.Configuration
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(x => x.User)
-                .WithOne(x => x.PCBuild)
-                .HasForeignKey<EshopUser>(x => x.PCBuildId);
-
             builder.Navigation(x => x.User).AutoInclude();
         }
     }

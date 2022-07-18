@@ -16,5 +16,15 @@ namespace Eshop.Service.Interface
         EshopUser? Get(ClaimsIdentity identity);
 
         EshopUser? Authenticate(UserLogin userLogin);
+
+        string Register(UserRegisterDto dto);
+
+        Tokens Generate(EshopUser user);
+
+        string GenerateRefreshToken();
+
+        bool UserExists(UserRegisterDto dto);
+
+        bool PasswordIsValid(string Password);
     }
 }

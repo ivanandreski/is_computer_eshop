@@ -29,7 +29,6 @@ namespace Eshop.Domain.Identity
         [Required]
         public string Role { get; set; }
 
-        [Required]
         public Address Address { get; set; }
 
         public byte[] Image { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Identity;
+using Eshop.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,6 +15,14 @@ namespace Eshop.Repository.Configuration
         public void Configure(EntityTypeBuilder<EshopUser> builder)
         {
             builder.HasKey(user => user.Id);
+
+            builder.HasOne(x => x.ShoppingCart)
+                .WithOne(x => x.User)
+                .HasForeignKey<ShoppingCart>(x => x.UserId);
+
+            builder.HasOne(x => x.PCBuild)
+                .WithOne(x => x.User)
+                .HasForeignKey<PCBuild>(x => x.UserId);
 
             builder.OwnsOne(x => x.Address);
 
