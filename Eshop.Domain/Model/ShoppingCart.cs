@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eshop.Domain.Model
@@ -21,10 +22,13 @@ namespace Eshop.Domain.Model
 
         // Relationships
 
+        [JsonIgnore]
         public long UserId { get; set; }
+        [JsonIgnore]
         public EshopUser User { get; set; }
 
-        public long StoreId { get; set; }
+        [JsonIgnore]
+        public long? StoreId { get; set; }
         public Store Store { get; set; }
 
         public virtual IEnumerable<ProductInShoppingCart> Products { get; set; }

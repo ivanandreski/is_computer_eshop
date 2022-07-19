@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eshop.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220718200411_init")]
+    [Migration("20220719175642_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,7 +216,7 @@ namespace Eshop.Repository.Migrations
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("StoreId")
+                    b.Property<long?>("StoreId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("UserId")
@@ -484,10 +484,8 @@ namespace Eshop.Repository.Migrations
             modelBuilder.Entity("Eshop.Domain.Model.ShoppingCart", b =>
                 {
                     b.HasOne("Eshop.Domain.Model.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("ShoppingCarts")
+                        .HasForeignKey("StoreId");
 
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithOne("ShoppingCart")
@@ -656,6 +654,8 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
+
+                    b.Navigation("ShoppingCarts");
                 });
 #pragma warning restore 612, 618
         }

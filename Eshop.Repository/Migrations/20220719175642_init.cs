@@ -171,7 +171,7 @@ namespace Eshop.Repository.Migrations
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Delivery = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserId = table.Column<long>(type: "INTEGER", nullable: false),
-                    StoreId = table.Column<long>(type: "INTEGER", nullable: false)
+                    StoreId = table.Column<long>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -180,8 +180,7 @@ namespace Eshop.Repository.Migrations
                         name: "FK_ShoppingCarts_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ShoppingCarts_Users_UserId",
                         column: x => x.UserId,

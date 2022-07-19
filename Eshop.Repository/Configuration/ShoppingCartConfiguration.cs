@@ -16,6 +16,10 @@ namespace Eshop.Repository.Configuration
         {
             builder.HasKey(x => x.Id);
 
+            builder.HasOne(x => x.Store)
+                .WithMany(x => x.ShoppingCarts)
+                .HasForeignKey(x => x.StoreId);
+
             builder.OwnsOne(x => x.TotalPrice);
 
             builder.Navigation(x => x.User).AutoInclude();

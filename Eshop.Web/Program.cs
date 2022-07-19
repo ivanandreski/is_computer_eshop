@@ -58,6 +58,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IStoreService, StoreService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
 var app = builder.Build();

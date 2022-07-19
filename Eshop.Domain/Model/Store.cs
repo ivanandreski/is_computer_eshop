@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eshop.Domain.Model
@@ -24,5 +25,8 @@ namespace Eshop.Domain.Model
         public virtual IEnumerable<ProductInStore> Products { get; set; }
 
         public virtual IEnumerable<Order> Orders { get; set; }
+
+        [JsonIgnore]
+        public virtual IEnumerable<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

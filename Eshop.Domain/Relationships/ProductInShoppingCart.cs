@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eshop.Domain.Relationships
@@ -16,7 +17,9 @@ namespace Eshop.Domain.Relationships
         public long ProductId { get; set; }
         public Product Product { get; set; }
 
+        [JsonIgnore]
         public long ShoppingCartId { get; set; }
+        [JsonIgnore]
         public ShoppingCart ShoppingCart { get; set; }
     }
 }
