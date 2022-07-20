@@ -1,4 +1,6 @@
 ﻿using Eshop.Domain;
+using Eshop.Domain.Dto;
+using Eshop.Domain.Projections;
 using Eshop.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +20,11 @@ namespace Eshop.Repository.Implementation
         {
             _context = context;
             _entities = _context.Set<T>();
+        }
+
+        public PagedList<T> GetPaged(PagingParameters pagingParams)
+        {
+            return PagedList<T>.ToPagedList(_entities, pagingParams.PageNumber, pagingParams.PageSize);
         }
 
         public async Task<T> Create(T entity)

@@ -11,8 +11,9 @@ namespace Eshop.Repository.PremadeRepos
         private readonly Dictionary<string, int> roles = new Dictionary<string, int>()
         {
             { "User", 1 },
-            { "Moderator", 2 },
-            { "Admin", 3 }
+            { "StoreWorker", 2},
+            { "Moderator", 3 },
+            { "Admin", 4 }
         };
 
         public List<string> GetRoles()

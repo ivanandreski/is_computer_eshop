@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Projections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace Eshop.Repository.Interface
 {
     public interface IRepository<T>
     {
+        PagedList<T> GetPaged(PagingParameters pagingParams);
+
         Task<IEnumerable<T>> GetAll();
 
         Task<T> Get(long id);
