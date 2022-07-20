@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Eshop.Domain.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,6 @@ namespace Eshop.Service.Interface
 
         string GetHashedPassword(string rawPassword);
 
-        string GetRawPassword(string rawPassword);
+        bool PasswordsMatch(string rawPassword, EshopUser user);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Eshop.Service.Interface;
+﻿using Eshop.Domain.Identity;
+using Eshop.Service.Interface;
 using HashidsNet;
 using System;
 using System.Collections.Generic;
@@ -43,12 +44,12 @@ namespace Eshop.Service.Implementation
 
         public string GetHashedPassword(string rawPassword)
         {
-            throw new NotImplementedException();
+            return BCrypt.Net.BCrypt.HashPassword(rawPassword);
         }
 
-        public string GetRawPassword(string rawPassword)
+        public bool PasswordsMatch(string rawPassword, EshopUser user)
         {
-            throw new NotImplementedException();
+            return BCrypt.Net.BCrypt.Verify(rawPassword, user.Password);
         }
     }
 }

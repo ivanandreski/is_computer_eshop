@@ -20,26 +20,28 @@ namespace Eshop.Service.Implementation
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _config;
+        private readonly IHashService _hashService;
 
-        public UserService(IUserRepository userRepository, IConfiguration config)
+        public UserService(IUserRepository userRepository, IConfiguration config, IHashService hashService)
         {
             _userRepository = userRepository;
             _config = config;
+            _hashService = hashService;
         }
 
         public EshopUser? Authenticate(UserLogin userLogin)
         {
-            // TODO: hash passwords
-
             var currentUser = _userRepository.GetAll()
-                .Where(user => user.UserName.Equals(userLogin.UserName) &&
-                    user.Password.Equals(userLogin.Password))
+                .Where(user => user.UserName.Equals(userLogin.UserName))
                 .FirstOrDefault();
 
-            if (currentUser != null)
-                return currentUser;
+            if (currentUser == null)
+                return null;
 
-            return null;
+            if (!_hashService.PasswordsMatch(userLogin.Password, currentUser))
+                return null;
+
+            return currentUser;
         }
 
         public Tokens Generate(EshopUser user)
@@ -121,7 +123,7 @@ namespace Eshop.Service.Implementation
             var user = new EshopUser();
             user.UserName = dto.UserName;
             user.Email = dto.Email;
-            user.Password = dto.Password;
+            user.Password = _hashService.GetHashedPassword(dto.Password);
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
 
