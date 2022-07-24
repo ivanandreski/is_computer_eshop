@@ -33,7 +33,7 @@ namespace Eshop.Service.Implementation
             var product = await _productRepository.Get(productId);
             ProductInShoppingCart pshp;
 
-            if (productExists(productId, cart.Products))
+            if (cart.Products != null && productExists(productId, cart.Products))
             {
                 pshp = (await _productInShoppingCartRepository.GetAll())
                     .First(p => p.ProductId == productId 
@@ -42,7 +42,11 @@ namespace Eshop.Service.Implementation
                 pshp.Quantity += 1;
 
                 cart = await Get(user);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
                 cart.TotalPrice.BasePrice = CalculateTotalPrice(cart.Products);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 cart.LastModified = DateTime.Now;
 
                 return await _shoppingCartRepository.Update(cart);
@@ -51,13 +55,20 @@ namespace Eshop.Service.Implementation
             pshp = new ProductInShoppingCart();
             pshp.ShoppingCart = cart;
             pshp.ShoppingCartId = cart.Id;
-            pshp.Product = product;
-            pshp.ProductId = product.Id;
+            if(product != null)
+            {
+                pshp.Product = product;
+                pshp.ProductId = product.Id;
+            }
             pshp.Quantity = 1;
             await _productInShoppingCartRepository.Create(pshp);
 
             cart = await Get(user);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             cart.TotalPrice.BasePrice = CalculateTotalPrice(cart.Products);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             cart.LastModified = DateTime.Now;
 
             return await _shoppingCartRepository.Update(cart);
@@ -66,7 +77,7 @@ namespace Eshop.Service.Implementation
         public async Task<ShoppingCart?> ChangeQuantity(EshopUser user, long productInCartId, int quantity)
         {
             var pshp = await _productInShoppingCartRepository.Get(productInCartId);
-            if (pshp.ShoppingCart.UserId != user.Id)
+            if (pshp == null || pshp.ShoppingCart == null || pshp.ShoppingCart.UserId != user.Id)
                 return null;
 
             if(quantity < 1)
@@ -79,7 +90,11 @@ namespace Eshop.Service.Implementation
             }
 
             var cart = await Get(user);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
             cart.TotalPrice.BasePrice = CalculateTotalPrice(cart.Products);
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             cart.LastModified = DateTime.Now;
 
             return await _shoppingCartRepository.Update(cart);
@@ -88,12 +103,21 @@ namespace Eshop.Service.Implementation
         public async Task<ShoppingCart?> RemoveProduct(EshopUser user, long productInCartId)
         {
             var pshp = await _productInShoppingCartRepository.Get(productInCartId);
-            if (pshp.ShoppingCart.UserId != user.Id)
+            if (pshp == null || pshp.ShoppingCart == null)
+                return null;
+
+            if (String.IsNullOrEmpty(pshp.ShoppingCart.UserId))
+                return null;
+
+            if (!pshp.ShoppingCart.UserId.Equals(user.Id))
                 return null;
 
             await _productInShoppingCartRepository.Remove(pshp);
 
             var cart = await Get(user);
+            if (cart.TotalPrice == null) return null;
+            if (cart.Products == null) return null;
+
             cart.TotalPrice.BasePrice = CalculateTotalPrice(cart.Products);
             cart.LastModified = DateTime.Now;
 
@@ -148,23 +172,31 @@ namespace Eshop.Service.Implementation
 
         public async Task<ShoppingCart> Get(EshopUser user)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var exists = (await _shoppingCartRepository.GetAll())
                 .Any(x => x.UserId.Equals(user.Id));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             if (!exists)
                 await Create(user);
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             return (await _shoppingCartRepository.GetAll())
                 .First(x => x.UserId.Equals(user.Id));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         // Helper methods
 
         private double CalculateTotalPrice(IEnumerable<ProductInShoppingCart> products)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8629 // Nullable value type may be null.
             return products
-                .Select(p => p.Product.Price.BasePrice * p.Quantity)
+                .Select(p => p.Product.Price.BasePrice.Value * p.Quantity)
                 .Sum();
+#pragma warning restore CS8629 // Nullable value type may be null.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
         private bool productExists(long productId, IEnumerable<ProductInShoppingCart> products)

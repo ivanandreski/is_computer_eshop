@@ -11,23 +11,32 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eshop.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220719175642_init")]
+    [Migration("20220724171948_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
             modelBuilder.Entity("Eshop.Domain.Identity.EshopUser", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -40,27 +49,61 @@ namespace Eshop.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("PCBuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
                     b.Property<long>("ShoppingCartId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UserName")
-                        .IsRequired()
+                        .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Category", b =>
@@ -95,8 +138,8 @@ namespace Eshop.Repository.Migrations
                     b.Property<DateTime>("TimeOfPost")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -119,8 +162,8 @@ namespace Eshop.Repository.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -144,8 +187,8 @@ namespace Eshop.Repository.Migrations
                     b.Property<DateTime>("TimeOfPurcahse")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -162,8 +205,8 @@ namespace Eshop.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -219,8 +262,8 @@ namespace Eshop.Repository.Migrations
                     b.Property<long?>("StoreId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -319,31 +362,164 @@ namespace Eshop.Repository.Migrations
                     b.ToTable("ProductsInStores");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("Eshop.Domain.Identity.EshopUser", b =>
                 {
                     b.OwnsOne("Eshop.Domain.ValueObjects.Address", "Address", b1 =>
                         {
-                            b1.Property<long>("EshopUserId")
-                                .HasColumnType("INTEGER");
+                            b1.Property<string>("EshopUserId")
+                                .HasColumnType("TEXT");
 
                             b1.Property<string>("City")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("Country")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("State")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("Street")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("ZipCode")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.HasKey("EshopUserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("AspNetUsers");
 
                             b1.WithOwner()
                                 .HasForeignKey("EshopUserId");
@@ -362,9 +538,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("ForumPost");
 
@@ -375,9 +549,7 @@ namespace Eshop.Repository.Migrations
                 {
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithMany("ForumPosts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -392,16 +564,14 @@ namespace Eshop.Repository.Migrations
 
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.OwnsOne("Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
                         {
                             b1.Property<long>("OrderId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("BasePrice")
+                            b1.Property<double?>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.HasKey("OrderId");
@@ -416,12 +586,6 @@ namespace Eshop.Repository.Migrations
                         {
                             b1.Property<long>("OrderId")
                                 .HasColumnType("INTEGER");
-
-                            b1.Property<string>("Status")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("StatusMessage")
-                                .HasColumnType("TEXT");
 
                             b1.HasKey("OrderId");
 
@@ -445,9 +609,7 @@ namespace Eshop.Repository.Migrations
                 {
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithOne("PCBuild")
-                        .HasForeignKey("Eshop.Domain.Model.PCBuild", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Eshop.Domain.Model.PCBuild", "UserId");
 
                     b.Navigation("User");
                 });
@@ -465,7 +627,7 @@ namespace Eshop.Repository.Migrations
                             b1.Property<long>("ProductId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("BasePrice")
+                            b1.Property<double?>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.HasKey("ProductId");
@@ -489,16 +651,14 @@ namespace Eshop.Repository.Migrations
 
                     b.HasOne("Eshop.Domain.Identity.EshopUser", "User")
                         .WithOne("ShoppingCart")
-                        .HasForeignKey("Eshop.Domain.Model.ShoppingCart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Eshop.Domain.Model.ShoppingCart", "UserId");
 
                     b.OwnsOne("Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
                         {
                             b1.Property<long>("ShoppingCartId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<double>("BasePrice")
+                            b1.Property<double?>("BasePrice")
                                 .HasColumnType("REAL");
 
                             b1.HasKey("ShoppingCartId");
@@ -524,18 +684,23 @@ namespace Eshop.Repository.Migrations
                                 .HasColumnType("INTEGER");
 
                             b1.Property<string>("City")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("Country")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("State")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("Street")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.Property<string>("ZipCode")
+                                .IsRequired()
                                 .HasColumnType("TEXT");
 
                             b1.HasKey("StoreId");
@@ -605,6 +770,57 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Eshop.Domain.Identity.EshopUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Eshop.Domain.Identity.EshopUser", b =>

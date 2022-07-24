@@ -19,33 +19,68 @@ using Eshop.Repository.Implementation;
 using Eshop.Service.Interface;
 using Eshop.Service.Implementation;
 using HashidsNet;
+using Eshop.Domain.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"DataSource=../mydatabase.db;"));
+
+// For Identity
+builder.Services.AddIdentity<EshopUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+// Adding Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(options =>
+
+// Adding Jwt Bearer
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//    .AddJwtBearer(options =>
+//    {
+//        options.SaveToken = true;
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+//            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//            ValidAudience = builder.Configuration["Jwt:Audience"],
+//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+//        };
+//    });
 builder.Services.AddMvc();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"DataSource=../mydatabase.db;"));
 
 // Dependency Injection
 // Repositories
@@ -54,7 +89,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
-builder.Services.AddTransient<IUserService, UserService>();
+//builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IStoreService, StoreService>();

@@ -14,7 +14,9 @@ namespace Eshop.Domain.ValueObjects
             {
                 return false;
             }
+#pragma warning disable CS8604 // Possible null reference argument.
             return ReferenceEquals(left, null) || left.Equals(right);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         protected static bool NotEqualOperator(ValueObject left, ValueObject right)
@@ -24,7 +26,9 @@ namespace Eshop.Domain.ValueObjects
 
         protected abstract IEnumerable<object> GetAtomicValues();
 
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         public override bool Equals(object obj)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         {
             if (obj == null || obj.GetType() != GetType())
             {

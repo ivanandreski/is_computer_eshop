@@ -10,9 +10,9 @@ namespace Eshop.Repository.Interface
 {
     public interface IUserRepository
     {
-        IEnumerable<EshopUser> GetAll();
+        Task<IEnumerable<EshopUser>> GetAll();
 
-        EshopUser Get(string userName);
+        Task<EshopUser?> Get(string userName);
 
         void Create(EshopUser user);
 

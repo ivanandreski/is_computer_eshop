@@ -35,7 +35,7 @@ namespace Eshop.Repository.Implementation
             return entity;
         }
 
-        public async Task<T> Get(long id)
+        public async Task<T?> Get(long id)
         {
             return await _entities.FirstOrDefaultAsync(e => e.Id == id);
         }

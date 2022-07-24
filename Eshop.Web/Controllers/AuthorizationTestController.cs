@@ -1,6 +1,8 @@
-﻿using Eshop.Service.Interface;
+﻿using Eshop.Domain.Identity;
+using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -10,11 +12,11 @@ namespace Eshop.APIs.AuthenticationService.Controllers
     [ApiController]
     public class AuthorizationTestController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly UserManager<EshopUser> _userManager;
 
-        public AuthorizationTestController(IUserService userService)
+        public AuthorizationTestController(UserManager<EshopUser> userManager)
         {
-            _userService = userService;
+            _userManager = userManager;
         }
 
         [HttpGet("Public")]
@@ -24,17 +26,22 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         }
 
         [HttpGet("Private")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         public IActionResult PrivateTest()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                //var user = _userManager.FindByEmailAsync(identity);
 
-                if (user != null)
-                    return Ok(user);
+                //if (user != null)
+                //    return Ok(user);
+
+                var userClaims = identity.Claims;
+                var userName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+
+                return Ok(_userManager.FindByNameAsync(userName));
             }
 
             return NotFound("User not found");

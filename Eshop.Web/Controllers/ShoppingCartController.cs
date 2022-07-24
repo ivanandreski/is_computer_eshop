@@ -29,7 +29,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {
@@ -48,7 +48,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {
@@ -67,7 +67,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {
@@ -90,7 +90,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {
@@ -115,7 +115,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {
@@ -140,7 +140,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await _userService.Get(identity);
 
                 if (user != null)
                 {

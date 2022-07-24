@@ -65,7 +65,9 @@ namespace Eshop.Service.Implementation
 
             product.Name = edits.Name;
             product.Description = edits.Description;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             product.Price.BasePrice = edits.Price.BasePrice;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             product.Manufacturer = edits.Manufacturer;
             product.Category = edits.Category;
             product.CategoryId = edits.CategoryId;
@@ -86,16 +88,20 @@ namespace Eshop.Service.Implementation
             product.Discontinued = dto.Discontinued;
 
             // TODO: more file validation
-            if(dto.Image.Length > 0)
+            if(dto.Image != null)
             {
-                using (var ms = new MemoryStream())
+                if (dto.Image.Length > 0)
                 {
-                    dto.Image.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    product.Image = fileBytes;
+                    using (var ms = new MemoryStream())
+                    {
+                        dto.Image.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        product.Image = fileBytes;
+                    }
                 }
             }
 
+            if (dto.CategoryIdHash == null) return null;
             var rawCategoryId = _hashService.GetRawId(dto.CategoryIdHash);
             if (rawCategoryId == null) return null;
 

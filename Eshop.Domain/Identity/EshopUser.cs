@@ -7,45 +7,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
 
 namespace Eshop.Domain.Identity
 {
-    public class EshopUser : BaseEntity
+    public class EshopUser : IdentityUser
     {
-        [Required]
-        public string UserName { get; set; }
+        [JsonIgnore]
+        public string? RefreshToken { get; set; }
+        [JsonIgnore]
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string? LastName { get; set; }
 
-        [Required]
-        public string FirstName { get; set; }
+        public Address? Address { get; set; }
 
-        [Required]
-        public string LastName { get; set; }
-
-        [Required]
-        public string Role { get; set; }
-
-        public Address Address { get; set; }
-
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
 
         // Relationships
 
-        public virtual IEnumerable<Order> Orders { get; set; }
+        public virtual IEnumerable<Order>? Orders { get; set; }
 
-        public virtual IEnumerable<ForumPost> ForumPosts { get; set; }
+        public virtual IEnumerable<ForumPost>? ForumPosts { get; set; }
 
-        public virtual IEnumerable<Comment> Comments { get; set; }
+        public virtual IEnumerable<Comment>? Comments { get; set; }
 
+        [JsonIgnore]
         public long PCBuildId { get; set; }
-        public PCBuild PCBuild { get; set; }
+        public PCBuild? PCBuild { get; set; }
 
+        [JsonIgnore]
         public long ShoppingCartId { get; set; }
-        public ShoppingCart ShoppingCart { get; set; }
+        public ShoppingCart? ShoppingCart { get; set; }
     }
 }

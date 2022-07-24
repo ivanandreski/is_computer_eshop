@@ -11,7 +11,7 @@ namespace Eshop.Domain.ValueObjects
     public class Money : ValueObject
     {
         [NotMapped]
-        public double Amount
+        public double? Amount
         {
             get {
                 switch (Currency)
@@ -28,15 +28,17 @@ namespace Eshop.Domain.ValueObjects
         }
 
         [NotMapped]
-        public string Currency { get; set; }
+        public string? Currency { get; set; }
 
         [JsonIgnore]
-        public double BasePrice { get; set; }
+        public double? BasePrice { get; set; }
 
         protected override IEnumerable<object> GetAtomicValues()
         {
+#pragma warning disable CS8603 // Possible null reference return.
             yield return Amount;
-            yield return Currency;
+#pragma warning restore CS8603 // Possible null reference return.
+            yield return Currency != null ? Currency : "";
         }
     }
 }

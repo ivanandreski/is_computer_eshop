@@ -14,7 +14,7 @@ namespace Eshop.Repository.Interface
 
         Task<IEnumerable<T>> GetAll();
 
-        Task<T> Get(long id);
+        Task<T?> Get(long id);
 
         Task<T> Create(T entity);
 
