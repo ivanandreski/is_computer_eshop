@@ -42,14 +42,14 @@ namespace Eshop.Service.Implementation
             return null;
         }
 
-        public string GetHashedPassword(string rawPassword)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(rawPassword);
-        }
+        //public string GetHashedPassword(string rawPassword)
+        //{
+        //    return BCrypt.Net.BCrypt.HashPassword(rawPassword);
+        //}
 
-        public bool PasswordsMatch(string rawPassword, EshopUser user)
-        {
-            return BCrypt.Net.BCrypt.Verify(rawPassword, user.Password);
-        }
+        //public bool PasswordsMatch(string rawPassword, EshopUser user)
+        //{
+        //    return BCrypt.Net.BCrypt.Verify(rawPassword, user.);
+        //}
     }
 }

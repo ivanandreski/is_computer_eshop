@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eshop.Domain.Model
@@ -13,7 +14,8 @@ namespace Eshop.Domain.Model
 
         // Relationships
 
-        public long UserId { get; set; }
-        public EshopUser User { get; set; }
+        [JsonIgnore]
+        public string? UserId { get; set; }
+        public EshopUser? User { get; set; }
     }
 }

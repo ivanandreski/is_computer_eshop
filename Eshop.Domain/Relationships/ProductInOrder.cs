@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eshop.Domain.Relationships
@@ -13,13 +14,17 @@ namespace Eshop.Domain.Relationships
 
         // Relatiionships
 
+        [JsonIgnore]
         public long ProductId { get; set; }
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
 
+        [JsonIgnore]
         public long OrderId { get; set; }
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
 
-        public ProductInOrder() { }
+        public ProductInOrder()
+        {
+        }
 
         public ProductInOrder(int quantity, Product product, Order order)
         {

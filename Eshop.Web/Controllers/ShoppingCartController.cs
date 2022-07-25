@@ -1,6 +1,8 @@
-﻿using Eshop.Service.Interface;
+﻿using Eshop.Domain.Identity;
+using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,29 +15,27 @@ namespace Eshop.Web.Controllers
     {
         private readonly IHashService _hashService;
         private readonly IShoppingCartService _shoppingCartService;
-        private readonly IUserService _userService;
+        private readonly UserManager<EshopUser> _userManager;
 
-        public ShoppingCartController(IHashService hashService, IShoppingCartService shoppingCartService, IUserService userService)
+        public ShoppingCartController(IHashService hashService, IShoppingCartService shoppingCartService, UserManager<EshopUser> userManager)
         {
             _hashService = hashService;
             _shoppingCartService = shoppingCartService;
-            _userService = userService;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<ActionResult> Get()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return BadRequest();
 
-            if (identity != null)
+            var user = await GetUser(identity);
+
+            if (user != null)
             {
-                var user = _userService.Get(identity);
-
-                if (user != null)
-                {
-                    return Ok(await _shoppingCartService.Get(user));
-                }
-
+                return Ok(await _shoppingCartService.Get(user));
             }
 
             return NotFound("User not found");
@@ -48,7 +48,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await GetUser(identity);
 
                 if (user != null)
                 {
@@ -67,7 +67,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await GetUser(identity);
 
                 if (user != null)
                 {
@@ -84,13 +84,13 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> ChangeQuantity([FromForm] string productInCartHashId,[FromForm] int quantity)
+        public async Task<ActionResult> ChangeQuantity([FromForm] string productInCartHashId, [FromForm] int quantity)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await GetUser(identity);
 
                 if (user != null)
                 {
@@ -115,7 +115,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await GetUser(identity);
 
                 if (user != null)
                 {
@@ -140,7 +140,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = _userService.Get(identity);
+                var user = await GetUser(identity);
 
                 if (user != null)
                 {
@@ -157,5 +157,19 @@ namespace Eshop.Web.Controllers
 
             return NotFound("User not found");
         }
+
+        private async Task<EshopUser?> GetUser(ClaimsIdentity identity)
+        {
+            var userClaims = identity.Claims;
+            var username = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            if (username != null)
+            {
+                return await _userManager.FindByNameAsync(username);
+            }
+
+            return null;
+        }
     }
+
 }
+

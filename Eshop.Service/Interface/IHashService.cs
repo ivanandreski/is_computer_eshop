@@ -13,8 +13,8 @@ namespace Eshop.Service.Interface
 
         long? GetRawId(string hashId);
 
-        string GetHashedPassword(string rawPassword);
+        //string GetHashedPassword(string rawPassword);
 
-        bool PasswordsMatch(string rawPassword, EshopUser user);
+        //bool PasswordsMatch(string rawPassword, EshopUser user);
     }
 }

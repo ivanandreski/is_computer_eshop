@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Eshop.Repository.Implementation
 {
-    public class UserRepository : Interface.IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<EshopUser> _entities;
@@ -31,14 +31,14 @@ namespace Eshop.Repository.Implementation
             throw new NotImplementedException();
         }
 
-        public EshopUser Get(string userName)
+        public async Task<EshopUser?> Get(string userName)
         {
-            return _entities.FirstOrDefault(e => e.UserName == userName);
+            return await _entities.FirstOrDefaultAsync(e => e.UserName == userName);
         }
 
-        public IEnumerable<EshopUser> GetAll()
+        public async Task<IEnumerable<EshopUser>> GetAll()
         {
-            return _entities;
+            return await _entities.ToListAsync();
         }
 
         public void Update(EshopUser user)

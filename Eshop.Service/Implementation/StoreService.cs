@@ -53,7 +53,9 @@ namespace Eshop.Service.Implementation
                 return null;
 
             store.Name = dto.Name;
+#pragma warning disable CS8604 // Possible null reference argument.
             store.Address = new Address(dto.Street, dto.City, dto.State, dto.ZipCode, dto.Country);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return await _storeRepository.Update(store);
         }
@@ -62,7 +64,9 @@ namespace Eshop.Service.Implementation
         {
             var store = new Store();
             store.Name = dto.Name;
+#pragma warning disable CS8604 // Possible null reference argument.
             store.Address = new Address(dto.Street, dto.City, dto.State, dto.ZipCode, dto.Country);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return store;
         }

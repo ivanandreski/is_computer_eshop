@@ -11,20 +11,20 @@ namespace Eshop.Service.Interface
 {
     public interface IUserService
     {
-        IEnumerable<EshopUser> GetAll();
+        Task<IEnumerable<EshopUser>> GetAll();
 
-        EshopUser? Get(ClaimsIdentity identity);
+        Task<EshopUser?> Get(ClaimsIdentity identity);
 
-        EshopUser? Authenticate(UserLogin userLogin);
+        Task<EshopUser?> Authenticate(LoginModel userLogin);
 
-        string Register(UserRegisterDto dto);
+        Task<string> Register(RegisterModel dto);
 
-        Tokens Generate(EshopUser user);
+        Task<TokenModel> Generate(EshopUser user);
 
-        string GenerateRefreshToken();
+        Task<string> GenerateRefreshToken();
 
-        bool UserExists(UserRegisterDto dto);
+        Task<bool> UserExists(RegisterModel dto);
 
-        bool PasswordIsValid(string Password);
+        Task<bool> PasswordIsValid(string Password);
     }
 }

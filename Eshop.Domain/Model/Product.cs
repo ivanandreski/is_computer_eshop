@@ -11,15 +11,15 @@ namespace Eshop.Domain.Model
 {
     public class Product : BaseEntity
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public Money Price { get; set; }
+        public Money? Price { get; set; }
 
-        public string Manufacturer { get; set; }
+        public string? Manufacturer { get; set; }
 
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
 
         public bool Discontinued { get; set; }
 
@@ -28,15 +28,15 @@ namespace Eshop.Domain.Model
         [JsonIgnore]
         public long CategoryId { get; set; }
 
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
         [JsonIgnore]
-        public virtual IEnumerable<ProductInShoppingCart> ProductsInShoppingCart { get; set; }
+        public virtual IEnumerable<ProductInShoppingCart>? ProductsInShoppingCart { get; set; }
 
         [JsonIgnore]
-        public virtual IEnumerable<ProductInStore> ProductsInStore { get; set; }
+        public virtual IEnumerable<ProductInStore>? ProductsInStore { get; set; }
 
         [JsonIgnore]
-        public virtual IEnumerable<ProductInOrder> ProductsInOrder { get; set; }
+        public virtual IEnumerable<ProductInOrder>? ProductsInOrder { get; set; }
     }
 }
