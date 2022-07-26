@@ -62,6 +62,20 @@ namespace Eshop.Web.Controllers
             return Ok(product);
         }
 
+        [HttpPut("{hashId}/image")]
+        public async Task<ActionResult> UpdateImage(string hashId, [FromForm] IFormFile image)
+        {
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Product not found");
+
+            var product = await _productService.UpdateImage(rawId.Value, image);
+            if (product == null)
+                return NotFound("Product not found");
+
+            return Ok(product);
+        }
+
         [HttpDelete("{hashId}")]
         public async Task<ActionResult> Remove(string hashId)
         {

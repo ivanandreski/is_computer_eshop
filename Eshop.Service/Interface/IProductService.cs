@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Domain.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace Eshop.Service.Interface
         Task<Product?> Create(ProductDto dto);
 
         Task<Product?> Update(long id, ProductDto dto);
+
+        Task<Product?> UpdateImage(long id, IFormFile image);
 
         Task<Product?> Remove(long id);
     }

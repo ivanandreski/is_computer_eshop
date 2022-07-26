@@ -3,6 +3,7 @@ using Eshop.Domain.Model;
 using Eshop.Domain.ValueObjects;
 using Eshop.Repository.Interface;
 using Eshop.Service.Interface;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -66,13 +67,35 @@ namespace Eshop.Service.Implementation
             product.Name = edits.Name;
             product.Description = edits.Description;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
+            if (edits.Price.BasePrice != null && edits.Price.BasePrice > 0)
             product.Price.BasePrice = edits.Price.BasePrice;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             product.Manufacturer = edits.Manufacturer;
             product.Category = edits.Category;
             product.CategoryId = edits.CategoryId;
-            product.Image = edits.Image;
             product.Discontinued = edits.Discontinued;
+
+            return await _productRepository.Update(product);
+        }
+
+        public async Task<Product?> UpdateImage(long id, IFormFile image)
+        {
+            var product = await _productRepository.Get(id);
+            if (product == null)
+                return null;
+
+            if (image != null)
+            {
+                if (image.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        image.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        product.Image = fileBytes;
+                    }
+                }
+            }
 
             return await _productRepository.Update(product);
         }

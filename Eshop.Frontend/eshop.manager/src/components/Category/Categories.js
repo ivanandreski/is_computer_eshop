@@ -17,7 +17,6 @@ const Categories = () => {
         setElements(result.data);
       })
       .catch((error) => console.log(error));
-    console.log("in fetch");
   };
 
   const saveValue = (id, value) => {
