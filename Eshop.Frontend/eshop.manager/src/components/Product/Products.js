@@ -20,10 +20,18 @@ const Products = () => {
       .catch((error) => console.log(error));
   };
 
+  const handleDelete = (hashId) => {
+    ProductService.delete(hashId)
+      .then((resp) => {
+        setEntities(entities.filter((e) => e.hashId !== hashId));
+      })
+      .catch((error) => console.log(error));
+  };
+
   const renderEntities = () => {
     return entities.map((product, i) => (
       <div className="col-md-3" key={i}>
-        <ProductCard product={product} />
+        <ProductCard product={product} handleDelete={handleDelete} />
       </div>
     ));
   };
@@ -32,24 +40,7 @@ const Products = () => {
     <>
       <div className="container">
         <div className="row">
-          <button
-            type="button"
-            className="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Add Product
-          </button>
-
-          <div
-            className="modal modal-lg fade"
-            id="exampleModal"
-            tabIndex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <AddProduct entities={entities} setEntities={setEntities} />
-          </div>
+          <AddProduct entities={entities} setEntities={setEntities} />
         </div>
         <div className="row">{renderEntities()}</div>
       </div>

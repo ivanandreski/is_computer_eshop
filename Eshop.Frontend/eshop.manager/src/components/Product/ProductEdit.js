@@ -18,7 +18,6 @@ const ProductEdit = ({ product, setProduct }) => {
       basePrice: product.price.amount,
       categoryHashId: product.category.hashId,
       discontinued: product.discontinued,
-      image: null,
     };
   };
 

@@ -38,7 +38,7 @@ const ProductDetails = () => {
                   className=""
                   width="100%"
                   alt="..."
-                />
+                />  
               </div>
             </div>
             <div className="row">
