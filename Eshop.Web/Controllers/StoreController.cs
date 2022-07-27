@@ -37,13 +37,13 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] StoreDto dto)
+        public async Task<ActionResult> Create([FromForm] StoreDto dto)
         {
             return Ok(await _storeService.Create(dto));
         }
 
         [HttpPut("{hashId}")]
-        public async Task<ActionResult> Update(StoreDto dto, string hashId)
+        public async Task<ActionResult> Update([FromForm]  StoreDto dto, string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
             if (rawId == null)
@@ -55,7 +55,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpDelete("{hashId}")]
-        public async Task<ActionResult> Update(string hashId)
+        public async Task<ActionResult> Delete(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
             if (rawId == null)

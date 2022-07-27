@@ -8,11 +8,11 @@
         public string ZipCode { get; private set; }
         public string Country { get; private set; }
 
-        public Address(string street, string city, string state, string zipCode, string country)
+        public Address(string street, string city, string zipCode, string country)
         {
             Street = street;
             City = city;
-            State = state;
+            State = "";
             ZipCode = zipCode;
             Country = country;
         }
