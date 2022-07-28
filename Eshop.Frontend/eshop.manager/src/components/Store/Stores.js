@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
@@ -78,7 +79,12 @@ const Stores = () => {
         <td>
           <div className="row">
             <div className="col-md-2">
-              <button className="btn btn-secondary w-100">Details</button>
+              <Link
+                to={`/store/${entity.hashId}`}
+                className="btn btn-secondary w-100"
+              >
+                Details
+              </Link>
             </div>
             <div className="col-md-2">
               <button

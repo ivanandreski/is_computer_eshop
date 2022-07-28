@@ -28,7 +28,6 @@ const StoreService = {
 
 const getFormData = (store) => {
   let formData = new FormData();
-  console.log(store)
   formData.append("name", store.name);
   formData.append("city", store.city);
   formData.append("state", store.state);

@@ -7,6 +7,7 @@ import Categories from "./components/Category/Categories";
 import Stores from "./components/Store/Stores";
 import Layout from "./components/Layout/Layout";
 import ErrorPage from "./components/Error/ErrorPage";
+import StoreDetails from "./components/Store/StoreDetails";
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           <Route exact path="product/:hashId" element={<ProductDetails />} />
           <Route path="product" element={<Products />} />
 
+          <Route exact path="store/:hashId" element={<StoreDetails />} />
           <Route path="store" element={<Stores />} />
+
           <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
