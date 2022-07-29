@@ -15,6 +15,13 @@ const StoreService = {
     return axios.post(baseUrl, getFormData(object));
   },
 
+  addProduct: (hashId, quantity) => {
+    let formData = new FormData();
+    formData.append("quantity", quantity);
+
+    return axios.put(`${baseUrl}/${hashId}/addProduct`, formData);
+  },
+
   edit: (id, object) => {
     if (id !== undefined) {
       return axios.put(`${baseUrl}/${id}`, getFormData(object));

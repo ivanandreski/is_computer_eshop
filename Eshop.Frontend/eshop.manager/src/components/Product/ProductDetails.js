@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ProductService from "../../repository/ProductService";
 import ProductEdit from "./ProductEdit";
-import ProductInStore from "./ProductInStore";
+import ProductAvailability from "./ProductAvailability";
 
 const ProductDetails = () => {
   const { hashId } = useParams();
@@ -22,15 +22,15 @@ const ProductDetails = () => {
 
   return product !== null ? (
     <>
-      <div className="container w-50">
+      <div className="container">
         <h1 className="bg-light">
           <span style={{ marginLeft: "10px" }}>{product.name}</span>
         </h1>
         <div className="row mt-2">
-          <div className="col-md-9">
+          <div className="col-md-8">
             <ProductEdit product={product} setProduct={setProduct} />
           </div>
-          <div className="col-md-3">
+          <div className="col-md-4">
             <div className="row">
               <div className="col">
                 <img
@@ -38,12 +38,12 @@ const ProductDetails = () => {
                   className=""
                   width="100%"
                   alt="..."
-                />  
+                />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                <ProductInStore product={product} />
+                <ProductAvailability product={product} />
               </div>
             </div>
           </div>

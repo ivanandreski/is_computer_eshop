@@ -11,6 +11,10 @@ const ProductService = {
     if (id !== undefined) return axios.get(`${baseUrl}/${id}`);
   },
 
+  fetchAvailability: (id) => {
+    if (id !== undefined) return axios.get(`${baseUrl}/${id}/availability`);
+  },
+
   add: (object) => {
     let formData = getFormData(object);
 
@@ -31,16 +35,16 @@ const ProductService = {
 };
 
 const getFormData = (object) => {
-    let formData = new FormData();
-    formData.append("name", object.name);
-    formData.append("description", object.description);
-    formData.append("basePrice", object.basePrice);
-    formData.append("categoryIdHash", object.categoryHashId);
-    formData.append("image", object.image);
-    formData.append("manufacturer", object.manufacturer);
-    formData.append("discontinued", object.discontinued);
+  let formData = new FormData();
+  formData.append("name", object.name);
+  formData.append("description", object.description);
+  formData.append("basePrice", object.basePrice);
+  formData.append("categoryIdHash", object.categoryHashId);
+  formData.append("image", object.image);
+  formData.append("manufacturer", object.manufacturer);
+  formData.append("discontinued", object.discontinued);
 
-    return formData;
-}
+  return formData;
+};
 
 export default ProductService;

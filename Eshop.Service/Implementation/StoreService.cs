@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
 using Eshop.Repository.Interface;
 using Eshop.Service.Interface;
@@ -14,17 +15,61 @@ namespace Eshop.Service.Implementation
     public class StoreService : IStoreService
     {
         private readonly IRepository<Store> _storeRepository;
+        private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<ProductInStore> _productInStoreRepository;
 
-        public StoreService(IRepository<Store> storeRepository)
+        public StoreService(IRepository<Store> storeRepository, IRepository<Product> productRepository, IRepository<ProductInStore> productInStoreRepository)
         {
             _storeRepository = storeRepository;
+            _productRepository = productRepository;
+            _productInStoreRepository = productInStoreRepository;
+        }
+
+        public async Task<Store?> AddProduct(long productInStoreId, int quantity)
+        {
+            if (quantity < 0)
+                return null;
+
+            var productInStore = await _productInStoreRepository.Get(productInStoreId);
+            if(productInStore == null)
+            {
+                return null;
+            }
+
+            var store = await _storeRepository.Get(productInStore.StoreId);
+            var product = await _productRepository.Get(productInStore.ProductId);
+
+            if (store == null || product == null)
+                return null;
+
+            productInStore.Quantity = quantity;
+
+            await _productInStoreRepository.Update(productInStore);
+
+            return store;
         }
 
         public async Task<Store> Create(StoreDto dto)
         {
             var store = DtoToStore(dto);
 
-            return await _storeRepository.Create(store);
+            store = await _storeRepository.Create(store);
+
+            (await _productRepository.GetAll())
+                .ToList()
+                .ForEach(async product =>
+                {
+                    var productInStore = new ProductInStore();
+                    productInStore.Product = product;
+                    productInStore.ProductId = product.Id;
+                    productInStore.Store = store;
+                    productInStore.StoreId = store.Id;
+                    productInStore.Quantity = 0;
+
+                    await _productInStoreRepository.Create(productInStore);
+                });
+
+            return store;
         }
 
         public async Task<Store?> Get(long id)

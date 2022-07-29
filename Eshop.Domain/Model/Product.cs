@@ -34,7 +34,7 @@ namespace Eshop.Domain.Model
         public virtual IEnumerable<ProductInShoppingCart>? ProductsInShoppingCart { get; set; }
 
         [JsonIgnore]
-        public virtual IEnumerable<ProductInStore>? ProductsInStore { get; set; }
+        public virtual ICollection<ProductInStore>? ProductsInStore { get; set; }
 
         [JsonIgnore]
         public virtual IEnumerable<ProductInOrder>? ProductsInOrder { get; set; }

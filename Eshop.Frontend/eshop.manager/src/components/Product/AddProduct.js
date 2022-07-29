@@ -30,7 +30,8 @@ const AddProduct = ({ entities, setEntities }) => {
     ProductService.add(product)
       .then((resp) => {
         const { data } = resp;
-        setEntities([ ...entities, data ]);
+        setEntities([...entities, data]);
+        setProduct(clearForm());
         setOpen(!open);
       })
       .catch((error) => console.log(error));

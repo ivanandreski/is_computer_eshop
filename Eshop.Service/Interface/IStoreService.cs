@@ -19,5 +19,7 @@ namespace Eshop.Service.Interface
         Task<Store?> Update(long id, StoreDto dto);
 
         Task<Store?> Remove(long id);
+
+        Task<Store?> AddProduct(long productInStoreId, int quantity);
     }
 }

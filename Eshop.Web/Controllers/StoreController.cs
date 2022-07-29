@@ -65,5 +65,17 @@ namespace Eshop.Web.Controllers
 
             return store == null ? NotFound("Store not found!") : Ok(store);
         }
+
+        [HttpPut("{hashId}/addProduct")]
+        public async Task<ActionResult> AddProduct([FromRoute]string hashId, [FromForm]int quantity)
+        {
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Store not found!");
+
+            var store = await _storeService.AddProduct(rawId.Value, quantity);
+
+            return store == null ? BadRequest("Something went wrong!") : Ok(store);
+        }
     }
 }

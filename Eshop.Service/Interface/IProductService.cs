@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace Eshop.Service.Interface
         Task<IEnumerable<Product>> GetAll();
 
         Task<Product?> Get(long id);
+
+        Task<IEnumerable<ProductInStore>> GetAvailability(long id);
 
         Task<Product?> Create(ProductDto dto);
 

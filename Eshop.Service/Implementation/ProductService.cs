@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
 using Eshop.Repository.Interface;
 using Eshop.Service.Interface;
@@ -17,12 +18,16 @@ namespace Eshop.Service.Implementation
     {
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<Store> _storeRepository;
+        private readonly IRepository<ProductInStore> _productInStoreRepository;
         private readonly IHashService _hashService;
 
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IHashService hashService)
+        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IHashService hashService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            _storeRepository = storeRepository;
+            _productInStoreRepository = productInStoreRepository;
             _hashService = hashService;
         }
 
@@ -32,7 +37,22 @@ namespace Eshop.Service.Implementation
             if (product == null)
                 return null;
 
-            return await _productRepository.Create(product);
+            product = await _productRepository.Create(product);
+            var stores = (await _storeRepository.GetAll()).ToList();
+
+            stores.ForEach(async store =>
+            {
+                var productInStore = new ProductInStore();
+                productInStore.ProductId = product.Id;
+                productInStore.Product = product;
+                productInStore.StoreId = store.Id;
+                productInStore.Store = store;
+                productInStore.Quantity = 0;
+
+                await _productInStoreRepository.Create(productInStore);
+            });
+
+            return product;
         }
 
         public async Task<Product?> Get(long id)
@@ -43,6 +63,13 @@ namespace Eshop.Service.Implementation
         public async Task<IEnumerable<Product>> GetAll()
         {
             return await _productRepository.GetAll();
+        }
+
+        public async Task<IEnumerable<ProductInStore>> GetAvailability(long id)
+        {
+            return (await _productInStoreRepository.GetAll())
+                .Where(x => x.ProductId == id)
+                .ToList();
         }
 
         public async Task<Product?> Remove(long id)

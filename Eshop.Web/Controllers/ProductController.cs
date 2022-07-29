@@ -28,14 +28,26 @@ namespace Eshop.Web.Controllers
         public async Task<ActionResult> Get(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
-            if(rawId == null)
+            if (rawId == null)
                 return NotFound("Product not found");
 
             var product = await _productService.Get(rawId.Value);
-            if(product == null)
+            if (product == null)
                 return NotFound("Product not found");
 
             return Ok(product);
+        }
+
+        [HttpGet("{hashId}/availability")]
+        public async Task<ActionResult> GetAvailability(string hashId)
+        {
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Product not found");
+
+            var productInStores = await _productService.GetAvailability(rawId.Value);
+
+            return Ok(productInStores);
         }
 
         [HttpPost]

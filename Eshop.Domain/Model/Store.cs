@@ -22,8 +22,10 @@ namespace Eshop.Domain.Model
 
         // Relationships
 
+        [JsonIgnore]
         public virtual IEnumerable<ProductInStore>? Products { get; set; }
 
+        [JsonIgnore]
         public virtual IEnumerable<Order>? Orders { get; set; }
 
         [JsonIgnore]
