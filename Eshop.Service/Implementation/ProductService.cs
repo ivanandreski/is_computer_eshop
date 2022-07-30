@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Images;
 using Eshop.Domain.Model;
 using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
@@ -23,6 +24,8 @@ namespace Eshop.Service.Implementation
         private readonly IRepository<ProductImages> _productImagesRepository;
         private readonly IHashService _hashService;
 
+        //private readonly long DEFAULT_IMAGE_PATH = "";
+
         public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, IHashService hashService)
         {
             _productRepository = productRepository;
@@ -41,15 +44,26 @@ namespace Eshop.Service.Implementation
 
             product = await _productRepository.Create(product);
 
-            // adapt for list
-            // more validation
-            if (dto.Image != null)
+            var defaultImage = Convert.FromBase64String(DefaultImage.base64);
+
+            if (dto.Image.Count < 1)
             {
-                if (dto.Image.Length > 0)
+                var image = new ProductImages();
+                image.Image = defaultImage;
+                image.Product = product;
+                image.ProductId = product.Id;
+
+                await _productImagesRepository.Create(image);
+            }
+
+            // more validation
+            foreach (var imageDto in dto.Image)
+            {
+                if (imageDto.Length > 0)
                 {
                     using (var ms = new MemoryStream())
                     {
-                        dto.Image.CopyTo(ms);
+                        imageDto.CopyTo(ms);
                         var fileBytes = ms.ToArray();
 
                         var image = new ProductImages();
@@ -61,7 +75,6 @@ namespace Eshop.Service.Implementation
                     }
                 }
             }
-
 
             (await _storeRepository.GetAll())
                 .ToList()
@@ -175,31 +188,5 @@ namespace Eshop.Service.Implementation
             return product;
         }
 
-        private ProductImages CreateImages(ProductDto dto, Product product)
-        {
-            List<ProductImages> images = new List<ProductImages>();
-
-            // TODO: more file validation
-            if (dto.Image != null)
-            {
-                if (dto.Image.Length > 0)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        dto.Image.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-
-                        var Image = new ProductImages();
-                        Image.Image = fileBytes;
-                        Image.Product = product;
-                        Image.ProductId = product.Id;
-
-                        images.Add(Image);
-                    }
-                }
-            }
-
-            return images[0];
-        }
     }
 }

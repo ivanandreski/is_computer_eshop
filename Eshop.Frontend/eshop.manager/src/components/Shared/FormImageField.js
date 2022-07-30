@@ -1,10 +1,12 @@
 import React from "react";
 
-const EditImage = ({ object, setObject, title }) => {
+const FormImageField = ({ object, setObject, title }) => {
   const handleChange = (e) => {
-    const { value } = e.target;
+    const { files } = e.target;
 
-    setObject({ ...object, value });
+    const image = [...object["image"], files];
+
+    setObject({ ...object, image });
   };
 
   return (
@@ -13,8 +15,9 @@ const EditImage = ({ object, setObject, title }) => {
         <h5>Image:</h5>
         <input
           className="form-control"
+          multiple
           type="file"
-          value={object.image}
+          //   value={object.image}
           onChange={handleChange}
         />
       </div>
@@ -22,4 +25,4 @@ const EditImage = ({ object, setObject, title }) => {
   );
 };
 
-export default EditImage;
+export default FormImageField;
