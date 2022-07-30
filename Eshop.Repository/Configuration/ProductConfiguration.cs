@@ -22,6 +22,7 @@ namespace Eshop.Repository.Configuration
             builder.OwnsOne(x => x.Price);
 
             builder.Navigation(x => x.Category).AutoInclude();
+            builder.Navigation(x => x.Images).AutoInclude();
 
         }
     }

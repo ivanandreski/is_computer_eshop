@@ -20,14 +20,16 @@ namespace Eshop.Service.Implementation
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Store> _storeRepository;
         private readonly IRepository<ProductInStore> _productInStoreRepository;
+        private readonly IRepository<ProductImages> _productImagesRepository;
         private readonly IHashService _hashService;
 
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IHashService hashService)
+        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, IHashService hashService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _storeRepository = storeRepository;
             _productInStoreRepository = productInStoreRepository;
+            _productImagesRepository = productImagesRepository;
             _hashService = hashService;
         }
 
@@ -38,19 +40,42 @@ namespace Eshop.Service.Implementation
                 return null;
 
             product = await _productRepository.Create(product);
-            var stores = (await _storeRepository.GetAll()).ToList();
 
-            stores.ForEach(async store =>
+            // adapt for list
+            // more validation
+            if (dto.Image != null)
             {
-                var productInStore = new ProductInStore();
-                productInStore.ProductId = product.Id;
-                productInStore.Product = product;
-                productInStore.StoreId = store.Id;
-                productInStore.Store = store;
-                productInStore.Quantity = 0;
+                if (dto.Image.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        dto.Image.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
 
-                await _productInStoreRepository.Create(productInStore);
-            });
+                        var image = new ProductImages();
+                        image.Image = fileBytes;
+                        image.Product = product;
+                        image.ProductId = product.Id;
+
+                        await _productImagesRepository.Create(image);
+                    }
+                }
+            }
+
+
+            (await _storeRepository.GetAll())
+                .ToList()
+                .ForEach(async store =>
+                {
+                    var productInStore = new ProductInStore();
+                    productInStore.ProductId = product.Id;
+                    productInStore.Product = product;
+                    productInStore.StoreId = store.Id;
+                    productInStore.Store = store;
+                    productInStore.Quantity = 0;
+
+                    await _productInStoreRepository.Create(productInStore);
+                });
 
             return product;
         }
@@ -95,7 +120,7 @@ namespace Eshop.Service.Implementation
             product.Description = edits.Description;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (edits.Price.BasePrice != null && edits.Price.BasePrice > 0)
-            product.Price.BasePrice = edits.Price.BasePrice;
+                product.Price.BasePrice = edits.Price.BasePrice;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             product.Manufacturer = edits.Manufacturer;
             product.Category = edits.Category;
@@ -119,7 +144,7 @@ namespace Eshop.Service.Implementation
                     {
                         image.CopyTo(ms);
                         var fileBytes = ms.ToArray();
-                        product.Image = fileBytes;
+                        //product.Image = fileBytes;
                     }
                 }
             }
@@ -137,20 +162,6 @@ namespace Eshop.Service.Implementation
             product.Price.BasePrice = dto.BasePrice;
             product.Discontinued = dto.Discontinued;
 
-            // TODO: more file validation
-            if(dto.Image != null)
-            {
-                if (dto.Image.Length > 0)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        dto.Image.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        product.Image = fileBytes;
-                    }
-                }
-            }
-
             if (dto.CategoryIdHash == null) return null;
             var rawCategoryId = _hashService.GetRawId(dto.CategoryIdHash);
             if (rawCategoryId == null) return null;
@@ -162,6 +173,33 @@ namespace Eshop.Service.Implementation
             product.CategoryId = rawCategoryId.Value;
 
             return product;
+        }
+
+        private ProductImages CreateImages(ProductDto dto, Product product)
+        {
+            List<ProductImages> images = new List<ProductImages>();
+
+            // TODO: more file validation
+            if (dto.Image != null)
+            {
+                if (dto.Image.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        dto.Image.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+
+                        var Image = new ProductImages();
+                        Image.Image = fileBytes;
+                        Image.Product = product;
+                        Image.ProductId = product.Id;
+
+                        images.Add(Image);
+                    }
+                }
+            }
+
+            return images[0];
         }
     }
 }

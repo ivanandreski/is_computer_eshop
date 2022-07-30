@@ -1,4 +1,5 @@
-﻿using HashidsNet;
+﻿using Eshop.Domain.Relationships;
+using HashidsNet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,6 @@ namespace Eshop.Domain
 {
     public class BaseEntity
     {
-
         private static readonly IHashids _hashids = new Hashids("rakish", 11);
 
         [Key]
