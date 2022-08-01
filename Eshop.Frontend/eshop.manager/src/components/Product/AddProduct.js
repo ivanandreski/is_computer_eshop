@@ -7,7 +7,7 @@ import FormTextAreaField from "../Shared/FormTextAreaField";
 import FormNumberField from "../Shared/FormNumberField";
 import FormSelectField from "../Shared/FormSelectField";
 import CategoryService from "../../repository/CategoryService";
-import EditImage from "../Shared/EditImage";
+import FormImageField from "../Shared/FormImageField";
 import ProductService from "../../repository/ProductService";
 
 const AddProduct = ({ entities, setEntities }) => {
@@ -19,7 +19,7 @@ const AddProduct = ({ entities, setEntities }) => {
       basePrice: "",
       categoryHashId: "",
       discontinued: false,
-      image: "",
+      image: [],
     };
   };
 
@@ -105,7 +105,7 @@ const AddProduct = ({ entities, setEntities }) => {
 
           <div className="row mt-2">
             <div className="col-md-12">
-              <EditImage
+              <FormImageField
                 object={product}
                 setObject={setProduct}
                 title="image"

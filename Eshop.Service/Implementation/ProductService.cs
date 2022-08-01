@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Images;
 using Eshop.Domain.Model;
 using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
@@ -20,14 +21,16 @@ namespace Eshop.Service.Implementation
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Store> _storeRepository;
         private readonly IRepository<ProductInStore> _productInStoreRepository;
+        private readonly IRepository<ProductImages> _productImagesRepository;
         private readonly IHashService _hashService;
 
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IHashService hashService)
+        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, IHashService hashService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _storeRepository = storeRepository;
             _productInStoreRepository = productInStoreRepository;
+            _productImagesRepository = productImagesRepository;
             _hashService = hashService;
         }
 
@@ -38,19 +41,52 @@ namespace Eshop.Service.Implementation
                 return null;
 
             product = await _productRepository.Create(product);
-            var stores = (await _storeRepository.GetAll()).ToList();
 
-            stores.ForEach(async store =>
+            var defaultImage = Convert.FromBase64String(DefaultImage.base64);
+
+            if (dto.Image.Count < 1)
             {
-                var productInStore = new ProductInStore();
-                productInStore.ProductId = product.Id;
-                productInStore.Product = product;
-                productInStore.StoreId = store.Id;
-                productInStore.Store = store;
-                productInStore.Quantity = 0;
+                var image = new ProductImages();
+                image.Image = defaultImage;
+                image.Product = product;
+                image.ProductId = product.Id;
 
-                await _productInStoreRepository.Create(productInStore);
-            });
+                await _productImagesRepository.Create(image);
+            }
+
+            // more validation
+            foreach (var imageDto in dto.Image)
+            {
+                if (imageDto.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        imageDto.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+
+                        var image = new ProductImages();
+                        image.Image = fileBytes;
+                        image.Product = product;
+                        image.ProductId = product.Id;
+
+                        await _productImagesRepository.Create(image);
+                    }
+                }
+            }
+
+            (await _storeRepository.GetAll())
+                .ToList()
+                .ForEach(async store =>
+                {
+                    var productInStore = new ProductInStore();
+                    productInStore.ProductId = product.Id;
+                    productInStore.Product = product;
+                    productInStore.StoreId = store.Id;
+                    productInStore.Store = store;
+                    productInStore.Quantity = 0;
+
+                    await _productInStoreRepository.Create(productInStore);
+                });
 
             return product;
         }
@@ -95,7 +131,7 @@ namespace Eshop.Service.Implementation
             product.Description = edits.Description;
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (edits.Price.BasePrice != null && edits.Price.BasePrice > 0)
-            product.Price.BasePrice = edits.Price.BasePrice;
+                product.Price.BasePrice = edits.Price.BasePrice;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             product.Manufacturer = edits.Manufacturer;
             product.Category = edits.Category;
@@ -105,13 +141,13 @@ namespace Eshop.Service.Implementation
             return await _productRepository.Update(product);
         }
 
-        public async Task<Product?> UpdateImage(long id, IFormFile image)
+        public async Task<Product?> AddImages(long id, IEnumerable<IFormFile> images)
         {
             var product = await _productRepository.Get(id);
             if (product == null)
                 return null;
 
-            if (image != null)
+            foreach (var image in images)
             {
                 if (image.Length > 0)
                 {
@@ -119,7 +155,13 @@ namespace Eshop.Service.Implementation
                     {
                         image.CopyTo(ms);
                         var fileBytes = ms.ToArray();
-                        product.Image = fileBytes;
+
+                        var productImage = new ProductImages();
+                        productImage.Image = fileBytes;
+                        productImage.Product = product;
+                        productImage.ProductId = product.Id;
+
+                        await _productImagesRepository.Create(productImage);
                     }
                 }
             }
@@ -137,20 +179,6 @@ namespace Eshop.Service.Implementation
             product.Price.BasePrice = dto.BasePrice;
             product.Discontinued = dto.Discontinued;
 
-            // TODO: more file validation
-            if(dto.Image != null)
-            {
-                if (dto.Image.Length > 0)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        dto.Image.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        product.Image = fileBytes;
-                    }
-                }
-            }
-
             if (dto.CategoryIdHash == null) return null;
             var rawCategoryId = _hashService.GetRawId(dto.CategoryIdHash);
             if (rawCategoryId == null) return null;
@@ -162,6 +190,33 @@ namespace Eshop.Service.Implementation
             product.CategoryId = rawCategoryId.Value;
 
             return product;
+        }
+
+        public async Task<Product?> RemoveImage(long imageId)
+        {
+            var image = await _productImagesRepository.Get(imageId);
+
+            if (image == null || image.ProductId == null) return null;
+
+            var product = await _productRepository.Get(image.ProductId.Value);
+
+            if (product == null) return null;
+
+            await _productImagesRepository.Remove(image);
+
+            if ((await _productImagesRepository.GetAll()).Where(i => i.ProductId == product.Id).ToList().Count < 1)
+            {
+                var defaultImage = Convert.FromBase64String(DefaultImage.base64);
+
+                var noImageAvailable = new ProductImages();
+                noImageAvailable.Image = defaultImage;
+                noImageAvailable.Product = product;
+                noImageAvailable.ProductId = product.Id;
+
+                await _productImagesRepository.Create(noImageAvailable);
+            }
+
+            return await _productRepository.Get(product.Id);
         }
     }
 }

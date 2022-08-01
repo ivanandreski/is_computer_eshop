@@ -2,6 +2,7 @@
 using Eshop.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -18,8 +19,6 @@ namespace Eshop.Domain.Model
         public Money? Price { get; set; }
 
         public string? Manufacturer { get; set; }
-
-        public byte[]? Image { get; set; }
 
         public bool Discontinued { get; set; }
 
@@ -38,5 +37,7 @@ namespace Eshop.Domain.Model
 
         [JsonIgnore]
         public virtual IEnumerable<ProductInOrder>? ProductsInOrder { get; set; }
+
+        public virtual ICollection<ProductImages> Images { get; set; } = new Collection<ProductImages>();
     }
 }

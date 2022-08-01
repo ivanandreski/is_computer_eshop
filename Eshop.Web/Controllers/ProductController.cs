@@ -74,18 +74,30 @@ namespace Eshop.Web.Controllers
             return Ok(product);
         }
 
-        [HttpPut("{hashId}/image")]
-        public async Task<ActionResult> UpdateImage(string hashId, [FromForm] IFormFile image)
+        [HttpPost("{hashId}/addImages")]
+        public async Task<ActionResult> AddImages(string hashId, [FromForm] IEnumerable<IFormFile> images)
         {
             var rawId = _hashService.GetRawId(hashId);
             if (rawId == null)
                 return NotFound("Product not found");
 
-            var product = await _productService.UpdateImage(rawId.Value, image);
+            var product = await _productService.AddImages(rawId.Value, images);
             if (product == null)
                 return NotFound("Product not found");
 
             return Ok(product);
+        }
+
+        [HttpDelete("{hashId}/deleteImage")]
+        public async Task<ActionResult> RemoveImage(string hashId)
+        {
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null)
+                return NotFound("Image not found");
+
+            var product = await _productService.RemoveImage(rawId.Value);
+
+            return product == null ? BadRequest("Something went wrong!") : Ok(product);
         }
 
         [HttpDelete("{hashId}")]

@@ -6,7 +6,7 @@ const ProductCard = ({ product, handleDelete }) => {
     <>
       <div className="card mt-3" style={{ width: "18rem" }}>
         <img
-          src={`data:image/jpeg;base64,${product.image}`}
+          src={`data:image/jpeg;base64,${product.images[0]?.image}`}
           className="card-img-top"
           style={{ width: "18rem" }}
           alt="..."

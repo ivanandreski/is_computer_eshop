@@ -24,7 +24,9 @@ namespace Eshop.Domain.Dto
         [Required]
         public string? Manufacturer { get; set; }
 
-        public IFormFile? Image { get; set; }
+        public List<IFormFile> Image { get; set; } = new List<IFormFile>();
+
+        //public string ImageJson { get; set; } = "";
 
         [Required]
         public bool Discontinued { get; set; }
