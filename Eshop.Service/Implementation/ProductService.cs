@@ -24,8 +24,6 @@ namespace Eshop.Service.Implementation
         private readonly IRepository<ProductImages> _productImagesRepository;
         private readonly IHashService _hashService;
 
-        //private readonly long DEFAULT_IMAGE_PATH = "";
-
         public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, IHashService hashService)
         {
             _productRepository = productRepository;
@@ -143,13 +141,13 @@ namespace Eshop.Service.Implementation
             return await _productRepository.Update(product);
         }
 
-        public async Task<Product?> UpdateImage(long id, IFormFile image)
+        public async Task<Product?> AddImages(long id, IEnumerable<IFormFile> images)
         {
             var product = await _productRepository.Get(id);
             if (product == null)
                 return null;
 
-            if (image != null)
+            foreach (var image in images)
             {
                 if (image.Length > 0)
                 {
@@ -157,7 +155,13 @@ namespace Eshop.Service.Implementation
                     {
                         image.CopyTo(ms);
                         var fileBytes = ms.ToArray();
-                        //product.Image = fileBytes;
+
+                        var productImage = new ProductImages();
+                        productImage.Image = fileBytes;
+                        productImage.Product = product;
+                        productImage.ProductId = product.Id;
+
+                        await _productImagesRepository.Create(productImage);
                     }
                 }
             }
@@ -188,5 +192,31 @@ namespace Eshop.Service.Implementation
             return product;
         }
 
+        public async Task<Product?> RemoveImage(long imageId)
+        {
+            var image = await _productImagesRepository.Get(imageId);
+
+            if (image == null || image.ProductId == null) return null;
+
+            var product = await _productRepository.Get(image.ProductId.Value);
+
+            if (product == null) return null;
+
+            await _productImagesRepository.Remove(image);
+
+            if ((await _productImagesRepository.GetAll()).Where(i => i.ProductId == product.Id).ToList().Count < 1)
+            {
+                var defaultImage = Convert.FromBase64String(DefaultImage.base64);
+
+                var noImageAvailable = new ProductImages();
+                noImageAvailable.Image = defaultImage;
+                noImageAvailable.Product = product;
+                noImageAvailable.ProductId = product.Id;
+
+                await _productImagesRepository.Create(noImageAvailable);
+            }
+
+            return await _productRepository.Get(product.Id);
+        }
     }
 }

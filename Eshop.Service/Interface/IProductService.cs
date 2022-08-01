@@ -22,7 +22,9 @@ namespace Eshop.Service.Interface
 
         Task<Product?> Update(long id, ProductDto dto);
 
-        Task<Product?> UpdateImage(long id, IFormFile image);
+        Task<Product?> AddImages(long id, IEnumerable<IFormFile> images);
+
+        Task<Product?> RemoveImage(long imageId);
 
         Task<Product?> Remove(long id);
     }

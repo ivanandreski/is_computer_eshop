@@ -4,10 +4,12 @@ import { useParams } from "react-router-dom";
 import ProductService from "../../repository/ProductService";
 import ProductEdit from "./ProductEdit";
 import ProductAvailability from "./ProductAvailability";
+import ProductImageEdit from "./ProductImageEdit";
 
 const ProductDetails = () => {
   const { hashId } = useParams();
   const [product, setProduct] = useState(null);
+  const jsonProduct = JSON.stringify(product);
 
   useEffect(() => {
     const fetch = () => {
@@ -18,7 +20,7 @@ const ProductDetails = () => {
         .catch((error) => console.log(error));
     };
     fetch();
-  }, [hashId]);
+  }, [hashId, jsonProduct]);
 
   return product !== null ? (
     <>
@@ -27,20 +29,20 @@ const ProductDetails = () => {
           <span style={{ marginLeft: "10px" }}>{product.name}</span>
         </h1>
         <div className="row mt-2">
-          <div className="col-md-8">
-            <ProductEdit product={product} setProduct={setProduct} />
+          <div className="col-md-12">
+            <ProductImageEdit product={product} setProduct={setProduct} />
           </div>
-          <div className="col-md-4">
+        </div>
+        <hr />
+        <div className="row mt-2">
+          <div className="col-md-8">
             <div className="row">
-              <div className="col">
-                <img
-                  src={`data:image/jpeg;base64,${product.image}`}
-                  className=""
-                  width="100%"
-                  alt="..."
-                />
+              <div className="col-md-12">
+                <ProductEdit product={product} setProduct={setProduct} />
               </div>
             </div>
+          </div>
+          <div className="col-md-4">
             <div className="row">
               <div className="col">
                 <ProductAvailability product={product} />

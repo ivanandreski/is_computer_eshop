@@ -29,6 +29,19 @@ const ProductService = {
     }
   },
 
+  deleteImage: (imageId) => {
+    return axios.delete(`${baseUrl}/${imageId}/deleteImage`);
+  },
+
+  addImages: (productId, images) => {
+    let formData = new FormData();
+    for (let i = 0; i < images?.length; i++) {
+      formData.append(`images`, images[i]);
+    }
+
+    return axios.post(`${baseUrl}/${productId}/addImages`, formData);
+  },
+
   delete: (id) => {
     if (id !== undefined) return axios.delete(`${baseUrl}/${id}`);
   },

@@ -5,6 +5,7 @@ import ProductInStore from "./ProductInStore";
 
 const ProductAvailability = ({ product }) => {
   const [productsInStores, setProductsInStores] = useState([]);
+  const jsonProduct = JSON.stringify(productsInStores);
 
   useEffect(() => {
     const fetch = () => {
@@ -15,7 +16,7 @@ const ProductAvailability = ({ product }) => {
         .catch((error) => console.log(error));
     };
     fetch();
-  }, [product.hashId, productsInStores]);
+  }, [product.hashId, jsonProduct]);
 
   const renderStores = () => {
     return productsInStores.map((p, i) => (
