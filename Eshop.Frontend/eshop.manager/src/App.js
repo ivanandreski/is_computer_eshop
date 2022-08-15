@@ -8,6 +8,7 @@ import Stores from "./components/Store/Stores";
 import Layout from "./components/Layout/Layout";
 import ErrorPage from "./components/Error/ErrorPage";
 import StoreDetails from "./components/Store/StoreDetails";
+import Login from "./components/Authentication/Login";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+
+          <Route path="login" element={<Login />} />
+
           <Route path="category" element={<Categories />} />
 
           <Route exact path="product/:hashId" element={<ProductDetails />} />

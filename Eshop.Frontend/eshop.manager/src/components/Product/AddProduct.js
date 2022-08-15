@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 
-import FormTextField from "../Shared/FormTextField";
-import FormTextAreaField from "../Shared/FormTextAreaField";
-import FormNumberField from "../Shared/FormNumberField";
-import FormSelectField from "../Shared/FormSelectField";
+import FormTextField from "../Core/FormTextField";
+import FormTextAreaField from "../Core/FormTextAreaField";
+import FormNumberField from "../Core/FormNumberField";
+import FormSelectField from "../Core/FormSelectField";
 import CategoryService from "../../repository/CategoryService";
-import FormImageField from "../Shared/FormImageField";
+import FormImageField from "../Core/FormImageField";
 import ProductService from "../../repository/ProductService";
 
 const AddProduct = ({ entities, setEntities }) => {

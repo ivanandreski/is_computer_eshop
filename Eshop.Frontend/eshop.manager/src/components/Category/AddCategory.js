@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CategoryService from "../../repository/CategoryService";
-import TextInputField from "../Shared/TextInputField";
+import TextInputField from "../Core/TextInputField";
 
 const AddCategory = ({ elements, setElements }) => {
   const num = elements.length;

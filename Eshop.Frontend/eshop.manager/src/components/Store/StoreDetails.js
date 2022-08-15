@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import StoreService from "../../repository/StoreService";
-import Address from "../Shared/Address";
-import FormTextField from "../Shared/FormTextField";
+import Address from "../Core/Address";
+import FormTextField from "../Core/FormTextField";
 
 const StoreDetails = () => {
   const { hashId } = useParams();

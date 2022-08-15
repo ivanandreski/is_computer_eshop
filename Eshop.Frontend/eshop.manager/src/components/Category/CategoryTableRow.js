@@ -1,6 +1,6 @@
 import React from "react";
 
-import EditableField from "../Shared/EditableField";
+import EditableField from "../Core/EditableField";
 
 const CategoryTableRow = ({ element, saveValue, handleDelete, i }) => {
   return (

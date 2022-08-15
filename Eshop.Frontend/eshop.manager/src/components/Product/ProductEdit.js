@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ProductService from "../../repository/ProductService";
-import InputText from "../Shared/InputText";
+import InputText from "../Core/InputText";
 import DescriptionEdit from "./DescriptionEdit";
 import PriceEdit from "./PriceEdit";
 

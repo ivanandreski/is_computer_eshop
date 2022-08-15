@@ -4,7 +4,7 @@ import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
 import StoreService from "../../repository/StoreService";
-import FormTextField from "../Shared/FormTextField";
+import FormTextField from "../Core/FormTextField";
 
 const Stores = () => {
   const clearForm = () => {
