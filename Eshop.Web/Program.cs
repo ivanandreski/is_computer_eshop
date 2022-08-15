@@ -60,7 +60,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin();
+            //builder.WithOrigins("http://localhost/3100");
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+        });
+});
 builder.Services.AddMvc();
 builder.Services.AddControllers();
 
@@ -71,7 +81,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
-//builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IStoreService, StoreService>();
@@ -98,7 +108,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors(
-        options => options.WithOrigins("*").AllowAnyMethod()
+        "AllowAllOrigins"
     );
 
 app.UseEndpoints(endpoints =>

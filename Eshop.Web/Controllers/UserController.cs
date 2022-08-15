@@ -17,15 +17,14 @@ namespace Eshop.APIs.AuthenticationService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly UserManager<EshopUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public UserController(
-            UserManager<EshopUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+        public UserController(IUserService userService, UserManager<EshopUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
+            _userService = userService;
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
@@ -75,9 +74,9 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            var userExists = await _userService.UserExists(model);
+            if (userExists)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
 
             EshopUser user = new()
             {
@@ -91,9 +90,11 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
+            user = await _userManager.FindByEmailAsync(model.Email);
+
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-            await _userManager.AddToRoleAsync(await _userManager.FindByEmailAsync(model.Email), UserRoles.User);
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }

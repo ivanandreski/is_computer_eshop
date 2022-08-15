@@ -9,6 +9,7 @@ import Layout from "./components/Layout/Layout";
 import ErrorPage from "./components/Error/ErrorPage";
 import StoreDetails from "./components/Store/StoreDetails";
 import Login from "./components/Authentication/Login";
+import Register from "./components/Authentication/Register";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route index element={<Home />} />
 
           <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
 
           <Route path="category" element={<Categories />} />
 

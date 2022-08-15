@@ -11,20 +11,6 @@ namespace Eshop.Service.Interface
 {
     public interface IUserService
     {
-        Task<IEnumerable<EshopUser>> GetAll();
-
-        Task<EshopUser?> Get(ClaimsIdentity identity);
-
-        Task<EshopUser?> Authenticate(LoginModel userLogin);
-
-        Task<string> Register(RegisterModel dto);
-
-        Task<TokenModel> Generate(EshopUser user);
-
-        Task<string> GenerateRefreshToken();
-
-        Task<bool> UserExists(RegisterModel dto);
-
-        Task<bool> PasswordIsValid(string Password);
+        Task<bool> UserExists(RegisterModel model);
     }
 }
