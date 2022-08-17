@@ -1,4 +1,3 @@
-import { Axios } from "axios";
 import axios from "../axios/axios";
 
 const baseUrl = "/user";
@@ -13,7 +12,6 @@ const AuthenticationService = {
       lastName,
       email,
     });
-    console.log(message);
 
     try {
       response = await axios.post(`${baseUrl}/register`, message, {
@@ -30,6 +28,32 @@ const AuthenticationService = {
     }
 
     return response;
+  },
+
+  login: async (user, password) => {
+    const message = JSON.stringify({
+      username: user,
+      password,
+    });
+
+    let response = null;
+    try {
+      response = await axios.post(`${baseUrl}/login`, message, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      return response;
+    } catch (error) {
+      if (!error?.response) {
+        return "No Server Response";
+      } else if (error.response?.status === 400) {
+        return "Missing Username or Password";
+      } else if (error.response?.status === 401) {
+        return "Unauthorized";
+      } else {
+        return "Login Failed";
+      }
+    }
   },
 };
 

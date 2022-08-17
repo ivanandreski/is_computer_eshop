@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+
+import RequireAuth from "./components/Authentication/RequireAuth";
 
 import Products from "./components/Product/Products";
 import ProductDetails from "./components/Product/ProductDetails";
@@ -10,17 +12,22 @@ import ErrorPage from "./components/Error/ErrorPage";
 import StoreDetails from "./components/Store/StoreDetails";
 import Login from "./components/Authentication/Login";
 import Register from "./components/Authentication/Register";
+import Unauthorized from "./components/Error/Unauthorized";
+import Admin from "./components/Admin/Admin";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="unauthorized" element={<Unauthorized />} />
+
+        <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
           <Route index element={<Home />} />
+        </Route>
 
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-
+        <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
           <Route path="category" element={<Categories />} />
 
           <Route exact path="product/:hashId" element={<ProductDetails />} />
@@ -28,11 +35,15 @@ function App() {
 
           <Route exact path="store/:hashId" element={<StoreDetails />} />
           <Route path="store" element={<Stores />} />
-
-          <Route path="*" element={<ErrorPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+
+        <Route element={<RequireAuth allowedRoles={["Admin"]} />}>
+          <Route path="admin" element={<Admin />} />
+        </Route>
+
+        <Route path="*" element={<ErrorPage />} />
+      </Route>
+    </Routes>
   );
 }
 

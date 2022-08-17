@@ -13,7 +13,7 @@ import AuthenticationService from "../../repository/AuthenticationService";
 import "./style.css";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
-const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
@@ -26,7 +26,6 @@ const Register = () => {
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
 
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
@@ -165,8 +164,6 @@ const Register = () => {
               value={email}
               required
               aria-invalid={validEmail ? "false" : "true"}
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
             />
           </div>
 

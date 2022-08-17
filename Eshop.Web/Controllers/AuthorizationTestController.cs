@@ -26,7 +26,7 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         }
 
         [HttpGet("Private")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin")]
         public IActionResult PrivateTest()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;

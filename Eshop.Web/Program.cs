@@ -65,10 +65,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.AllowAnyOrigin();
-            //builder.WithOrigins("http://localhost/3100");
-            builder.AllowAnyHeader();
-            builder.AllowAnyMethod();
+            //builder.AllowAnyOrigin();
+            builder.WithOrigins("http://localhost:3100/")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowed(origin => true)
+            .AllowCredentials();
+
         });
 });
 builder.Services.AddMvc();
@@ -103,19 +106,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors("AllowAllOrigins");
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseCors(
-        "AllowAllOrigins"
-    );
-
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
+    endpoints.MapControllers();
 });
 
-app.MapControllers();
+//app.MapControllers();
 
 app.Run();
