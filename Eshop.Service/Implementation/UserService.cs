@@ -27,6 +27,12 @@ namespace Eshop.Service.Implementation
             _userRepository = userRepository;
         }
 
+        public async Task<EshopUser?> GetByRefreshToken(string refreshToken)
+        {
+            return (await _userRepository.GetAll())
+                .FirstOrDefault(x => x.RefreshToken == refreshToken);
+        }
+
         public async Task<bool> UserExists(RegisterModel model)
         {
             return (await _userRepository.GetAll())

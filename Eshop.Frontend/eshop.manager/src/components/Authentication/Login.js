@@ -5,7 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import AuthenticationService from "../../repository/AuthenticationService";
 
 const Login = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, persist, setPersist } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,14 +35,20 @@ const Login = () => {
       setErrMsg(response);
       errRef.current.focus();
     } else {
-      const accessToken = response?.data?.token;
+      const accessToken = response?.data?.accessToken;
       const refreshToken = response?.data?.refreshToken;
       const roles = response?.data?.roles;
-      setAuth({ user, password, roles, accessToken, refreshToken });
+      sessionStorage.setItem("refresh", refreshToken);
+      setAuth({ user, password, roles, accessToken });
 
       // reroute to /home
       navigate(from, { replace: true });
     }
+  };
+
+  const togglePersist = () => {
+    setPersist(!persist);
+    localStorage.setItem("persist", !persist);
   };
 
   return (
@@ -82,6 +88,20 @@ const Login = () => {
               value={password}
               required
             />
+          </div>
+
+          <div className="row mb-3">
+            <div className="col-md-12">
+              <span style={{ marginRight: "10px" }}>
+                <input
+                  type="checkbox"
+                  id="persist"
+                  onChange={togglePersist}
+                  checked={persist}
+                />
+              </span>
+              <label htmlFor="persist">Trust this machine?</label>
+            </div>
           </div>
 
           <div className="row mb-3">

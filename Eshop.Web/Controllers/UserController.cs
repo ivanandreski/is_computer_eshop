@@ -62,7 +62,7 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
                 return Ok(new
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                     RefreshToken = refreshToken,
                     Roles = roles,
                     Expiration = token.ValidTo
@@ -101,47 +101,63 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         }
 
         [HttpPost]
-        [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        [Route("refreshToken")]
+        public async Task<IActionResult> GetToken(TokenModel? model)
         {
-            if (tokenModel is null)
+            if (model == null) return Unauthorized();
+
+            var refreshToken = model.RefreshToken;
+            if (refreshToken == null) return Unauthorized();
+
+            var user = await _userService.GetByRefreshToken(refreshToken);
+            if (user != null && user.RefreshTokenExpiryTime > DateTime.Now)
             {
-                return BadRequest("Invalid client request");
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var userRole in roles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = CreateToken(authClaims);
+
+                return Ok(new
+                {
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    RefreshToken = user.RefreshToken,
+                    Roles = roles,
+                    Expiration = token.ValidTo
+                }); ;
             }
 
-            string? accessToken = tokenModel.AccessToken;
-            string? refreshToken = tokenModel.RefreshToken;
+            return Unauthorized();
+        }
 
-            var principal = GetPrincipalFromExpiredToken(accessToken);
-            if (principal == null)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout(TokenModel model)
+        {
+            if (model == null) return NoContent();
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            string username = principal.Identity.Name;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            string? accessToken = model.AccessToken;
+            string? refreshToken = model.RefreshToken;
 
-            var user = await _userManager.FindByNameAsync(username);
+            if (accessToken == null || refreshToken == null) return NoContent();
 
-            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
+            var user = await _userService.GetByRefreshToken(refreshToken);
+            if(user == null) return NoContent();
 
-            var newAccessToken = CreateToken(principal.Claims.ToList());
-            var newRefreshToken = GenerateRefreshToken();
-
-            user.RefreshToken = newRefreshToken;
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
             await _userManager.UpdateAsync(user);
 
-            return new ObjectResult(new
-            {
-                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                refreshToken = newRefreshToken
-            });
+            return NoContent(); 
         }
 
         [Authorize]
@@ -250,5 +266,49 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         //    }
         //    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         //}
+
+        //        [HttpPost]
+        //        [Route("refresh-token")]
+        //        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        //        {
+        //            if (tokenModel is null)
+        //            {
+        //                return BadRequest("Invalid client request");
+        //            }
+
+        //            string? accessToken = tokenModel.AccessToken;
+        //            string? refreshToken = tokenModel.RefreshToken;
+
+        //            var principal = GetPrincipalFromExpiredToken(accessToken);
+        //            if (principal == null)
+        //            {
+        //                return BadRequest("Invalid access token or refresh token");
+        //            }
+
+        //#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        //#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        //            string username = principal.Identity.Name;
+        //#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        //#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+        //            var user = await _userManager.FindByNameAsync(username);
+
+        //            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        //            {
+        //                return BadRequest("Invalid access token or refresh token");
+        //            }
+
+        //            var newAccessToken = CreateToken(principal.Claims.ToList());
+        //            var newRefreshToken = GenerateRefreshToken();
+
+        //            user.RefreshToken = newRefreshToken;
+        //            await _userManager.UpdateAsync(user);
+
+        //            return new ObjectResult(new
+        //            {
+        //                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+        //                refreshToken = newRefreshToken
+        //            });
+        //        }
     }
 }

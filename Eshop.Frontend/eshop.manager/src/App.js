@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import RequireAuth from "./components/Authentication/RequireAuth";
+import PersistLogin from "./components/Authentication/PersistLogin";
 
 import Products from "./components/Product/Products";
 import ProductDetails from "./components/Product/ProductDetails";
@@ -23,22 +24,24 @@ function App() {
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
-          <Route index element={<Home />} />
-        </Route>
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
+            <Route index element={<Home />} />
+          </Route>
 
-        <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
-          <Route path="category" element={<Categories />} />
+          <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
+            <Route path="category" element={<Categories />} />
 
-          <Route exact path="product/:hashId" element={<ProductDetails />} />
-          <Route path="product" element={<Products />} />
+            <Route exact path="product/:hashId" element={<ProductDetails />} />
+            <Route path="product" element={<Products />} />
 
-          <Route exact path="store/:hashId" element={<StoreDetails />} />
-          <Route path="store" element={<Stores />} />
-        </Route>
+            <Route exact path="store/:hashId" element={<StoreDetails />} />
+            <Route path="store" element={<Stores />} />
+          </Route>
 
-        <Route element={<RequireAuth allowedRoles={["Admin"]} />}>
-          <Route path="admin" element={<Admin />} />
+          <Route element={<RequireAuth allowedRoles={["Admin"]} />}>
+            <Route path="admin" element={<Admin />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

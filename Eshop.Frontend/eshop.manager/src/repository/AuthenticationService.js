@@ -16,7 +16,7 @@ const AuthenticationService = {
     try {
       response = await axios.post(`${baseUrl}/register`, message, {
         headers: { "Content-Type": "application/json" },
-        // withCredentials: true,
+        withCredentials: true,
       });
     } catch (error) {
       console.log(error);

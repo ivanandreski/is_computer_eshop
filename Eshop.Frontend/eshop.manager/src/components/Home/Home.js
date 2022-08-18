@@ -1,9 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import useLogout from "../../hooks/useLogout";
 
 import "./style.css";
 
 const Home = () => {
+  const logout = useLogout();
+  const navigate = useNavigate();
+
+  const signOut = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <div className="row">
       <div className="col-md-4 home p-3">
@@ -31,7 +41,9 @@ const Home = () => {
         </div>
         <div className="row">
           <div className="col-md-12">
-            <button className="btn btn-primary">Sign out!</button>
+            <button onClick={signOut} className="btn btn-primary">
+              Sign out!
+            </button>
           </div>
         </div>
       </div>

@@ -12,5 +12,7 @@ namespace Eshop.Service.Interface
     public interface IUserService
     {
         Task<bool> UserExists(RegisterModel model);
+
+        Task<EshopUser?> GetByRefreshToken(string refreshToken);
     }
 }
