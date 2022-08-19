@@ -158,11 +158,11 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             if (user == null) return NoContent();
 
             user.RefreshToken = null;
-            user.RefreshTokenExpiryTime = DateTime.MinValue
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
 
             await _userManager.UpdateAsync(user);
 
-            // Set refresh token cookie
+                        // Set refresh token cookie
             // Delete must be given the smae properties for CookieOptiosn as teh cookie you are trying to delete!
             Response.Cookies.Delete("jwt", new CookieOptions()
             {
