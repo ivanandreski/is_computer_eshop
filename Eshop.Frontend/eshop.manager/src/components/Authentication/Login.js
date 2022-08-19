@@ -36,8 +36,7 @@ const Login = () => {
       errRef.current.focus();
     } else {
       const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
-      setAuth({ user, password, roles, accessToken });
+      setAuth({ user, accessToken });
 
       // reroute to /home
       navigate(from, { replace: true });
