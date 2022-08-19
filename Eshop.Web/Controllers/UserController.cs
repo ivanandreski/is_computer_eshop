@@ -60,13 +60,23 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
                 await _userManager.UpdateAsync(user);
 
+                // Set refresh token cookie
+                Response.Cookies.Append("jwt", refreshToken, new CookieOptions()
+                {
+                    Secure = true,
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    MaxAge = TimeSpan.FromDays(1)
+                });
+
                 return Ok(new
                 {
                     AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                    RefreshToken = refreshToken,
                     Roles = roles,
                     Expiration = token.ValidTo
-                });;
+                }); ;
+
+
             }
             return Unauthorized();
         }
@@ -102,11 +112,9 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
         [HttpPost]
         [Route("refreshToken")]
-        public async Task<IActionResult> GetToken(TokenModel? model)
+        public async Task<IActionResult> GetToken()
         {
-            if (model == null) return Unauthorized();
-
-            var refreshToken = model.RefreshToken;
+            var refreshToken = Request.Cookies.FirstOrDefault(x => x.Key == "jwt").Value;
             if (refreshToken == null) return Unauthorized();
 
             var user = await _userService.GetByRefreshToken(refreshToken);
@@ -141,23 +149,30 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
         [HttpPost]
         [Route("logout")]
-        public async Task<IActionResult> Logout(TokenModel model)
+        public async Task<IActionResult> Logout()
         {
-            if (model == null) return NoContent();
-
-            string? accessToken = model.AccessToken;
-            string? refreshToken = model.RefreshToken;
-
-            if (accessToken == null || refreshToken == null) return NoContent();
+            var refreshToken = Request.Cookies.FirstOrDefault(x => x.Key == "jwt").Value;
+            if (refreshToken == null) return Unauthorized();
 
             var user = await _userService.GetByRefreshToken(refreshToken);
-            if(user == null) return NoContent();
+            if (user == null) return NoContent();
 
             user.RefreshToken = null;
-            user.RefreshTokenExpiryTime = DateTime.MinValue;
+            user.RefreshTokenExpiryTime = DateTime.MinValue
+
             await _userManager.UpdateAsync(user);
 
-            return NoContent(); 
+            // Set refresh token cookie
+            // Delete must be given the smae properties for CookieOptiosn as teh cookie you are trying to delete!
+            Response.Cookies.Delete("jwt", new CookieOptions()
+            {
+                Secure = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                MaxAge = TimeSpan.MinValue
+            });
+
+            return Ok();
         }
 
         [Authorize]

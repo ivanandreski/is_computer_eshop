@@ -7,10 +7,7 @@ const useRefreshToken = () => {
   const refresh = async () => {
     const response = await axios.post(
       "/user/refreshToken",
-      {
-        accessToken: "",
-        refreshToken: sessionStorage.getItem("refresh"),
-      },
+      {},
       {
         withCredentials: true,
       }

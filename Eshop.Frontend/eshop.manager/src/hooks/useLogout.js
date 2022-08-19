@@ -8,10 +8,7 @@ const useLogout = () => {
     try {
       await axios.post(
         "/user/logout",
-        {
-          accessToken: "",
-          refreshToken: sessionStorage.getItem("refresh"),
-        },
+        {},
         {
           withCredentials: true,
         }
@@ -20,7 +17,6 @@ const useLogout = () => {
       console.log(error);
     } finally {
       setAuth({});
-      sessionStorage.setItem("refresh", null);
     }
   };
 

@@ -40,6 +40,7 @@ const AuthenticationService = {
     try {
       response = await axios.post(`${baseUrl}/login`, message, {
         headers: { "Content-Type": "application/json" },
+        withCredentials: true,
       });
 
       return response;

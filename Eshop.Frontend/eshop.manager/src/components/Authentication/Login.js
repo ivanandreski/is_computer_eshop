@@ -36,9 +36,7 @@ const Login = () => {
       errRef.current.focus();
     } else {
       const accessToken = response?.data?.accessToken;
-      const refreshToken = response?.data?.refreshToken;
       const roles = response?.data?.roles;
-      sessionStorage.setItem("refresh", refreshToken);
       setAuth({ user, password, roles, accessToken });
 
       // reroute to /home
