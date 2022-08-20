@@ -25,6 +25,7 @@ const PersistLogin = () => {
     !auth?.accessToken && persist ? verifyRefreshToken() : setLoading(false);
 
     return () => (isMounted = false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // mesto <p>loading</p> stavi spinner

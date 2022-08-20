@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
@@ -15,11 +16,20 @@ const Authenticate = () => {
   };
 
   return auth?.accessToken ? (
-    <button className="btn btn-danger" onClick={signOut}>
-      Logout
-    </button>
+    <>
+      <button className="btn btn-danger" onClick={signOut}>
+        Logout
+      </button>
+    </>
   ) : (
-    <></>
+    <>
+      <Link to={"/login"} className="btn btn-primary">
+        Log in
+      </Link>
+      <Link to={"/register"} className="btn btn-secondary">
+        Register
+      </Link>
+    </>
   );
 };
 
