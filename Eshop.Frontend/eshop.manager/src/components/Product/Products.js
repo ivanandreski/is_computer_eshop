@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ProductService from "../../repository/ProductService";
 import AddProduct from "./AddProduct";
 
 import ProductCard from "./ProductCard";
 
 const Products = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [entities, setEntities] = useState([]);
 
   useEffect(() => {
@@ -21,7 +24,8 @@ const Products = () => {
   };
 
   const handleDelete = (hashId) => {
-    ProductService.delete(hashId)
+    axiosPrivate
+      .delete(`/product/${hashId}`)
       .then((resp) => {
         setEntities(entities.filter((e) => e.hashId !== hashId));
       })

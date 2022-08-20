@@ -1,4 +1,5 @@
 ﻿using Eshop.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eshop.Web.Controllers
@@ -37,6 +38,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Create([FromForm] string name)
         {
             var category = await _categoryService.Create(name);
@@ -45,6 +47,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Update(string hashId, [FromForm] string name)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -59,6 +62,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpDelete("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Remove(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);

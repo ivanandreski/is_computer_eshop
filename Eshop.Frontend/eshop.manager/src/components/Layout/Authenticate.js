@@ -26,7 +26,7 @@ const Authenticate = () => {
       <Link to={"/login"} className="btn btn-primary">
         Log in
       </Link>
-      <Link to={"/register"} className="btn btn-secondary">
+      <Link to={"/register"} className="btn btn-secondary ms-2">
         Register
       </Link>
     </>

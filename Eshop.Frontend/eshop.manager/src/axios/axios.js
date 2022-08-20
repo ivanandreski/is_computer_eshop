@@ -10,8 +10,6 @@ export default axios.create({
 
 export const axiosPrivate = axios.create({
   baseURL: REACT_APP_ESHOP_API,
-  //   headers: {
-
-  //   }
+  headers: {},
   withCredentials: true,
 });

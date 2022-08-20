@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +52,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Create([FromForm] ProductDto dto)
         {
             var result = await _productService.Create(dto);
@@ -61,6 +63,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Update(string hashId, [FromForm] ProductDto dto)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -75,6 +78,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost("{hashId}/addImages")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> AddImages(string hashId, [FromForm] IEnumerable<IFormFile> images)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -89,6 +93,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpDelete("{hashId}/deleteImage")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> RemoveImage(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -101,6 +106,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpDelete("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Remove(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
