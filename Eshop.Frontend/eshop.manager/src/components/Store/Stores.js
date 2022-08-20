@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
-import StoreService from "../../repository/StoreService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import {
+  getStores,
+  deleteStore,
+  addStore,
+  getFormData,
+} from "../../api/storeApi";
 import FormTextField from "../Core/FormTextField";
 
 const Stores = () => {
@@ -17,21 +23,34 @@ const Stores = () => {
       country: "",
     };
   };
+  const axiosPrivate = useAxiosPrivate();
 
   const [entities, setEntities] = useState([]);
   const [store, setStore] = useState(clearForm());
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const fetch = () => {
-      StoreService.fetchAll()
-        .then((resp) => {
-          setEntities(resp.data);
-        })
-        .catch((error) => console.log(error));
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchStores = async () => {
+      try {
+        const response = await axiosPrivate.get(getStores(), {
+          signal: controller.signal,
+        });
+        isMounted && setEntities(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    fetch();
-  }, []);
+
+    fetchStores();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [axiosPrivate]);
 
   const getButton = () => {
     if (!open) {
@@ -47,22 +66,31 @@ const Stores = () => {
     }
   };
 
-  const handleDelete = (hashId) => {
-    StoreService.delete(hashId)
-      .then((resp) => {
-        setEntities(entities.filter((e) => e.hashId !== hashId));
-      })
-      .catch((error) => console.log(error));
+  const handleDelete = async (hashId) => {
+    try {
+      await axiosPrivate.delete(deleteStore(hashId), {
+        withCredentials: true,
+      });
+
+      setEntities(entities.filter((e) => e.hashId !== hashId));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleSave = () => {
-    StoreService.add(store)
-      .then((resp) => {
-        setStore(clearForm());
-        setEntities([...entities, resp.data]);
-        setOpen(false);
-      })
-      .catch((error) => console.log(error));
+  const handleSave = async () => {
+    try {
+      const formData = getFormData(store);
+      const response = await axiosPrivate.post(addStore(), formData, {
+        withCredentials: true,
+      });
+
+      setStore(clearForm());
+      setEntities([...entities, response.data]);
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCancel = () => {

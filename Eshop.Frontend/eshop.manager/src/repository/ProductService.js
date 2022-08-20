@@ -1,9 +1,8 @@
-import axios from "../axios/axios";
+import axios from "../api/axios";
 
 const baseUrl = "/product";
 
 const ProductService = {
-
   fetchAll: () => {
     return axios.get(baseUrl);
   },

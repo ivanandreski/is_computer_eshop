@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import StoreService from "../../repository/StoreService";
+import { getStore, editStore, getFormData } from "../../api/storeApi";
 import Address from "../Core/Address";
 import FormTextField from "../Core/FormTextField";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const StoreDetails = () => {
   const { hashId } = useParams();
+  const axiosPrivate = useAxiosPrivate();
 
   const resetEdit = (s) => {
     return {
@@ -23,22 +25,31 @@ const StoreDetails = () => {
   const [editedStore, setEditedStore] = useState({});
 
   useEffect(() => {
-    StoreService.fetch(hashId)
-      .then((resp) => {
-        setStore(resp.data);
-        setEditedStore(resetEdit(resp.data));
-      })
-      .catch((error) => console.log(error));
-  }, [hashId]);
+    const fetchStore = async () => {
+      try {
+        const response = await axiosPrivate.get(getStore(hashId));
+        setStore(response.data);
+        setEditedStore(resetEdit(response.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const handleSave = () => {
-    StoreService.edit(hashId, editedStore)
-      .then((resp) => {
-        setStore(resp.data);
-        setEditedStore(resetEdit(resp.data));
-        setEdit(false);
-      })
-      .catch((error) => console.log(error));
+    fetchStore();
+  }, [hashId, axiosPrivate]);
+
+  const handleSave = async () => {
+    const formData = getFormData(editedStore);
+    try {
+      const response = await axiosPrivate.put(editStore(hashId), formData, {
+        withCredentials: true,
+      });
+      setStore(response.data);
+      setEditedStore(resetEdit(response.data));
+      setEdit(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCancel = () => {

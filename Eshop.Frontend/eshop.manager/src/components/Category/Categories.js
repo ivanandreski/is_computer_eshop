@@ -1,51 +1,46 @@
 import React, { useState, useEffect } from "react";
 
-import CategoryService from "../../repository/CategoryService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { getAllCategories } from "../../api/categoryApi";
+
 import AddCategory from "./AddCategory";
 import CategoryTableRow from "./CategoryTableRow";
 
 const Categories = () => {
-  const [elements, setElements] = useState([]);
+  const axiosPrivate = useAxiosPrivate();
+
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch();
-  }, []);
+    let isMounted = true;
+    const controller = new AbortController();
 
-  const fetch = () => {
-    CategoryService.fetchAll()
-      .then((result) => {
-        setElements(result.data);
-      })
-      .catch((error) => console.log(error));
-  };
+    const getCategories = async () => {
+      try {
+        const response = await axiosPrivate.get(getAllCategories(), {
+          signal: controller.signal,
+        });
+        isMounted && setCategories(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const saveValue = (id, value) => {
-    CategoryService.edit(id, value)
-      .then((result) => {
-        console.log(result.data);
-      })
-      .catch((error) => console.log(error));
+    getCategories();
 
-    // todo: swal alert
-  };
-
-  const handleDelete = (e) => {
-    CategoryService.delete(e.target.value)
-      .then((result) => {
-        setElements(elements.filter((e) => e.hashId !== result.data.hashId));
-      })
-      .catch((error) => console.log(error));
-
-    // todo: swal alert
-  };
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [axiosPrivate]);
 
   const renderRows = () => {
-    return elements?.map((e, i) => (
+    return categories.map((e, i) => (
       <CategoryTableRow
         key={i}
         element={e}
-        saveValue={saveValue}
-        handleDelete={handleDelete}
+        categories={categories}
+        setCategories={setCategories}
         i={i}
       />
     ));
@@ -64,7 +59,7 @@ const Categories = () => {
           </thead>
           <tbody>{renderRows()}</tbody>
         </table>
-        <AddCategory elements={elements} setElements={setElements} />
+        <AddCategory categories={categories} setCategories={setCategories} />
       </div>
     </>
   );

@@ -1,34 +1,73 @@
-import axios from "../axios/axios";
+// import axios from "../api/axios";
 
 const baseUrl = "/category";
 
 const CategoryService = {
-  fetchAll: () => {
-    return axios.get(baseUrl);
+  fetchAll: async (axiosPrivate) => {
+    let response = [];
+    try {
+      response = await axiosPrivate.get(baseUrl);
+    } catch (error) {
+      console.log(error);
+      return response;
+    }
+    return response.data;
   },
 
-  fetch: (id) => {
-    if (id !== undefined) return axios.get(`${baseUrl}/${id}`);
+  fetch: async (axiosPrivate, id) => {
+    let response = {};
+    try {
+      response = await axiosPrivate.get(`${baseUrl}/${id}`);
+    } catch (error) {
+      console.log(error);
+      return response;
+    }
+    return response.data;
   },
 
-  add: (name) => {
+  add: async (axiosPrivate, name) => {
     let formData = new FormData();
     formData.append("name", name);
 
-    return axios.post(baseUrl, formData);
-  },
-
-  edit: (id, name) => {
-    if (id !== undefined) {
-      let formData = new FormData();
-      formData.append("name", name);
-
-      return axios.put(`${baseUrl}/${id}`, formData);
+    let response = {};
+    try {
+      response = await axiosPrivate.post(baseUrl, formData, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error);
+      return response;
     }
+    return response.data;
   },
 
-  delete: (id) => {
-    if (id !== undefined) return axios.delete(`${baseUrl}/${id}`);
+  edit: async (axiosPrivate, id, name) => {
+    let formData = new FormData();
+    formData.append("name", name);
+
+    let response = {};
+    try {
+      response = await axiosPrivate.put(`${baseUrl}/${id}`, formData, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error);
+      return response;
+    }
+    return response.data;
+  },
+
+  delete: async (axiosPrivate, id) => {
+    let response = {};
+    try {
+      response = await axiosPrivate.delete(`${baseUrl}/${id}`, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.log(error);
+      return response;
+    }
+    return response.data;
   },
 };
 
