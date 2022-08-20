@@ -13,7 +13,7 @@ const RequireAuth = ({ allowedRoles }) => {
   const roles =
     decoded === undefined
       ? []
-      : roleProperty in decoded
+      : !(roleProperty in decoded)
       ? []
       : decoded[roleProperty] instanceof Array
       ? decoded[roleProperty]
