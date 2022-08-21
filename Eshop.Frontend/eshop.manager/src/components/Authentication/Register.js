@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import AuthenticationService from "../../repository/AuthenticationService";
+import AuthenticationApiService from "../../api/AuthenticationApiService";
 
 import "./style.css";
 
@@ -75,7 +75,7 @@ const Register = () => {
       return;
     }
 
-    const response = await AuthenticationService.register(
+    const response = await AuthenticationApiService.register(
       user,
       password,
       firstName,

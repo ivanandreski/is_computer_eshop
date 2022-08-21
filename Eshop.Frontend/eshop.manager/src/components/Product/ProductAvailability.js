@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from "react";
 
-import ProductService from "../../repository/ProductService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import ProductApiService from "../../api/ProductApService";
 import ProductInStore from "./ProductInStore";
 
 const ProductAvailability = ({ product }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
+
   const [productsInStores, setProductsInStores] = useState([]);
   const jsonProduct = JSON.stringify(productsInStores);
 
   useEffect(() => {
-    const fetch = () => {
-      return ProductService.fetchAvailability(product.hashId)
-        .then((resp) => {
-          setProductsInStores(resp.data);
-        })
-        .catch((error) => console.log(error));
+    const fetch = async () => {
+      try {
+        const response = await productApi.getProductAvailability(
+          product.hashId
+        );
+        setProductsInStores(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.hashId, jsonProduct]);
 
   const renderStores = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
 
@@ -6,9 +6,10 @@ import FormTextField from "../Core/FormTextField";
 import FormTextAreaField from "../Core/FormTextAreaField";
 import FormNumberField from "../Core/FormNumberField";
 import FormSelectField from "../Core/FormSelectField";
-import CategoryService from "../../repository/CategoryService";
 import FormImageField from "../Core/FormImageField";
-import ProductService from "../../repository/ProductService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import ProductApiService from "../../api/ProductApService";
+import CategoryApiService from "../../api/CategoryApiService";
 
 const AddProduct = ({ entities, setEntities }) => {
   const clearForm = () => {
@@ -23,18 +24,38 @@ const AddProduct = ({ entities, setEntities }) => {
     };
   };
 
+  const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
+  const categoryApi = new CategoryApiService(axiosPrivate);
+
   const [product, setProduct] = useState(clearForm());
+  const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const handleSave = () => {
-    ProductService.add(product)
-      .then((resp) => {
-        const { data } = resp;
-        setEntities([...entities, data]);
-        setProduct(clearForm());
-        setOpen(!open);
-      })
-      .catch((error) => console.log(error));
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await categoryApi.getCategories();
+        setCategories(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const response = await productApi.addProduct(product);
+      const { data } = response;
+      setEntities([...entities, data]);
+      setProduct(clearForm());
+      setOpen(!open);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleButtonClick = () => {
@@ -94,7 +115,7 @@ const AddProduct = ({ entities, setEntities }) => {
             </div>
             <div className="col-md-6">
               <FormSelectField
-                service={CategoryService}
+                items={categories}
                 type={"categoryHashId"}
                 title={"Category"}
                 object={product}

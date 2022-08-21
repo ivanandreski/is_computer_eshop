@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 
-import ProductService from "../../repository/ProductService";
+import ProductApiService from "../../api/ProductApService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const ProductImageEdit = ({ product, setProduct }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
+
   const [newImages, setNewImages] = useState({});
 
-  const handleDelete = (hashId) => {
-    ProductService.deleteImage(hashId)
-      .then((resp) => {
-        setProduct(resp.data);
-      })
-      .catch((error) => console.log(error));
+  const handleDelete = async (hashId) => {
+    try {
+      const response = await productApi.deleteImageForProduct(hashId);
+      setProduct(response.data);
+    } catch (error) {
+        console.log(error);
+    }
   };
 
-  const handleSubmit = () => {
-    ProductService.addImages(product.hashId, newImages)
-      .then((resp) => {
-        setProduct(resp.data);
-      })
-      .catch((error) => console.log(error));
+  const handleSubmit = async () => {
+      try {
+        const response = await productApi.addImagesToProduct(product.hashId, newImages);
+        setProduct(response.data);
+      } catch (error) {
+          console.log(error);
+      }
   };
 
   const renderImages = () => {
@@ -26,7 +32,6 @@ const ProductImageEdit = ({ product, setProduct }) => {
       <div className="col-md-3" key={i}>
         <img
           src={`data:image/jpeg;base64,${image.image}`}
-          //   className="d-block"
           width="90%"
           alt="..."
         />

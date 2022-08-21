@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Collapse } from "react-bootstrap";
-import StoreService from "../../repository/StoreService";
+
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import StoreApiService from "../../api/StoreApiService";
 
 import "./css/productInStore.css";
 
@@ -9,19 +11,23 @@ const ProductInStore = ({ productInStore, save }) => {
     return productInStore.quantity;
   };
 
+  const axiosPrivate = useAxiosPrivate();
+  const storeApi = new StoreApiService(axiosPrivate);
+
   const [edit, setEdit] = useState(false);
   const [form, setForm] = useState(resetForm());
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let quantity = form;
     if (form < 0) quantity = 0;
 
-    StoreService.addProduct(productInStore.hashId, quantity)
-      .then((resp) => {
+    try {
+        await storeApi.addProductToStore(productInStore.hashId, quantity)
         setEdit(false);
         save([]);
-      })
-      .catch((error) => console.log(error));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleReset = () => {

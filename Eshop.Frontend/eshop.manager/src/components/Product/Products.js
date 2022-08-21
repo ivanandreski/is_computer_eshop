@@ -1,35 +1,38 @@
 import React, { useEffect, useState } from "react";
 
+import ProductApiService from "../../api/ProductApService";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import ProductService from "../../repository/ProductService";
-import AddProduct from "./AddProduct";
 
+import AddProduct from "./AddProduct";
 import ProductCard from "./ProductCard";
 
 const Products = () => {
   const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
 
   const [entities, setEntities] = useState([]);
 
   useEffect(() => {
+    const fetchEntities = async () => {
+      try {
+        const response = await productApi.getProducts();
+        setEntities(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchEntities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchEntities = () => {
-    ProductService.fetchAll()
-      .then((response) => {
-        setEntities(response.data);
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const handleDelete = (hashId) => {
-    axiosPrivate
-      .delete(`/product/${hashId}`)
-      .then((resp) => {
-        setEntities(entities.filter((e) => e.hashId !== hashId));
-      })
-      .catch((error) => console.log(error));
+  const handleDelete = async (hashId) => {
+    try {
+      await productApi.deleteProduct(hashId);
+      setEntities(entities.filter((e) => e.hashId !== hashId));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderEntities = () => {

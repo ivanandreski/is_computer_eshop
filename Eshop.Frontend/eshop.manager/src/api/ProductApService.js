@@ -13,8 +13,10 @@ export default class ProductApiService {
     formData.append("categoryIdHash", object.categoryHashId);
     formData.append("manufacturer", object.manufacturer);
     formData.append("discontinued", object.discontinued);
-    for (let i = 0; i < object.image[0]?.length; i++) {
-      formData.append(`image`, object.image[0][i]);
+    if (object.image) {
+      for (let i = 0; i < object?.image[0]?.length || 0; i++) {
+        formData.append(`image`, object.image[0][i]);
+      }
     }
 
     return formData;
@@ -35,17 +37,23 @@ export default class ProductApiService {
   addProduct = (object) => {
     const formData = this.getFormData(object);
 
-    return this.axiosPrivate.post(baseUrl, formData);
+    return this.axiosPrivate.post(baseUrl, formData, {
+      withCredentials: true,
+    });
   };
 
   editProduct = (id, object) => {
     const formData = this.getFormData(object);
 
-    return this.axiosPrivate.put(`${baseUrl}/${id}`, formData);
+    return this.axiosPrivate.put(`${baseUrl}/${id}`, formData, {
+      withCredentials: true,
+    });
   };
 
   deleteImageForProduct = (imageId) => {
-    return this.axiosPrivate.delete(`${baseUrl}/${imageId}/deleteImage`);
+    return this.axiosPrivate.delete(`${baseUrl}/${imageId}/deleteImage`, {
+      withCredentials: true,
+    });
   };
 
   addImagesToProduct = (productId, images) => {
@@ -56,11 +64,16 @@ export default class ProductApiService {
 
     return this.axiosPrivate.post(
       `${baseUrl}/${productId}/addImages`,
-      formData
+      formData,
+      {
+        withCredentials: true,
+      }
     );
   };
 
   deleteProduct = (id) => {
-    return this.axiosPrivate.delete(`${baseUrl}/${id}`);
+    return this.axiosPrivate.delete(`${baseUrl}/${id}`, {
+      withCredentials: true,
+    });
   };
 }

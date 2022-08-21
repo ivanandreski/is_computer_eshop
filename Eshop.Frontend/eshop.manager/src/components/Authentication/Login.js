@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
-import AuthenticationService from "../../repository/AuthenticationService";
+import AuthenticationApiService from "../../api/AuthenticationApiService";
 
 const Login = () => {
   const { setAuth, persist, setPersist } = useAuth();
@@ -29,7 +29,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await AuthenticationService.login(user, password);
+    const response = await AuthenticationApiService.login(user, password);
 
     if (typeof response === "string") {
       setErrMsg(response);

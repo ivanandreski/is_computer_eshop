@@ -1,8 +1,8 @@
-import axios from "../api/axios";
+import axios from "./axios";
 
 const baseUrl = "/user";
 
-const AuthenticationService = {
+const AuthenticationApiService = {
   register: async (user, password, firstName, lastName, email) => {
     let response = null;
     const message = JSON.stringify({
@@ -58,4 +58,4 @@ const AuthenticationService = {
   },
 };
 
-export default AuthenticationService;
+export default AuthenticationApiService;

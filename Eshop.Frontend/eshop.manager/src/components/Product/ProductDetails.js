@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import ProductService from "../../repository/ProductService";
+import ProductApiService from "../../api/ProductApService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ProductEdit from "./ProductEdit";
 import ProductAvailability from "./ProductAvailability";
 import ProductImageEdit from "./ProductImageEdit";
 
 const ProductDetails = () => {
   const { hashId } = useParams();
+  const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
+
   const [product, setProduct] = useState(null);
   const jsonProduct = JSON.stringify(product);
 
   useEffect(() => {
-    const fetch = () => {
-      ProductService.fetch(hashId)
-        .then((response) => {
-          setProduct(response.data);
-        })
-        .catch((error) => console.log(error));
+    const fetch = async () => {
+      try {
+        const response = await productApi.getProduct(hashId);
+        setProduct(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hashId, jsonProduct]);
 
   return product !== null ? (

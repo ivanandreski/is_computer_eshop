@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import ProductService from "../../repository/ProductService";
+import ProductApiService from "../../api/ProductApService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import InputText from "../Core/InputText";
 import DescriptionEdit from "./DescriptionEdit";
 import PriceEdit from "./PriceEdit";
 
 const ProductEdit = ({ product, setProduct }) => {
   let navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
+  const productApi = new ProductApiService(axiosPrivate);
+
   const [edit, setEdit] = useState(false);
 
   const clearValues = () => {
@@ -23,12 +27,13 @@ const ProductEdit = ({ product, setProduct }) => {
 
   const [value, setValue] = useState(clearValues());
 
-  const handleDelete = () => {
-    ProductService.delete(product.hashId)
-      .then((response) => {
-        navigate("/product");
-      })
-      .catch((error) => console.log(error));
+  const handleDelete = async () => {
+    try {
+      await productApi.deleteProduct(product.hashId);
+      navigate("/product");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCancel = () => {
@@ -36,14 +41,15 @@ const ProductEdit = ({ product, setProduct }) => {
     setEdit(false);
   };
 
-  const handleSave = () => {
-    ProductService.edit(product.hashId, value)
-      .then((response) => {
-        setProduct(response.data);
-        setValue(clearValues());
-        setEdit(false);
-      })
-      .catch((error) => console.log(error));
+  const handleSave = async () => {
+    try {
+      const response = await productApi.editProduct(product.hashId, value);
+      setProduct(response.data);
+      setValue(clearValues());
+      setEdit(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return edit ? (
