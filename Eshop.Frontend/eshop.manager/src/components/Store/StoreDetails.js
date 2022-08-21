@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { getStore, editStore, getFormData } from "../../api/storeApi";
+import StoreApiService from "../../api/StoreApiService";
 import Address from "../Core/Address";
 import FormTextField from "../Core/FormTextField";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -9,6 +9,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 const StoreDetails = () => {
   const { hashId } = useParams();
   const axiosPrivate = useAxiosPrivate();
+  const storeApi = new StoreApiService(axiosPrivate);
 
   const resetEdit = (s) => {
     return {
@@ -27,7 +28,7 @@ const StoreDetails = () => {
   useEffect(() => {
     const fetchStore = async () => {
       try {
-        const response = await axiosPrivate.get(getStore(hashId));
+        const response = await storeApi.getStore(hashId);
         setStore(response.data);
         setEditedStore(resetEdit(response.data));
       } catch (error) {
@@ -36,14 +37,12 @@ const StoreDetails = () => {
     };
 
     fetchStore();
-  }, [hashId, axiosPrivate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSave = async () => {
-    const formData = getFormData(editedStore);
     try {
-      const response = await axiosPrivate.put(editStore(hashId), formData, {
-        withCredentials: true,
-      });
+      const response = await storeApi.editStore(hashId, editedStore);
       setStore(response.data);
       setEditedStore(resetEdit(response.data));
       setEdit(false);

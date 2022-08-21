@@ -1,31 +1,21 @@
 import React from "react";
 
-import {
-  deleteCategory,
-  editCategory,
-  getFormData,
-} from "../../api/categoryApi";
+import CategoryApiService from "../../api/CategoryApiService";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import EditableField from "../Core/EditableField";
 
 const CategoryTableRow = ({ element, categories, setCategories, i }) => {
   const axiosPrivate = useAxiosPrivate();
+  const categoryApi = new CategoryApiService(axiosPrivate);
 
   const handleDelete = async () => {
-    await axiosPrivate.delete(deleteCategory(element.hashId), {
-      withCredentials: true,
-    });
+    await categoryApi.deleteCategory(element.hashId);
 
     setCategories(categories.filter((c) => c.hashId !== element.hashId));
   };
 
   const handleSave = async (id, name) => {
-    const formData = getFormData(name);
-
-    const response = await axiosPrivate.put(editCategory(id), formData, {
-      withCredentials: true,
-    });
-
+    const response = await categoryApi.editCategory(element.hashId, name);
     const temp = categories.filter((c) => c.hashId !== id);
 
     setCategories([...temp, response.data]);

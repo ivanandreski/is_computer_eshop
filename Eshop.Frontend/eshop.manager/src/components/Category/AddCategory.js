@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 
-import { addCategory, getFormData } from "../../api/categoryApi";
+import CategoryApiService from "../../api/CategoryApiService";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import TextInputField from "../Core/TextInputField";
 
 const AddCategory = ({ categories, setCategories }) => {
   const axiosPrivate = useAxiosPrivate();
+  const categoryApi = new CategoryApiService(axiosPrivate);
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
   const handleSave = async () => {
     try {
-      const formData = getFormData(name);
-
-      const response = await axiosPrivate.post(addCategory(), formData, {
-        withCredentials: true,
-      });
+      const response = await categoryApi.addCategory(name);
       setName("");
       setOpen(false);
       setCategories([...categories, response.data]);

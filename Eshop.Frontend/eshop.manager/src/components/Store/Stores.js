@@ -4,12 +4,7 @@ import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import {
-  getStores,
-  deleteStore,
-  addStore,
-  getFormData,
-} from "../../api/storeApi";
+import StoreApiService from "../../api/StoreApiService";
 import FormTextField from "../Core/FormTextField";
 
 const Stores = () => {
@@ -24,33 +19,25 @@ const Stores = () => {
     };
   };
   const axiosPrivate = useAxiosPrivate();
+  const storeApi = new StoreApiService(axiosPrivate);
 
   const [entities, setEntities] = useState([]);
   const [store, setStore] = useState(clearForm());
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
     const fetchStores = async () => {
       try {
-        const response = await axiosPrivate.get(getStores(), {
-          signal: controller.signal,
-        });
-        isMounted && setEntities(response.data);
+        const response = await storeApi.getStores();
+        setEntities(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchStores();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [axiosPrivate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getButton = () => {
     if (!open) {
@@ -68,9 +55,7 @@ const Stores = () => {
 
   const handleDelete = async (hashId) => {
     try {
-      await axiosPrivate.delete(deleteStore(hashId), {
-        withCredentials: true,
-      });
+      await storeApi.deleteStore(hashId);
 
       setEntities(entities.filter((e) => e.hashId !== hashId));
     } catch (error) {
@@ -80,10 +65,7 @@ const Stores = () => {
 
   const handleSave = async () => {
     try {
-      const formData = getFormData(store);
-      const response = await axiosPrivate.post(addStore(), formData, {
-        withCredentials: true,
-      });
+      const response = await storeApi.addStore(store);
 
       setStore(clearForm());
       setEntities([...entities, response.data]);
@@ -106,7 +88,7 @@ const Stores = () => {
         <td>{entity.address.city}</td>
         <td>
           <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-6">
               <Link
                 to={`/store/${entity.hashId}`}
                 className="btn btn-secondary w-100"
@@ -114,7 +96,7 @@ const Stores = () => {
                 Details
               </Link>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-6">
               <button
                 className="btn btn-danger w-100"
                 onClick={() => handleDelete(entity.hashId)}
