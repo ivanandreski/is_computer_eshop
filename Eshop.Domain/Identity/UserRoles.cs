@@ -12,5 +12,11 @@ namespace Eshop.Domain.Identity
         public const string Manager = "Manager";
         public const string StoreClerk = "StoreClerk";
         public const string User = "User";
+
+        public static List<string> GetRoles()
+        {
+            return new List<string> { Admin, Manager, StoreClerk, User };
+        }
+
     }
 }
