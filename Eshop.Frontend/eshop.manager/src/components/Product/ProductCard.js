@@ -4,27 +4,34 @@ import { Link } from "react-router-dom";
 const ProductCard = ({ product, handleDelete }) => {
   return (
     <>
-      <div className="card mt-3" style={{ width: "18rem" }}>
-        <img
-          src={`data:image/jpeg;base64,${product.images[0]?.image}`}
-          className="card-img-top"
-          style={{ width: "18rem" }}
-          alt="..."
-        />
+      <div className="card mt-3" style={{ height: "40vh" }}>
+        <div className="d-flex justify-content-center">
+          <img
+            src={`data:image/jpeg;base64,${product.images[0]?.image}`}
+            className="card-img-top"
+            style={{ height: "12rem", width: "16rem" }}
+            alt="..."
+          />
+        </div>
         <div className="card-body">
-          <h5 className="card-title">{product.name}</h5>
+          <strong className="card-title">{product.name}</strong>
         </div>
         <div className="card-body d-flex justify-content-end">
-          <Link to={`/product/${product.hashId}`} className="btn btn-secondary">
-            Details
-          </Link>
-          <button
-            className="btn btn-danger"
-            style={{ marginLeft: "5px" }}
-            onClick={() => handleDelete(product.hashId)}
-          >
-            Delete
-          </button>
+          <div>
+            <Link
+              to={`/product/${product.hashId}`}
+              className="btn btn-secondary"
+            >
+              Details
+            </Link>
+            <button
+              className="btn btn-danger"
+              style={{ marginLeft: "5px" }}
+              onClick={() => handleDelete(product.hashId)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </>

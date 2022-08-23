@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
-import StoreService from "../../repository/StoreService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import StoreApiService from "../../api/StoreApiService";
 import FormTextField from "../Core/FormTextField";
 
 const Stores = () => {
@@ -17,20 +18,25 @@ const Stores = () => {
       country: "",
     };
   };
+  const axiosPrivate = useAxiosPrivate();
+  const storeApi = new StoreApiService(axiosPrivate);
 
   const [entities, setEntities] = useState([]);
   const [store, setStore] = useState(clearForm());
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const fetch = () => {
-      StoreService.fetchAll()
-        .then((resp) => {
-          setEntities(resp.data);
-        })
-        .catch((error) => console.log(error));
+    const fetchStores = async () => {
+      try {
+        const response = await storeApi.getStores();
+        setEntities(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    fetch();
+
+    fetchStores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getButton = () => {
@@ -47,22 +53,26 @@ const Stores = () => {
     }
   };
 
-  const handleDelete = (hashId) => {
-    StoreService.delete(hashId)
-      .then((resp) => {
-        setEntities(entities.filter((e) => e.hashId !== hashId));
-      })
-      .catch((error) => console.log(error));
+  const handleDelete = async (hashId) => {
+    try {
+      await storeApi.deleteStore(hashId);
+
+      setEntities(entities.filter((e) => e.hashId !== hashId));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleSave = () => {
-    StoreService.add(store)
-      .then((resp) => {
-        setStore(clearForm());
-        setEntities([...entities, resp.data]);
-        setOpen(false);
-      })
-      .catch((error) => console.log(error));
+  const handleSave = async () => {
+    try {
+      const response = await storeApi.addStore(store);
+
+      setStore(clearForm());
+      setEntities([...entities, response.data]);
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCancel = () => {
@@ -78,7 +88,7 @@ const Stores = () => {
         <td>{entity.address.city}</td>
         <td>
           <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-6">
               <Link
                 to={`/store/${entity.hashId}`}
                 className="btn btn-secondary w-100"
@@ -86,7 +96,7 @@ const Stores = () => {
                 Details
               </Link>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-6">
               <button
                 className="btn btn-danger w-100"
                 onClick={() => handleDelete(entity.hashId)}

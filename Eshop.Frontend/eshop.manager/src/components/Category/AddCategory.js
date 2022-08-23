@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-import CategoryService from "../../repository/CategoryService";
+
+import CategoryApiService from "../../api/CategoryApiService";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import TextInputField from "../Core/TextInputField";
 
-const AddCategory = ({ elements, setElements }) => {
-  const num = elements.length;
+const AddCategory = ({ categories, setCategories }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const categoryApi = new CategoryApiService(axiosPrivate);
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
 
-  const handleSave = () => {
-    CategoryService.add(name).then((response) => {
-      setElements([...elements, response.data]);
+  const handleSave = async () => {
+    try {
+      const response = await categoryApi.addCategory(name);
       setName("");
       setOpen(false);
-    });
+      setCategories([...categories, response.data]);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return open ? (
@@ -21,7 +27,7 @@ const AddCategory = ({ elements, setElements }) => {
       <table className="table">
         <tbody>
           <tr>
-            <th>{num + 1}</th>
+            <th>{(categories?.data?.length || 0) + 1}</th>
             <th>
               <div className="row">
                 <div className="col-md-10">

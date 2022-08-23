@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Select from "react-select";
 
 class SelectItem {
@@ -8,19 +8,7 @@ class SelectItem {
   }
 }
 
-const FormSelectField = ({ service, type, title, object, setObject }) => {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    const fetchItems = () => {
-      service
-        .fetchAll()
-        .then((response) => setItems(response.data))
-        .catch((error) => console.log(error));
-    };
-    fetchItems();
-  }, [service]);
-
+const FormSelectField = ({ items, type, title, object, setObject }) => {
   const mapItems = () => {
     return items.map((item) => new SelectItem(item.hashId, item.name));
   };

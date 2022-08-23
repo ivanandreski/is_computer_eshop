@@ -6,25 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Eshop.Domain.Dto;
 using Eshop.Domain.Identity;
+using Eshop.Domain.Projections;
 
 namespace Eshop.Service.Interface
 {
     public interface IUserService
     {
-        Task<IEnumerable<EshopUser>> GetAll();
+        Task<List<EshopUserProjection>> GetEshopUsers(string? param);
 
-        Task<EshopUser?> Get(ClaimsIdentity identity);
+        Task<bool> UserExists(RegisterModel model);
 
-        Task<EshopUser?> Authenticate(LoginModel userLogin);
+        Task<EshopUser?> GetByRefreshToken(string refreshToken);
 
-        Task<string> Register(RegisterModel dto);
-
-        Task<TokenModel> Generate(EshopUser user);
-
-        Task<string> GenerateRefreshToken();
-
-        Task<bool> UserExists(RegisterModel dto);
-
-        Task<bool> PasswordIsValid(string Password);
+        Task<EshopUserProjection?> SetRoles(SetRolesDto dto);
     }
 }

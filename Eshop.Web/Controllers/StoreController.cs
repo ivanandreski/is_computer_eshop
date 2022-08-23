@@ -1,5 +1,6 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,12 +38,14 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Create([FromForm] StoreDto dto)
         {
             return Ok(await _storeService.Create(dto));
         }
 
         [HttpPut("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Update([FromForm]  StoreDto dto, string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -55,6 +58,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpDelete("{hashId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> Delete(string hashId)
         {
             var rawId = _hashService.GetRawId(hashId);
@@ -67,6 +71,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut("{hashId}/addProduct")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult> AddProduct([FromRoute]string hashId, [FromForm]int quantity)
         {
             var rawId = _hashService.GetRawId(hashId);

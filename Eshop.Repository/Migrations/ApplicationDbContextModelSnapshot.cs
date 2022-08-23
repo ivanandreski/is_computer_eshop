@@ -285,6 +285,28 @@ namespace Eshop.Repository.Migrations
                     b.ToTable("Stores");
                 });
 
+            modelBuilder.Entity("Eshop.Domain.Model.Tag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductImages", b =>
                 {
                     b.Property<long>("Id")
@@ -729,6 +751,17 @@ namespace Eshop.Repository.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Eshop.Domain.Model.Tag", b =>
+                {
+                    b.HasOne("Eshop.Domain.Model.Product", "Product")
+                        .WithMany("Tags")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductImages", b =>
                 {
                     b.HasOne("Eshop.Domain.Model.Product", "Product")
@@ -883,6 +916,8 @@ namespace Eshop.Repository.Migrations
                     b.Navigation("ProductsInShoppingCart");
 
                     b.Navigation("ProductsInStore");
+
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.ShoppingCart", b =>

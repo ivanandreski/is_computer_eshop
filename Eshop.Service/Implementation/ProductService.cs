@@ -22,16 +22,20 @@ namespace Eshop.Service.Implementation
         private readonly IRepository<Store> _storeRepository;
         private readonly IRepository<ProductInStore> _productInStoreRepository;
         private readonly IRepository<ProductImages> _productImagesRepository;
+        private readonly ITagService _tagService;
         private readonly IHashService _hashService;
+        private Random random;
 
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, IHashService hashService)
+        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, ITagService tagService, IHashService hashService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _storeRepository = storeRepository;
             _productInStoreRepository = productInStoreRepository;
             _productImagesRepository = productImagesRepository;
+            _tagService = tagService;
             _hashService = hashService;
+            random = new Random();
         }
 
         public async Task<Product?> Create(ProductDto dto)
@@ -98,7 +102,10 @@ namespace Eshop.Service.Implementation
 
         public async Task<IEnumerable<Product>> GetAll()
         {
-            return await _productRepository.GetAll();
+            var param = new PagingParameters();
+            param.PageNumber = (int)(await _productRepository.Count() / 12);
+
+            return _productRepository.GetPaged(param);
         }
 
         public async Task<IEnumerable<ProductInStore>> GetAvailability(long id)
@@ -217,6 +224,73 @@ namespace Eshop.Service.Implementation
             }
 
             return await _productRepository.Get(product.Id);
+        }
+
+        public async Task<Product> ImportScrapedProduct(ProductScrapedDto dto)
+        {
+            var defaultImage = Convert.FromBase64String(DefaultImage.base64);
+
+            var product = new Product();
+            product.Name = dto.Name;
+            product.Description = dto.Description;
+            product.Manufacturer = dto.Manufacturer;
+            product.Price = new Money();
+            product.Price.BasePrice = dto.Price;
+            product.Discontinued = false;
+
+            var category = (await _categoryRepository.GetAll())
+                .Where(category => category.Name == dto.Category)
+                .First();
+            product.CategoryId = category.Id;
+            product.Category = category;
+
+            product.Tags = _tagService.CreateTags(product);
+
+            product = await _productRepository.Create(product);
+
+            if(dto.ImageBase64.Count() < 1)
+            {
+                var productImage = new ProductImages();
+                productImage.Product = product;
+                productImage.ProductId = product.Id;
+                productImage.Image = defaultImage;
+
+                product.Images.Add(productImage);
+            }
+            else
+            {
+                foreach (var imageBase64 in dto.ImageBase64)
+                {
+                    var productImage = new ProductImages();
+                    productImage.Product = product;
+                    productImage.ProductId = product.Id;
+                    productImage.Image = Convert.FromBase64String(imageBase64);
+
+                    product.Images.Add(productImage);
+                }
+            }
+
+            int i = 3;
+            int randomInt = random.Next(1, 3);
+            (await _storeRepository.GetAll())
+                .ToList()
+                .ForEach(async store =>
+                {
+                    var productInStore = new ProductInStore();
+                    productInStore.ProductId = product.Id;
+                    productInStore.Product = product;
+                    productInStore.StoreId = store.Id;
+                    productInStore.Store = store;
+
+                    if (i == randomInt)
+                        productInStore.Quantity = 0;
+                    else
+                        productInStore.Quantity = random.Next(0, 50);
+
+                    await _productInStoreRepository.Create(productInStore);
+                });
+
+            return await _productRepository.Update(product);
         }
     }
 }

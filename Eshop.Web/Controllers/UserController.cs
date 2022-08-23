@@ -17,15 +17,14 @@ namespace Eshop.APIs.AuthenticationService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IUserService _userService;
         private readonly UserManager<EshopUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public UserController(
-            UserManager<EshopUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+        public UserController(IUserService userService, UserManager<EshopUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
+            _userService = userService;
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
@@ -38,7 +37,7 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
                 {
@@ -46,7 +45,7 @@ namespace Eshop.APIs.AuthenticationService.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
-                foreach (var userRole in userRoles)
+                foreach (var userRole in roles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
@@ -61,12 +60,22 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
                 await _userManager.UpdateAsync(user);
 
+                // Set refresh token cookie
+                Response.Cookies.Append("jwt", refreshToken, new CookieOptions()
+                {
+                    Secure = true,
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.None,
+                    MaxAge = TimeSpan.FromDays(1)
+                });
+
                 return Ok(new
                 {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    RefreshToken = refreshToken,
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                     Expiration = token.ValidTo
-                });
+                }); ;
+
+
             }
             return Unauthorized();
         }
@@ -75,9 +84,9 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            var userExists = await _userService.UserExists(model);
+            if (userExists)
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
 
             EshopUser user = new()
             {
@@ -91,89 +100,76 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
+            user = await _userManager.FindByEmailAsync(model.Email);
+
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-            await _userManager.AddToRoleAsync(await _userManager.FindByEmailAsync(model.Email), UserRoles.User);
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
-        //[HttpPost]
-        //[Route("register-admin")]
-        //public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
-        //{
-        //    var userExists = await _userManager.FindByNameAsync(model.Username);
-        //    if (userExists != null)
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+        [HttpPost]
+        [Route("refreshToken")]
+        public async Task<IActionResult> GetToken()
+        {
+            var refreshToken = Request.Cookies.FirstOrDefault(x => x.Key == "jwt").Value;
+            if (refreshToken == null) return Unauthorized();
 
-        //    ApplicationUser user = new()
-        //    {
-        //        Email = model.Email,
-        //        SecurityStamp = Guid.NewGuid().ToString(),
-        //        UserName = model.Username
-        //    };
-        //    var result = await _userManager.CreateAsync(user, model.Password);
-        //    if (!result.Succeeded)
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            var user = await _userService.GetByRefreshToken(refreshToken);
+            if (user != null && user.RefreshTokenExpiryTime > DateTime.Now)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
 
-        //    if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-        //    if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
 
-        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //    {
-        //        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-        //    }
-        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //    {
-        //        await _userManager.AddToRoleAsync(user, UserRoles.User);
-        //    }
-        //    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-        //}
+                foreach (var userRole in roles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = CreateToken(authClaims);
+
+                return Ok(new
+                {
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    Expiration = token.ValidTo
+                }); ;
+            }
+
+            return Unauthorized();
+        }
 
         [HttpPost]
-        [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
         {
-            if (tokenModel is null)
-            {
-                return BadRequest("Invalid client request");
-            }
+            var refreshToken = Request.Cookies.FirstOrDefault(x => x.Key == "jwt").Value;
+            if (refreshToken == null) return Unauthorized();
 
-            string? accessToken = tokenModel.AccessToken;
-            string? refreshToken = tokenModel.RefreshToken;
+            var user = await _userService.GetByRefreshToken(refreshToken);
+            if (user == null) return NoContent();
 
-            var principal = GetPrincipalFromExpiredToken(accessToken);
-            if (principal == null)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
 
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            string username = principal.Identity.Name;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
-            var user = await _userManager.FindByNameAsync(username);
-
-            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return BadRequest("Invalid access token or refresh token");
-            }
-
-            var newAccessToken = CreateToken(principal.Claims.ToList());
-            var newRefreshToken = GenerateRefreshToken();
-
-            user.RefreshToken = newRefreshToken;
             await _userManager.UpdateAsync(user);
 
-            return new ObjectResult(new
+            // Set refresh token cookie
+            // Delete must be given the smae properties for CookieOptiosn as teh cookie you are trying to delete!
+            Response.Cookies.Delete("jwt", new CookieOptions()
             {
-                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                refreshToken = newRefreshToken
+                Secure = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                MaxAge = TimeSpan.MinValue
             });
+
+            return Ok();
         }
 
         [Authorize]
@@ -248,5 +244,83 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             return principal;
 
         }
+
+        //[HttpPost]
+        //[Route("register-admin")]
+        //public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        //{
+        //    var userExists = await _userManager.FindByNameAsync(model.Username);
+        //    if (userExists != null)
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+        //    ApplicationUser user = new()
+        //    {
+        //        Email = model.Email,
+        //        SecurityStamp = Guid.NewGuid().ToString(),
+        //        UserName = model.Username
+        //    };
+        //    var result = await _userManager.CreateAsync(user, model.Password);
+        //    if (!result.Succeeded)
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+        //    if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+        //    if (!await _roleManager.RoleExistsAsync(UserRoles.User))
+        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        //    {
+        //        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+        //    }
+        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+        //    {
+        //        await _userManager.AddToRoleAsync(user, UserRoles.User);
+        //    }
+        //    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        //}
+
+        //        [HttpPost]
+        //        [Route("refresh-token")]
+        //        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        //        {
+        //            if (tokenModel is null)
+        //            {
+        //                return BadRequest("Invalid client request");
+        //            }
+
+        //            string? accessToken = tokenModel.AccessToken;
+        //            string? refreshToken = tokenModel.RefreshToken;
+
+        //            var principal = GetPrincipalFromExpiredToken(accessToken);
+        //            if (principal == null)
+        //            {
+        //                return BadRequest("Invalid access token or refresh token");
+        //            }
+
+        //#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        //#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        //            string username = principal.Identity.Name;
+        //#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        //#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+        //            var user = await _userManager.FindByNameAsync(username);
+
+        //            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        //            {
+        //                return BadRequest("Invalid access token or refresh token");
+        //            }
+
+        //            var newAccessToken = CreateToken(principal.Claims.ToList());
+        //            var newRefreshToken = GenerateRefreshToken();
+
+        //            user.RefreshToken = newRefreshToken;
+        //            await _userManager.UpdateAsync(user);
+
+        //            return new ObjectResult(new
+        //            {
+        //                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+        //                refreshToken = newRefreshToken
+        //            });
+        //        }
     }
 }

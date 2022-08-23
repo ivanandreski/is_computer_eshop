@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TextInputField from "./TextInputField";
 
-const EditableField = ({ id, originalValue, saveValue }) => {
+const EditableField = ({ id, originalValue, handleSave }) => {
   const [value, setValue] = useState(originalValue);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -17,7 +17,7 @@ const EditableField = ({ id, originalValue, saveValue }) => {
           className="btn btn-primary w-100"
           onClick={() => {
             setIsEdit(false);
-            saveValue(id, value);
+            handleSave(id, value);
           }}
         >
           Save
