@@ -79,7 +79,8 @@ const ProductEdit = ({ product, setProduct }) => {
   ) : (
     <>
       <p>{`Manufacturer: ${product.manufacturer}`}</p>
-      <p>{`Description: ${product.description}`}</p>
+      <p>{"Description:"}</p>
+      <pre>{product.description}</pre>
       <p>{`Price: ${product.price?.amount}`}</p>
       <div className="row">
         <div className="col-md-6">

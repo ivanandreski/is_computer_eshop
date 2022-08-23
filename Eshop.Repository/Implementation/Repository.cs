@@ -60,5 +60,10 @@ namespace Eshop.Repository.Implementation
 
             return entity;
         }
+
+        public async Task<int> Count()
+        {
+            return await _entities.CountAsync();
+        }
     }
 }

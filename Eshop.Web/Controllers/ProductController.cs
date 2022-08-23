@@ -1,4 +1,9 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Images;
+using Eshop.Domain.Model;
+using Eshop.Domain.ValueObjects;
+using Eshop.Repository;
+using Eshop.Repository.Interface;
 using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -118,6 +123,13 @@ namespace Eshop.Web.Controllers
                 return NotFound("Product not found");
 
             return Ok(product);
+        }
+
+        [HttpPost]
+        [Route("scrape")]
+        public async Task<IActionResult> AddProductScraped([FromBody] ProductScrapedDto dto)
+        {
+            return Ok(await _productService.ImportScrapedProduct(dto));            
         }
     }
 }

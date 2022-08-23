@@ -21,5 +21,7 @@ namespace Eshop.Repository.Interface
         Task<T> Update(T entity);
 
         Task<T> Remove(T entity);
+
+        Task<int> Count();
     }
 }

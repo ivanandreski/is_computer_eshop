@@ -27,5 +27,7 @@ namespace Eshop.Service.Interface
         Task<Product?> RemoveImage(long imageId);
 
         Task<Product?> Remove(long id);
+
+        Task<Product> ImportScrapedProduct(ProductScrapedDto dto);
     }
 }
