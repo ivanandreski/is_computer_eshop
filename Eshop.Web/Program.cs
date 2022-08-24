@@ -81,6 +81,7 @@ builder.Services.AddControllers();
 // Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
 
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
@@ -119,7 +120,5 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
-//app.MapControllers();
 
 app.Run();

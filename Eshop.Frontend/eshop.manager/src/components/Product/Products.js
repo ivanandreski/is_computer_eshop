@@ -2,21 +2,32 @@ import React, { useEffect, useState } from "react";
 
 import ProductApiService from "../../api/ProductApService";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Pagination from "../Core/Pagination";
 
 import AddProduct from "./AddProduct";
 import ProductCard from "./ProductCard";
+import ProductFilter from "./ProductFilter";
 
 const Products = () => {
   const axiosPrivate = useAxiosPrivate();
   const productApi = new ProductApiService(axiosPrivate);
 
   const [entities, setEntities] = useState([]);
+  const [queryString, setQueryString] = useState({
+    currentPage: 1,
+    pageSize: 12,
+    searchParams: "",
+    categoryHash: "",
+  });
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const fetchEntities = async () => {
       try {
-        const response = await productApi.getProducts();
-        setEntities(response.data);
+        const response = await productApi.getProducts(queryString);
+        console.log(response.data);
+        setEntities(response.data.items);
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.log(error);
       }
@@ -24,7 +35,7 @@ const Products = () => {
 
     fetchEntities();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [queryString]);
 
   const handleDelete = async (hashId) => {
     try {
@@ -46,6 +57,15 @@ const Products = () => {
   return (
     <>
       <div className="container">
+        <Pagination
+          totalPages={totalPages}
+          queryString={queryString}
+          setQueryString={setQueryString}
+        />
+        <ProductFilter
+          queryString={queryString}
+          setQueryString={setQueryString}
+        />
         <div className="row">
           <AddProduct entities={entities} setEntities={setEntities} />
         </div>

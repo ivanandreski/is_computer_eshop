@@ -1,6 +1,8 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Images;
 using Eshop.Domain.Model;
+using Eshop.Domain.Projections;
 using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
 using Eshop.Repository.Interface;
@@ -17,16 +19,16 @@ namespace Eshop.Service.Implementation
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Store> _storeRepository;
         private readonly IRepository<ProductInStore> _productInStoreRepository;
         private readonly IRepository<ProductImages> _productImagesRepository;
+        private readonly IProductRepository _productRepository;
         private readonly ITagService _tagService;
         private readonly IHashService _hashService;
         private Random random;
 
-        public ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, ITagService tagService, IHashService hashService)
+        public ProductService(IProductRepository productRepository, IRepository<Category> categoryRepository, IRepository<Store> storeRepository, IRepository<ProductInStore> productInStoreRepository, IRepository<ProductImages> productImagesRepository, ITagService tagService, IHashService hashService)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -100,12 +102,13 @@ namespace Eshop.Service.Implementation
             return await _productRepository.Get(id);
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<PagedList<ProductCardDto>> GetAll(ProductFilter filter)
         {
             var param = new PagingParameters();
-            param.PageNumber = (int)(await _productRepository.Count() / 12);
+            param.PageNumber = param.PageNumber > filter.CurrentPage ? param.PageNumber : filter.CurrentPage;
+            param.PageSize = param.PageSize > filter.PageSize ? param.PageSize : filter.PageSize;
 
-            return _productRepository.GetPaged(param);
+            return _productRepository.GetPaged(param, filter);
         }
 
         public async Task<IEnumerable<ProductInStore>> GetAvailability(long id)

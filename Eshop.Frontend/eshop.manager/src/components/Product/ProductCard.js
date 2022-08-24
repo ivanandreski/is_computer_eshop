@@ -7,9 +7,9 @@ const ProductCard = ({ product, handleDelete }) => {
       <div className="card mt-3" style={{ height: "40vh" }}>
         <div className="d-flex justify-content-center">
           <img
-            src={`data:image/jpeg;base64,${product.images[0]?.image}`}
+            src={`data:image/jpeg;base64,${product.image}`}
             className="card-img-top"
-            style={{ height: "12rem", width: "16rem" }}
+            style={{ height: "8rem", width: "12rem" }}
             alt="..."
           />
         </div>

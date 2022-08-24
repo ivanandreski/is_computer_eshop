@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Images;
 using Eshop.Domain.Model;
 using Eshop.Domain.ValueObjects;
@@ -27,7 +28,18 @@ namespace Eshop.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            return Ok(await _productService.GetAll());
+            var filter = new ProductFilter();
+            filter.CurrentPage = Convert.ToInt32(Request.Query["currentPage"]);
+            filter.PageSize = Convert.ToInt32(Request.Query["pageSize"]);
+            filter.SearchParams = Request.Query["searchParams"];
+            filter.CategoryHash = Request.Query["categoryHash"];
+
+            var rawId = _hashService.GetRawId(filter.CategoryHash);
+            filter.CategoryHash = rawId.ToString() ?? "";
+
+            var result = await _productService.GetAll(filter);
+
+            return Ok(new { Items = result, PageSize = result.PageSize, TotalPages = result.TotalPages });
         }
 
         [HttpGet("{hashId}")]
