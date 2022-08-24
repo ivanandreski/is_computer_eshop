@@ -37,7 +37,9 @@ namespace Eshop.Service.Implementation
 
         public async Task<IEnumerable<Category>> GetAll()
         {
-            return await _categoryRepository.GetAll();
+            var items = await _categoryRepository.GetAll();
+
+            return items;
         }
 
         public async Task<Category?> Remove(long id)

@@ -36,11 +36,11 @@ namespace Eshop.Domain.Model
         public virtual IEnumerable<ProductInShoppingCart>? ProductsInShoppingCart { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<ProductInStore>? ProductsInStore { get; set; }
+        public virtual ICollection<ProductInStore> ProductsInStore { get; set; } = new Collection<ProductInStore>();
 
         [JsonIgnore]
         public virtual IEnumerable<ProductInOrder>? ProductsInOrder { get; set; }
 
-        public virtual ICollection<ProductImages> Images { get; set; } = new Collection<ProductImages>();
+        public virtual IList<ProductImages> Images { get; set; } = new List<ProductImages>();
     }
 }

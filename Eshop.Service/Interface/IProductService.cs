@@ -1,5 +1,7 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Model;
+using Eshop.Domain.Projections;
 using Eshop.Domain.Relationships;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -12,7 +14,7 @@ namespace Eshop.Service.Interface
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAll();
+        Task<PagedList<ProductCardDto>> GetAll(ProductFilter filter);
 
         Task<Product?> Get(long id);
 

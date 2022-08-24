@@ -22,8 +22,8 @@ export default class ProductApiService {
     return formData;
   };
 
-  getProducts = () => {
-    return this.axiosPrivate.get(baseUrl);
+  getProducts = (queryString) => {
+    return this.axiosPrivate.get(baseUrl, { params: queryString });
   };
 
   getProduct = (id) => {

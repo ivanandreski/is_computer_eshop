@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Model;
 using Eshop.Domain.Projections;
 using System;
@@ -11,7 +12,7 @@ namespace Eshop.Repository.Interface
 {
     public interface IProductRepository
     {
-        PagedList<Product> GetPaged(PagingParameters pagingParams);
+        PagedList<ProductCardDto> GetPaged(PagingParameters pagingParams, ProductFilter filter);
 
         Task<IEnumerable<Product>> GetAll();
 
