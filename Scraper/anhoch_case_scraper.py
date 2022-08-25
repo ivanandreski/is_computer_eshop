@@ -46,11 +46,17 @@ while True:
         pageRequest = requests.get(productUrl)
         detailsPage = BeautifulSoup(pageRequest.content, 'html.parser')
 
-        # Get description for Product
-        description = detailsPage.select('div.span8.clearfix > pre')[0].get_text(strip=True)
+                # Get description for Product
+        if(len(detailsPage.select('div.span8.clearfix > pre')) > 0):
+            description = detailsPage.select('div.span8.clearfix > pre')[0].get_text(strip=True)
+        else:
+            description = "" 
         
         # Get manufacturer for Product
-        manufacturer = detailsPage.select('div.product-desc > a')[0].get_text(strip=True)
+        if(len(detailsPage.select('div.product-desc > a')) > 0):
+            manufacturer = detailsPage.select('div.product-desc > a')[0].get_text(strip=True)
+        else:
+            manufacturer = "" 
 
         # Get image and convert to base64 for later use as byte[]
         imagesBase64 = []

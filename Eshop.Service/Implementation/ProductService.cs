@@ -80,19 +80,20 @@ namespace Eshop.Service.Implementation
                 }
             }
 
-            (await _storeRepository.GetAll())
-                .ToList()
-                .ForEach(async store =>
-                {
-                    var productInStore = new ProductInStore();
-                    productInStore.ProductId = product.Id;
-                    productInStore.Product = product;
-                    productInStore.StoreId = store.Id;
-                    productInStore.Store = store;
-                    productInStore.Quantity = 0;
+            var stores = (await _storeRepository.GetAll())
+                .ToList();
 
-                    await _productInStoreRepository.Create(productInStore);
-                });
+            foreach (var store in stores)
+            {
+                var productInStore = new ProductInStore();
+                productInStore.ProductId = product.Id;
+                productInStore.Product = product;
+                productInStore.StoreId = store.Id;
+                productInStore.Store = store;
+                productInStore.Quantity = 0;
+
+                await _productInStoreRepository.Create(productInStore);
+            }
 
             return product;
         }
@@ -251,7 +252,7 @@ namespace Eshop.Service.Implementation
 
             product = await _productRepository.Create(product);
 
-            if(dto.ImageBase64.Count() < 1)
+            if (dto.ImageBase64.Count() < 1)
             {
                 var productImage = new ProductImages();
                 productImage.Product = product;
@@ -272,26 +273,26 @@ namespace Eshop.Service.Implementation
                     product.Images.Add(productImage);
                 }
             }
+            product = await _productRepository.Update(product);
 
             int i = 3;
             int randomInt = random.Next(1, 3);
-            (await _storeRepository.GetAll())
-                .ToList()
-                .ForEach(async store =>
-                {
-                    var productInStore = new ProductInStore();
-                    productInStore.ProductId = product.Id;
-                    productInStore.Product = product;
-                    productInStore.StoreId = store.Id;
-                    productInStore.Store = store;
+            var stores = (await _storeRepository.GetAll());
+            foreach (var store in stores)
+            {
+                var productInStore = new ProductInStore();
+                productInStore.ProductId = product.Id;
+                productInStore.Product = product;
+                productInStore.StoreId = store.Id;
+                productInStore.Store = store;
 
-                    if (i == randomInt)
-                        productInStore.Quantity = 0;
-                    else
-                        productInStore.Quantity = random.Next(0, 50);
+                if (i == randomInt)
+                    productInStore.Quantity = 0;
+                else
+                    productInStore.Quantity = random.Next(0, 50);
 
-                    await _productInStoreRepository.Create(productInStore);
-                });
+                await _productInStoreRepository.Create(productInStore);
+            };
 
             return await _productRepository.Update(product);
         }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   faCheck,
@@ -19,6 +19,7 @@ const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%]).{8,24}$/;
 const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
@@ -87,7 +88,7 @@ const Register = () => {
       setErrorMessage(response);
       errRef.current.focus();
     } else {
-      // reroute to /login
+      navigate("/login");
     }
   };
 

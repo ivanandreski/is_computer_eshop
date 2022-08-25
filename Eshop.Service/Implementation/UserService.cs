@@ -33,7 +33,7 @@ namespace Eshop.Service.Implementation
         public async Task<List<EshopUserProjection>> GetEshopUsers(string? param)
         {
             List<EshopUserProjection> result = new List<EshopUserProjection>();
-            (await _userRepository.GetAll())
+            var users = (await _userRepository.GetAll())
                 .Where(user =>
                 {
                     if (!param.IsNullOrEmpty())
@@ -43,13 +43,14 @@ namespace Eshop.Service.Implementation
                     return true;
                 })
                 .Take(20)
-                .ToList()
-                .ForEach(async user =>
-                {
-                    var roles = await _userManager.GetRolesAsync(user);
+                .ToList();
 
-                    result.Add(new EshopUserProjection(user.UserName, user.Email, (List<string>)roles));
-                });
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                result.Add(new EshopUserProjection(user.UserName, user.Email, (List<string>)roles));
+            }
 
             return result;
         }

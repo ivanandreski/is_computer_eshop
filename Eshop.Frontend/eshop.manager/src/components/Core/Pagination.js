@@ -14,7 +14,7 @@ const Pagination = ({ queryString, setQueryString, totalPages }) => {
   return (
     <div className="row">
       <div className="col-md-2">
-        <select className="form-control" onChange={handlePageSizeChange}>
+        <select className="form-select" onChange={handlePageSizeChange}>
           <option value="12">12</option>
           <option value="24">24</option>
           <option value="36">36</option>

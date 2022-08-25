@@ -31,7 +31,7 @@ namespace Eshop.Service.Implementation
                 return null;
 
             var productInStore = await _productInStoreRepository.Get(productInStoreId);
-            if(productInStore == null)
+            if (productInStore == null)
             {
                 return null;
             }
@@ -55,19 +55,20 @@ namespace Eshop.Service.Implementation
 
             store = await _storeRepository.Create(store);
 
-            (await _productRepository.GetAll())
-                .ToList()
-                .ForEach(async product =>
-                {
-                    var productInStore = new ProductInStore();
-                    productInStore.Product = product;
-                    productInStore.ProductId = product.Id;
-                    productInStore.Store = store;
-                    productInStore.StoreId = store.Id;
-                    productInStore.Quantity = 0;
+            var products = (await _productRepository.GetAll())
+                .ToList();
 
-                    await _productInStoreRepository.Create(productInStore);
-                });
+            foreach (var product in products)
+            {
+                var productInStore = new ProductInStore();
+                productInStore.Product = product;
+                productInStore.ProductId = product.Id;
+                productInStore.Store = store;
+                productInStore.StoreId = store.Id;
+                productInStore.Quantity = 0;
+
+                await _productInStoreRepository.Create(productInStore);
+            }
 
             return store;
         }
