@@ -1,0 +1,9 @@
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_case_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_graphics_card_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_motherboard_scrape.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_power_supply_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_processor_amd_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_processor_intel_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_ram_scraper.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_ssd_scrape.py
+d:/Git/is_computer_eshop/Scraper/env/Scripts/python.exe d:/Git/is_computer_eshop/Scraper/anhoch_hard_drive_scrapeer.py

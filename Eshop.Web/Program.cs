@@ -26,7 +26,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"DataSource=../mydatabase.db;"));
+//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"DataSource=../mydatabase.db;"));
+var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // For Identity
 builder.Services.AddIdentity<EshopUser, IdentityRole>()
