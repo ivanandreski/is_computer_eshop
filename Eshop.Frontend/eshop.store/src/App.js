@@ -9,6 +9,7 @@ import Register from "./Components/Authentication/Register";
 import Unauthorized from "./Components/Error/Unauthorized";
 import ErrorPage from "./Components/Error/ErrorPage";
 import Home from "./Components/Home/Home";
+import Profile from "./Components/Profile/Profile";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             }
           >
             <Route index element={<Home />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
 
