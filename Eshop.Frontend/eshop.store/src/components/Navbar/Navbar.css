@@ -44,3 +44,10 @@ a {
   font: 600;
   font-weight: 500;
 }
+
+.navbar-item-text {
+  text-decoration: none;
+  color: white;
+  font: 600;
+  font-weight: 500;
+}
