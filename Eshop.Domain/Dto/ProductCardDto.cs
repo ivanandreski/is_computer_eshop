@@ -30,8 +30,10 @@ namespace Eshop.Domain.Dto
             Name = product.Name;
             Price = product.Price;
             Manufacturer = product.Manufacturer;
-            Image = product.Images[0]?.Image ?? Convert.FromBase64String(DefaultImage.base64);
             IsAvailable = product.ProductsInStore.Where(product => !product.Available).Count() < 1;
+            Image = product.Images[0]?.Image ?? Convert.FromBase64String(DefaultImage.base64);
         }
+
+
     }
 }

@@ -29,6 +29,7 @@ namespace Eshop.Repository.Implementation
                 query = _entities.Where(product => product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
             else
                 query = _entities;
+
             var items = query.Select(item => new ProductCardDto(item));
 
             return PagedList<ProductCardDto>.ToPagedList(items, pagingParams.PageNumber, pagingParams.PageSize);

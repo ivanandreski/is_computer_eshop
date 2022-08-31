@@ -109,7 +109,13 @@ namespace Eshop.Service.Implementation
             param.PageNumber = param.PageNumber > filter.CurrentPage ? param.PageNumber : filter.CurrentPage;
             param.PageSize = param.PageSize > filter.PageSize ? param.PageSize : filter.PageSize;
 
-            return _productRepository.GetPaged(param, filter);
+            var items = _productRepository.GetPaged(param, filter);
+            foreach(var item in items)
+            {
+                item.Image = ImageService.ScaleImage(item.Image);
+            }
+
+            return items;
         }
 
         public async Task<IEnumerable<ProductInStore>> GetAvailability(long id)
