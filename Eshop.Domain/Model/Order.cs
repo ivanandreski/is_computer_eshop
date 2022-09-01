@@ -25,7 +25,7 @@ namespace Eshop.Domain.Model
 
         // Relatonships
 
-        public virtual IEnumerable<ProductInOrder>? Products { get; set; }
+        public virtual IEnumerable<ProductInOrder> Products { get; set; } = Enumerable.Empty<ProductInOrder>();
 
         [JsonIgnore]
         public string? UserId { get; set; }

@@ -17,7 +17,8 @@ const AddressSelector = ({ object, setObject }) => {
 
         if (object.address?.country !== "") {
           setCities(
-            countries.find((c) => c.country === object.address?.country).cities
+            countries.find((c) => c.country === object.address?.country)
+              ?.cities || []
           );
         }
       } catch (error) {
@@ -26,6 +27,7 @@ const AddressSelector = ({ object, setObject }) => {
     };
 
     fetchCountries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCountries = () => {
@@ -47,7 +49,7 @@ const AddressSelector = ({ object, setObject }) => {
       },
     });
 
-    setCities(countries.find((c) => c.country === country).cities);
+    setCities(countries.find((c) => c.country === country)?.cities || []);
   };
 
   const handleCityChange = (e) => {
@@ -110,7 +112,7 @@ const AddressSelector = ({ object, setObject }) => {
             <label htmlFor="city">City:</label>
             <Select
               id="city"
-              isDisabled={cities.length < 1}
+              isDisabled={cities?.length || 0 < 1}
               onChange={handleCityChange}
               value={{ label: object.address.city, value: object.address.city }}
               options={cities.map((c) => {

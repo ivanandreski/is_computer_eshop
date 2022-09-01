@@ -219,6 +219,32 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+            if (user == null) return Unauthorized();
+
+            if (!(await _userManager.CheckPasswordAsync(user, dto.CurrentPassword)))
+                return Unauthorized("Invalid current password!");
+
+            if (!dto.PasswordMatch()) return Unauthorized("New passwords don't match!");
+
+            if (dto.CheckEmpty()) return Unauthorized("New password cannot be empty!");
+
+            await _userManager.RemovePasswordAsync(user);
+            await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("revoke/{username}")]
         public async Task<IActionResult> Revoke(string username)
         {

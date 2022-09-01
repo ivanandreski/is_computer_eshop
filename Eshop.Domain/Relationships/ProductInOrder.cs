@@ -20,6 +20,7 @@ namespace Eshop.Domain.Relationships
 
         [JsonIgnore]
         public long OrderId { get; set; }
+        [JsonIgnore]
         public Order? Order { get; set; }
 
         public ProductInOrder()

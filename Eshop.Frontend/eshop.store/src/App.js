@@ -10,6 +10,7 @@ import Unauthorized from "./Components/Error/Unauthorized";
 import ErrorPage from "./Components/Error/ErrorPage";
 import Home from "./Components/Home/Home";
 import Profile from "./Components/Profile/Profile";
+import PageNotDeveloped from "./Components/Error/PageNotDeveloped";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route index element={<Home />} />
 
         <Route element={<PersistLogin />}>
           {/* PLACE ROUTES WHICH REQUIRE LOGIN HERE */}
@@ -27,8 +29,11 @@ function App() {
               <RequireAuth allowedRoles={["Admin", "Manager", "User"]} />
             }
           >
-            <Route index element={<Home />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="shop" element={<PageNotDeveloped />} />
+            <Route path="builder" element={<PageNotDeveloped />} />
+            <Route path="forum" element={<PageNotDeveloped />} />
+            <Route path="cart" element={<PageNotDeveloped />} />
           </Route>
         </Route>
 

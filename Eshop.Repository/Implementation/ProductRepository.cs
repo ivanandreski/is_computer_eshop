@@ -20,15 +20,13 @@ namespace Eshop.Repository.Implementation
 
         public PagedList<ProductCardDto> GetPaged(PagingParameters pagingParams, ProductFilter filter)
         {
-            IQueryable<Product> query;
+            IQueryable<Product> query = _entities.Where(product => !product.Discontinued);
             if (!string.IsNullOrEmpty(filter.CategoryHash) && !string.IsNullOrEmpty(filter.SearchParams))
                 query = _entities.Where(product => product.CategoryId == Convert.ToInt64(filter.CategoryHash) && product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
             else if (!string.IsNullOrEmpty(filter.CategoryHash))
                 query = _entities.Where(product => product.CategoryId == Convert.ToInt64(filter.CategoryHash));
             else if (!string.IsNullOrEmpty(filter.SearchParams))
                 query = _entities.Where(product => product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
-            else
-                query = _entities;
 
             var items = query.Select(item => new ProductCardDto(item));
 

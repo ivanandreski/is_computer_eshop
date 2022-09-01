@@ -61,13 +61,6 @@ const ProfileMenu = ({ activeMenu, setActiveMenu }) => {
       >
         Forum Comments
       </li>
-      <li
-        className="list-group-item profile-item"
-        id={menuItems.deleteAccount}
-        onClick={handleClick}
-      >
-        Delete Account
-      </li>
     </ul>
   );
 };

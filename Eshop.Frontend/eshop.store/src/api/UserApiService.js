@@ -17,4 +17,11 @@ export default class UserApiService {
       withCredentials: true,
     });
   };
+
+  changePassword = (changePassword) => {
+    return this.axiosPrivate.post(`${baseUrl}/changePassword`, changePassword, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+  };
 }
