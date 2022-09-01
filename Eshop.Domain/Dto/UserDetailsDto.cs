@@ -18,7 +18,7 @@ namespace Eshop.Domain.Dto
 
         public string LastName { get; set; } = "";
 
-        public Address Addrress { get; set; } = new Address("", "", "", "");
+        public Address Address { get; set; } = new Address("", "", "", "");
 
         public string Phone { get; set; } = "";
 
@@ -28,7 +28,7 @@ namespace Eshop.Domain.Dto
             Username = user.UserName;
             FirstName = user.FirstName ?? "/";
             LastName = user.LastName ?? "/";
-            Addrress = user.Address ?? new Address("", "", "", "");
+            Address = user.Address ?? new Address("", "", "", "");
             Phone = user.PhoneNumber ?? "/";
         }
 

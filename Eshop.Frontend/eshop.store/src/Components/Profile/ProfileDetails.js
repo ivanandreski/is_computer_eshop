@@ -24,13 +24,15 @@ const ProfileDetails = () => {
   }, []);
 
   const renderAddress = () => {
-    return profileDetails.address === null ? (
+    return profileDetails.address !== null ? (
       <>
-        <p>{profileDetails.address?.street},</p>
-        <p>
-          {profileDetails.address?.zipCode},{profileDetails.address?.city},
-        </p>
-        <p>{profileDetails.address?.country}</p>
+        <div>{profileDetails.address?.street},</div>
+        <div>
+          <span>
+            {profileDetails.address?.zipCode}, {profileDetails.address?.city},
+          </span>
+        </div>
+        <div>{profileDetails.address?.country}</div>
       </>
     ) : (
       <p>{"/"}</p>

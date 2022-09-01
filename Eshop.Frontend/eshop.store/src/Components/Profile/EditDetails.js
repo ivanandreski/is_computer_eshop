@@ -5,6 +5,7 @@ import useLogout from "../../Hooks/useLogout";
 import UserApiService from "../../api/UserApiService";
 import { menuItems } from "./ProfileMenu";
 import FormTextField from "../Core/FormTextField";
+import AddressSelector from "../Core/AddressSelector";
 
 const EditDetails = ({ setActiveMenu }) => {
   const axiosPrivate = useAxiosPrivate();
@@ -30,6 +31,16 @@ const EditDetails = ({ setActiveMenu }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (profileDetails.username === "") {
+      setError("Username cannot be empty!");
+      return;
+    }
+
+    if (profileDetails.email === "") {
+      setError("Email cannot be empty!");
+      return;
+    }
 
     try {
       const response = await userApi.editDetails(profileDetails);
@@ -90,7 +101,10 @@ const EditDetails = ({ setActiveMenu }) => {
           id="phone"
           title="Phone Number"
         />
-        <p>TODO: ADRESSS</p>
+        <AddressSelector
+          object={profileDetails}
+          setObject={setProfileDetails}
+        />
         <div className="form-group mb-2">
           <button type="submit" className="btn btn-primary w-100">
             Save

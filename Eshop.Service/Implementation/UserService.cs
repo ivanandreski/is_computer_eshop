@@ -101,7 +101,7 @@ namespace Eshop.Service.Implementation
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
             user.PhoneNumber = dto.Phone;
-            user.Address = dto.Addrress;
+            user.Address = dto.Address;
 
             await _userManager.UpdateAsync(user);
             return new UserDetailsDto(user);
