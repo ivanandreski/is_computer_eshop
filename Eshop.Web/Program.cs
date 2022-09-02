@@ -90,6 +90,10 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IPostRepository, PostRepository>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+
+builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
@@ -100,7 +104,8 @@ builder.Services.AddTransient<IStoreService, StoreService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
-builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
+builder.Services.AddTransient<IPostService, PostService>();
+builder.Services.AddTransient<ICommentService, CommentService>();
 
 var app = builder.Build();
 
