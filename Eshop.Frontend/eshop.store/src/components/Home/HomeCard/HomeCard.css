@@ -1,0 +1,20 @@
+.home-card {
+  background: red;
+  width: 20%;
+  padding: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.home-card-img {
+  height: 50px;
+  width: 50px;
+  margin: 10px auto;
+}
+.home-card > div {
+  padding: 10px;
+}
+.home-card-button {
+  font-size: x-large;
+}
