@@ -15,12 +15,14 @@ namespace Eshop.Web.Controllers
     {
         private readonly IHashService _hashService;
         private readonly IShoppingCartService _shoppingCartService;
+        private readonly IUserService _userService;
         private readonly UserManager<EshopUser> _userManager;
 
-        public ShoppingCartController(IHashService hashService, IShoppingCartService shoppingCartService, UserManager<EshopUser> userManager)
+        public ShoppingCartController(IHashService hashService, IShoppingCartService shoppingCartService, IUserService userService, UserManager<EshopUser> userManager)
         {
             _hashService = hashService;
             _shoppingCartService = shoppingCartService;
+            _userService = userService;
             _userManager = userManager;
         }
 
@@ -31,7 +33,7 @@ namespace Eshop.Web.Controllers
             if (identity == null)
                 return BadRequest();
 
-            var user = await GetUser(identity);
+            var user = await _userService.GetUser(identity);
 
             if (user != null)
             {
@@ -48,7 +50,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = await GetUser(identity);
+                var user = await _userService.GetUser(identity);
 
                 if (user != null)
                 {
@@ -67,7 +69,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = await GetUser(identity);
+                var user = await _userService.GetUser(identity);
 
                 if (user != null)
                 {
@@ -90,7 +92,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = await GetUser(identity);
+                var user = await _userService.GetUser(identity);
 
                 if (user != null)
                 {
@@ -115,7 +117,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = await GetUser(identity);
+                var user = await _userService.GetUser(identity);
 
                 if (user != null)
                 {
@@ -140,7 +142,7 @@ namespace Eshop.Web.Controllers
 
             if (identity != null)
             {
-                var user = await GetUser(identity);
+                var user = await _userService.GetUser(identity);
 
                 if (user != null)
                 {
@@ -156,18 +158,6 @@ namespace Eshop.Web.Controllers
             }
 
             return NotFound("User not found");
-        }
-
-        private async Task<EshopUser?> GetUser(ClaimsIdentity identity)
-        {
-            var userClaims = identity.Claims;
-            var username = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-            if (username != null)
-            {
-                return await _userManager.FindByNameAsync(username);
-            }
-
-            return null;
         }
     }
 

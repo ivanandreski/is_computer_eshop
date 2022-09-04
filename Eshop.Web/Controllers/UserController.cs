@@ -84,7 +84,7 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _userService.UserExists(model);
+            var userExists = await _userService.UserExists(model.Username ?? "");
             if (userExists)
                 return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
 
@@ -173,6 +173,77 @@ namespace Eshop.APIs.AuthenticationService.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        [Route("details")]
+        public async Task<IActionResult> GetDetails()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return BadRequest();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                return Ok(new UserDetailsDto(user));
+            }
+
+            return NotFound("User not found");
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("details")]
+        public async Task<IActionResult> EditDetails([FromBody] UserDetailsDto dto)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user?.UserName != dto.Username && await _userService.UserExists(dto.Username))
+                return BadRequest("User with that username already exists!");
+
+            if (user != null)
+            {
+                bool usernameChange = false;
+                if (user.UserName != dto.Username) usernameChange = true;
+
+                return Ok(new { UsernameChange = usernameChange, Details = await _userService.EditDetails(user, dto) });
+
+            }
+
+            return NotFound("User not found");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+            if (user == null) return Unauthorized();
+
+            if (!(await _userManager.CheckPasswordAsync(user, dto.CurrentPassword)))
+                return Unauthorized("Invalid current password!");
+
+            if (!dto.PasswordMatch()) return Unauthorized("New passwords don't match!");
+
+            if (dto.CheckEmpty()) return Unauthorized("New password cannot be empty!");
+
+            await _userManager.RemovePasswordAsync(user);
+            await _userManager.AddPasswordAsync(user, dto.NewPassword);
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("revoke/{username}")]
         public async Task<IActionResult> Revoke(string username)
@@ -224,103 +295,5 @@ namespace Eshop.APIs.AuthenticationService.Controllers
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
-
-        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-                ValidateLifetime = false
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
-
-            return principal;
-
-        }
-
-        //[HttpPost]
-        //[Route("register-admin")]
-        //public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
-        //{
-        //    var userExists = await _userManager.FindByNameAsync(model.Username);
-        //    if (userExists != null)
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-
-        //    ApplicationUser user = new()
-        //    {
-        //        Email = model.Email,
-        //        SecurityStamp = Guid.NewGuid().ToString(),
-        //        UserName = model.Username
-        //    };
-        //    var result = await _userManager.CreateAsync(user, model.Password);
-        //    if (!result.Succeeded)
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-        //    if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-        //    if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-        //        await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-
-        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //    {
-        //        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-        //    }
-        //    if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-        //    {
-        //        await _userManager.AddToRoleAsync(user, UserRoles.User);
-        //    }
-        //    return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-        //}
-
-        //        [HttpPost]
-        //        [Route("refresh-token")]
-        //        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
-        //        {
-        //            if (tokenModel is null)
-        //            {
-        //                return BadRequest("Invalid client request");
-        //            }
-
-        //            string? accessToken = tokenModel.AccessToken;
-        //            string? refreshToken = tokenModel.RefreshToken;
-
-        //            var principal = GetPrincipalFromExpiredToken(accessToken);
-        //            if (principal == null)
-        //            {
-        //                return BadRequest("Invalid access token or refresh token");
-        //            }
-
-        //#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-        //#pragma warning disable CS8602 // Dereference of a possibly null reference.
-        //            string username = principal.Identity.Name;
-        //#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        //#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-
-        //            var user = await _userManager.FindByNameAsync(username);
-
-        //            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-        //            {
-        //                return BadRequest("Invalid access token or refresh token");
-        //            }
-
-        //            var newAccessToken = CreateToken(principal.Claims.ToList());
-        //            var newRefreshToken = GenerateRefreshToken();
-
-        //            user.RefreshToken = newRefreshToken;
-        //            await _userManager.UpdateAsync(user);
-
-        //            return new ObjectResult(new
-        //            {
-        //                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-        //                refreshToken = newRefreshToken
-        //            });
-        //        }
     }
 }

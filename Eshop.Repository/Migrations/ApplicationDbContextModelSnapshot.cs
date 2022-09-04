@@ -82,7 +82,7 @@ namespace Eshop.Repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -137,13 +137,16 @@ namespace Eshop.Repository.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeOfPost")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -165,8 +168,14 @@ namespace Eshop.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("TimeOfPost")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -196,7 +205,7 @@ namespace Eshop.Repository.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("TimeOfPurcahse")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -271,7 +280,7 @@ namespace Eshop.Repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long?>("StoreId")
                         .HasColumnType("bigint");

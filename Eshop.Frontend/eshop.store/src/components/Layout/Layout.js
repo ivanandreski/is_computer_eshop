@@ -1,4 +1,18 @@
 import React from "react";
+<<<<<<< HEAD
+import { Outlet } from "react-router-dom";
+
+import Navbar from "../Navbar/Navigation";
+
+const Layout = () => {
+  return (
+    <>
+      <Navbar />
+
+      <main className="App">
+        <Outlet />
+      </main>
+=======
 import Navbar from "../Navbar/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../Home/Home";
@@ -22,6 +36,7 @@ const Layout = () => {
         </div>
         <Footer></Footer>
       </BrowserRouter>
+>>>>>>> master
     </>
   );
 };
