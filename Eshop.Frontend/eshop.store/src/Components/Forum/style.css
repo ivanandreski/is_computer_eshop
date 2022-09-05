@@ -1,0 +1,29 @@
+.post-card {
+  background-color: #1e1f23 !important;
+  color: white;
+}
+
+.post-title {
+  text-decoration: none;
+  color: white;
+  font-size: x-large;
+}
+
+.post-text {
+  text-decoration: none;
+  color: white;
+  font-size: large;
+}
+
+.post-title-link {
+  text-decoration: none;
+  color: white;
+  font-size: x-large;
+}
+
+.post-title-link:hover {
+  text-decoration: underline;
+  font-size: xx-large;
+  font-weight: bold;
+  color: white;
+}

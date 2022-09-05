@@ -28,7 +28,7 @@ namespace Eshop.Service.Implementation
         public async Task<Comment?> Create(CommentDto dto, EshopUser user)
         {
             var comment = new Comment();
-            comment.Text = comment.Text;
+            comment.Text = dto.Text;
             comment.UserId = user.Id;
             comment.TimeOfPost = DateTime.Now;
             comment.LastModified = comment.TimeOfPost;

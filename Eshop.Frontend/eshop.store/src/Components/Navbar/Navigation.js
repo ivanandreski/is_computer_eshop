@@ -34,7 +34,7 @@ const Navigation = () => {
               </Link>
             </Nav.Item>
             <Nav.Item className="navbar-item">
-              <Link to={"/Forum"} className="navbar-item-text">
+              <Link to={"/forum/post"} className="navbar-item-text">
                 FORUM
               </Link>
             </Nav.Item>

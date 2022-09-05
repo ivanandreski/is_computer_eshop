@@ -30,10 +30,13 @@ namespace Eshop.Domain.Identity
 
         // Relationships
 
+        [JsonIgnore]
         public virtual IEnumerable<Order>? Orders { get; set; }
 
+        [JsonIgnore]
         public virtual IEnumerable<ForumPost>? ForumPosts { get; set; }
 
+        [JsonIgnore]
         public virtual IEnumerable<Comment>? Comments { get; set; }
 
         [JsonIgnore]
@@ -42,6 +45,8 @@ namespace Eshop.Domain.Identity
 
         [JsonIgnore]
         public long ShoppingCartId { get; set; }
+
+
         public ShoppingCart? ShoppingCart { get; set; }
     }
 }

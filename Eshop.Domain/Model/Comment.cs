@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -25,10 +26,16 @@ namespace Eshop.Domain.Model
 
         [JsonIgnore]
         public long ForumPostId { get; set; }
+        [JsonIgnore]
         public ForumPost? ForumPost { get; set; }
 
         [JsonIgnore]
         public string? UserId { get; set; }
+
+        [JsonIgnore]
         public EshopUser? User { get; set; }
+
+        [NotMapped]
+        public string Username { get { return User?.UserName ?? ""; } }
     }
 }

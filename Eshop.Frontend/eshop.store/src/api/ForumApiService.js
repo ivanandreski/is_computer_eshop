@@ -7,9 +7,9 @@ export default class ForumApiService {
     this.axiosPrivate = axiosPrivate;
   }
 
-  //   getPosts = () => {
-  //     return axios.get(`${baseUrl}/post/${hashId}`);
-  //   };
+  getPosts = (filter) => {
+    return axios.get(`${baseUrl}/post/`, filter);
+  };
 
   createPost = (post) => {
     return axiosPrivate.post(`${baseUrl}/post`, post, {
@@ -18,10 +18,10 @@ export default class ForumApiService {
     });
   };
 
-  editPost = (text, hashId) => {
+  editPost = (post, hashId) => {
     return axiosPrivate.put(
-      `${baseUrl}/post`,
-      { text, hashId },
+      `${baseUrl}/post/${hashId}`,
+      post,
       {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
@@ -30,9 +30,13 @@ export default class ForumApiService {
   };
 
   deletePost = (hashId) => {
-    return axiosPrivate.delete(`${baseUrl}/post/${hashId}`, {}, {
-      withCredentials: true,
-    });
+    return axiosPrivate.delete(
+      `${baseUrl}/post/${hashId}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   };
 
   getPost = (hashId) => {
@@ -58,9 +62,13 @@ export default class ForumApiService {
   };
 
   deleteComment = (hashId) => {
-    return axiosPrivate.delete(`${baseUrl}/comment/${hashId}`, {}, {
-      withCredentials: true,
-    });
+    return axiosPrivate.delete(
+      `${baseUrl}/comment/${hashId}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   };
 
   getPostsFromUser = () => {
@@ -70,7 +78,7 @@ export default class ForumApiService {
   };
 
   getCommentsFromUser = () => {
-    return this.axiosPrivate.get(`${baseUrl}/post/user`, {
+    return this.axiosPrivate.get(`${baseUrl}/comment/user`, {
       withCredentials: true,
     });
   };

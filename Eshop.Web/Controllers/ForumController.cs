@@ -41,7 +41,9 @@ namespace Eshop.Web.Controllers
             filter.SearchParams = Request.Query["searchParams"];
             try
             {
-                filter.FromDate = DateTime.Parse(Request.Query["fromDate"]);
+                var temp = Request.Query["fromDate"].ToString();
+                if (temp == null) temp = "";
+                filter.FromDate = DateTime.Parse(temp);
             } catch (FormatException)
             {
                 filter.FromDate = null;
@@ -49,7 +51,9 @@ namespace Eshop.Web.Controllers
 
             try
             {
-                filter.ToDate = DateTime.Parse(Request.Query["toDate"]);
+                var temp = Request.Query["toDate"].ToString();
+                if (temp == null) temp = "";
+                filter.ToDate = DateTime.Parse(temp);
             }
             catch (FormatException)
             {
