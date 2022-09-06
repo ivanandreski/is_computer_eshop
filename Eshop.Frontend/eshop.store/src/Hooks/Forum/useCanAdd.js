@@ -1,5 +1,3 @@
-import React from "react";
-
 import useIsLoggedIn from "../useIsLoggedIn";
 
 const useCanAdd = () => {

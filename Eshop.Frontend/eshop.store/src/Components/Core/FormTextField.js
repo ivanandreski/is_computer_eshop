@@ -12,9 +12,18 @@ const FormTextField = ({ object, setObject, id, title, type }) => {
     return type;
   };
 
-  return (
-    <div className="form-group mb-2">
-      <label htmlFor="username">{title}:</label>
+  const getInputField = () => {
+    if (type === "textarea")
+      return (
+        <textarea
+          id={id}
+          className="form-control"
+          value={object[id]}
+          onChange={handleValueChange}
+        ></textarea>
+      );
+
+    return (
       <input
         type={getType()}
         id={id}
@@ -22,6 +31,13 @@ const FormTextField = ({ object, setObject, id, title, type }) => {
         value={object[id]}
         onChange={handleValueChange}
       />
+    );
+  };
+
+  return (
+    <div className="form-group mb-2">
+      <label htmlFor="username">{title}:</label>
+      {getInputField()}
     </div>
   );
 };

@@ -74,7 +74,7 @@ namespace Eshop.Repository.Implementation
                 query = _entities
                     .Where(post => post.Title.ToLower().Contains(filter.SearchParams.ToLower()));
 
-            var items = query.OrderBy(post => post.TimeOfPost).Select(item => new UserPostDto(item));
+            var items = query.OrderByDescending(post => post.TimeOfPost).Select(item => new UserPostDto(item));
 
             return PagedList<UserPostDto>.ToPagedList(items, pagingParams.PageNumber, pagingParams.PageSize);
         }
