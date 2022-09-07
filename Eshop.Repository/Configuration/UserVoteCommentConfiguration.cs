@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,23 +10,22 @@ using System.Threading.Tasks;
 
 namespace Eshop.Repository.Configuration
 {
-    public class CommentConfiguration : IEntityTypeConfiguration<Comment>
+    public class UserVoteCommentConfiguration : IEntityTypeConfiguration<UserVoteComment>
     {
-        public void Configure(EntityTypeBuilder<Comment> builder)
+        public void Configure(EntityTypeBuilder<UserVoteComment> builder)
         {
             builder.HasKey(x => x.Id);
 
             builder.HasOne(x => x.User)
-                .WithMany(x => x.Comments)
+                .WithMany(x => x.UserVotes)
                 .HasForeignKey(x => x.UserId);
 
-            builder.HasOne(x => x.ForumPost)
-                .WithMany(x => x.Comments)
-                .HasForeignKey(x => x.ForumPostId);
+            builder.HasOne(x => x.Comment)
+                .WithMany(x => x.UserVotes)
+                .HasForeignKey(x => x.CommentId);
 
             builder.Navigation(x => x.User).AutoInclude();
-            builder.Navigation(x => x.ForumPost).AutoInclude();
-            builder.Navigation(x => x.UserVotes).AutoInclude();
+            builder.Navigation(x => x.Comment).AutoInclude();
         }
     }
 }

@@ -27,7 +27,6 @@ const Post = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    getUsername();
     const fetchProduct = async () => {
       try {
         const response = await forumApi.getPost(hashId);

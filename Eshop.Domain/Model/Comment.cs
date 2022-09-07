@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Identity;
+using Eshop.Domain.Relationships;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,8 +21,6 @@ namespace Eshop.Domain.Model
         [DataType(DataType.DateTime)]
         public DateTime LastModified { get; set; }
 
-        public int Score { get; set; }
-
         // Relationships
 
         [JsonIgnore]
@@ -37,5 +36,16 @@ namespace Eshop.Domain.Model
 
         [NotMapped]
         public string Username { get { return User?.UserName ?? ""; } }
+
+        public List<UserVoteComment> UserVotes { get; set; } = new List<UserVoteComment>();
+
+        [NotMapped]
+        public int Score
+        {
+            get
+            {
+                return UserVotes.Select(vote => vote.Score).Sum();
+            }
+        }
     }
 }

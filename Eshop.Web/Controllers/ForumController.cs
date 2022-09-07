@@ -210,6 +210,29 @@ namespace Eshop.Web.Controllers
             return Unauthorized("User not found");
         }
 
+        [HttpPost]
+        [Authorize]
+        [Route("comment/{hashId}/vote")]
+        public async Task<IActionResult> Vote([FromRoute] string hashId, [FromBody] int score)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null) return NotFound("Comment not found.");
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var post = await _commentService.Vote(rawId.Value, user, score);
+                return Ok(post);
+            }
+
+            return Unauthorized("User not found");
+        }
+
         [HttpPut]
         [Authorize]
         [Route("comment/{hashId}")]

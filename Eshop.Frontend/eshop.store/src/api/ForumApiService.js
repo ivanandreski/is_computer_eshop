@@ -19,14 +19,10 @@ export default class ForumApiService {
   };
 
   editPost = (post, hashId) => {
-    return axiosPrivate.put(
-      `${baseUrl}/post/${hashId}`,
-      post,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return axiosPrivate.put(`${baseUrl}/post/${hashId}`, post, {
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   deletePost = (hashId) => {
@@ -59,6 +55,13 @@ export default class ForumApiService {
         headers: { "Content-Type": "application/json" },
       }
     );
+  };
+
+  voteComment = (hashId, score) => {
+    return axiosPrivate.post(`${baseUrl}/comment/${hashId}/vote`, score, {
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   deleteComment = (hashId) => {

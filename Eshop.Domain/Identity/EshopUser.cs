@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
+using Eshop.Domain.Relationships;
 
 namespace Eshop.Domain.Identity
 {
@@ -45,8 +46,9 @@ namespace Eshop.Domain.Identity
 
         [JsonIgnore]
         public long ShoppingCartId { get; set; }
-
-
         public ShoppingCart? ShoppingCart { get; set; }
+
+        [JsonIgnore]
+        public List<UserVoteComment> UserVotes { get; set; } = new List<UserVoteComment>();
     }
 }

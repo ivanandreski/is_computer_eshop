@@ -4,6 +4,7 @@ import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ForumApiService from "../../api/ForumApiService";
 import useGetUsername from "../../Hooks/useGetUsername";
 import useGetRoles from "../../Hooks/useGetRoles";
+import Vote from "./Vote";
 
 const PostComments = ({ post, setRender }) => {
   const getUsername = useGetUsername();
@@ -47,14 +48,21 @@ const PostComments = ({ post, setRender }) => {
 
   return post?.comments?.map((comment, key) => (
     <div key={key} className="col-md-12 p-3 mb-2 mt-1 card post-card">
-      <pre className="post-text">{comment.text}</pre>
-      <hr className="post-text" />
       <div className="row">
-        <div className="col-md-4">Posted by: {comment.username}</div>
-        <div className="col-md-6">
-          Time of post: {getDisplayDate(post.timeOfPost)}
+        <div className="col-md-2">
+          <Vote comment={comment} setRender={setRender} />
         </div>
-        <div className="col-md-2">{renderDelete(comment.hashId)}</div>
+        <div className="col-md-10">
+          <pre className="post-text">{comment.text}</pre>
+          <hr className="post-text" />
+          <div className="row">
+            <div className="col-md-4">Posted by: {comment.username}</div>
+            <div className="col-md-6">
+              Time of post: {getDisplayDate(post.timeOfPost)}
+            </div>
+            <div className="col-md-2">{renderDelete(comment.hashId)}</div>
+          </div>
+        </div>
       </div>
     </div>
   ));
