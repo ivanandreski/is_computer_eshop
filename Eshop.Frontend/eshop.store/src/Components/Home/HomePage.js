@@ -5,7 +5,7 @@ import pc from "../../resources/images/pc.png";
 import hammer from "../../resources/images/hammer.png";
 import home from "../../resources/images/home.jpg";
 import "./Home.css";
-const Home = () => {
+const HomePage = () => {
   return (
     <div>
       <div>
@@ -46,4 +46,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

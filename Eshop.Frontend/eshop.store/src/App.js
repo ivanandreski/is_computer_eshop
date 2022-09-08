@@ -1,17 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 
-import RequireAuth from "./Components/Authentication/RequireAuth";
-import PersistLogin from "./Components/Authentication/PersistLogin";
+import RequireAuth from "./components/Authentication/RequireAuth";
+import PersistLogin from "./components/Authentication/PersistLogin";
 
-import Layout from "./Components/Layout/Layout";
-import Login from "./Components/Authentication/Login";
-import Register from "./Components/Authentication/Register";
-import Unauthorized from "./Components/Error/Unauthorized";
-import ErrorPage from "./Components/Error/ErrorPage";
-import Home from "./Components/Home/Home";
-import Profile from "./Components/Profile/Profile";
-import PageNotDeveloped from "./Components/Error/PageNotDeveloped";
-import Shop from "./Components/Shop/Shop";
+import Layout from "./components/Layout/Layout";
+import Login from "./components/Authentication/Login";
+import Register from "./components/Authentication/Register";
+import Unauthorized from "./components/Error/Unauthorized";
+import ErrorPage from "./components/Error/ErrorPage";
+import Home from "./components/Home/HomePage";
+import Profile from "./components/Profile/Profile";
+import PageNotDeveloped from "./components/Error/PageNotDeveloped";
+import Shop from "./components/Shop/Shop";
 
 function App() {
   return (
