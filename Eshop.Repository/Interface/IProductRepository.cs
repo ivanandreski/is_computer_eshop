@@ -23,5 +23,6 @@ namespace Eshop.Repository.Interface
         Task<Product> Update(Product entity);
 
         Task<Product> Remove(Product entity);
+
     }
 }

@@ -1,0 +1,114 @@
+.shop-container {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: 15% 85%;
+  height: 90vh;
+  color: white;
+}
+.sidebar-items {
+  list-style-type: none;
+  margin: 10px 0px 0px -10px;
+}
+.sidebar {
+  height: 97%;
+  background-color: #1e1f23;
+  text-align: left;
+  padding-left: 10%;
+  padding-top: 10%;
+  text-decoration: none;
+}
+.sidebar-title {
+  font-size: large;
+  font-weight: 500;
+}
+.sidebar-items-buttons,
+.builds {
+  background-color: #1e1f23;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  width: 80%;
+  text-align: left;
+}
+.sidebar-items-buttons:hover,
+.builds:hover {
+  color: red;
+  background-color: #333335;
+}
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  align-items: center;
+}
+.page-item {
+  list-style-type: none;
+}
+.page-link {
+  padding: 0px 10px;
+}
+.page-link:hover {
+  color: red;
+  background-color: #333335;
+}
+.pagination-container {
+  background-color: #1e1f23;
+  display: grid;
+  grid-template-columns: 30% 20% 12%;
+  justify-content: space-between;
+  padding: 20px;
+}
+.pagination-right {
+  display: flex;
+  justify-content: space-between;
+}
+.cards-container {
+  display: grid;
+  grid-template-columns: 23% 23% 23%;
+  justify-content: space-evenly;
+  height: 82vh;
+  overflow-y: auto;
+}
+.product-card {
+  height: 350px;
+  background-color: #1a0000;
+  margin: 20px 0px;
+  padding: 20px 10px;
+}
+.product-button {
+  background-color: red;
+  width: 40%;
+  margin: 0px auto;
+  border-radius: 10px;
+  padding: 0px 5px 4px 5px;
+}
+.product-button > a {
+  margin-top: -6px;
+}
+.card-image-container {
+  width: 50%;
+  height: 50%;
+  margin: 0px auto;
+}
+.card-image-container > img {
+  width: 100%;
+  height: 100%;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  display: none;
+}
+.search {
+  border-radius: 10px;
+}
+.active > a {
+  color: red;
+}
+.no-products {
+  font-size: x-large;
+  width: 500px;
+  position: absolute;
+  top: 45%;
+  left: 40%;
+}
