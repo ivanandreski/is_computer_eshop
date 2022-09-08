@@ -11,6 +11,7 @@ import ErrorPage from "./Components/Error/ErrorPage";
 import Home from "./Components/Home/Home";
 import Profile from "./Components/Profile/Profile";
 import PageNotDeveloped from "./Components/Error/PageNotDeveloped";
+import Shop from "./Components/Shop/Shop";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
             }
           >
             <Route path="profile" element={<Profile />} />
-            <Route path="shop" element={<PageNotDeveloped />} />
+            <Route path="Shop" element={<Shop/>} />
             <Route path="builder" element={<PageNotDeveloped />} />
             <Route path="forum" element={<PageNotDeveloped />} />
             <Route path="cart" element={<PageNotDeveloped />} />
