@@ -7,7 +7,7 @@ import home from "../../resources/images/home.jpg";
 import "./Home.css";
 const HomePage = () => {
   return (
-    <div>
+    <div className="container">
       <div>
         <img src={home} className="home-img"></img>
         <div className="home-text">

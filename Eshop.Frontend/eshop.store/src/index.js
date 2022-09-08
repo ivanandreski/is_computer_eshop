@@ -9,13 +9,13 @@ import { AuthProvider } from "./Context/AuthProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "bootstrap/js/src/collapse.js";
-
+import "./index.css";
 
 if (process.env.NODE_ENV === "production") {
   disableReactDevTools();
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>

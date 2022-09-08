@@ -21,6 +21,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="Shop" element={<Shop />} />
         <Route index element={<Home />} />
 
         <Route element={<PersistLogin />}>
@@ -31,7 +32,6 @@ function App() {
             }
           >
             <Route path="profile" element={<Profile />} />
-            <Route path="Shop" element={<Shop/>} />
             <Route path="builder" element={<PageNotDeveloped />} />
             <Route path="forum" element={<PageNotDeveloped />} />
             <Route path="cart" element={<PageNotDeveloped />} />

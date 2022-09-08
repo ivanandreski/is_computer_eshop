@@ -85,6 +85,8 @@
 }
 .product-button > a {
   margin-top: -6px;
+  color: white !important;
+  text-decoration: none !important;
 }
 .card-image-container {
   width: 50%;
