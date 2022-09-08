@@ -19,6 +19,8 @@ namespace Eshop.Domain.Model
         [DataType(DataType.DateTime)]
         public DateTime LastModified { get; set; }
 
+        public int Score { get; set; }
+
         // Relationships
 
         [JsonIgnore]

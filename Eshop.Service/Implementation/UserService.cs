@@ -75,11 +75,36 @@ namespace Eshop.Service.Implementation
                 .FirstOrDefault(x => x.RefreshToken == refreshToken);
         }
 
-        public async Task<bool> UserExists(RegisterModel model)
+        public async Task<bool> UserExists(string username)
         {
             return (await _userRepository.GetAll())
-                .Where(x => x.UserName == model.Username || x.Email == model.Email)
+                .Where(x => x.UserName == username)
                 .Any();
+        }
+
+        public async Task<EshopUser?> GetUser(ClaimsIdentity identity)
+        {
+            var userClaims = identity.Claims;
+            var username = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            if (username != null)
+            {
+                return await _userManager.FindByNameAsync(username);
+            }
+
+            return null;
+        }
+
+        public async Task<UserDetailsDto?> EditDetails(EshopUser user, UserDetailsDto dto)
+        {
+            user.UserName = dto.Username;
+            user.Email = dto.Email;
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.PhoneNumber = dto.Phone;
+            user.Address = dto.Address;
+
+            await _userManager.UpdateAsync(user);
+            return new UserDetailsDto(user);
         }
     }
 }

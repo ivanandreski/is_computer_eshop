@@ -14,10 +14,14 @@ namespace Eshop.Service.Interface
     {
         Task<List<EshopUserProjection>> GetEshopUsers(string? param);
 
-        Task<bool> UserExists(RegisterModel model);
+        Task<bool> UserExists(string username);
 
         Task<EshopUser?> GetByRefreshToken(string refreshToken);
 
         Task<EshopUserProjection?> SetRoles(SetRolesDto dto);
+
+        Task<EshopUser?> GetUser(ClaimsIdentity identity);
+
+        Task<UserDetailsDto?> EditDetails(EshopUser user, UserDetailsDto dto);
     }
 }

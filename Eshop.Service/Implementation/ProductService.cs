@@ -131,7 +131,8 @@ namespace Eshop.Service.Implementation
             if (product == null)
                 return null;
 
-            return await _productRepository.Remove(product);
+            product.Discontinued = true;
+            return await _productRepository.Update(product);
         }
 
         public async Task<Product?> Update(long id, ProductDto dto)
