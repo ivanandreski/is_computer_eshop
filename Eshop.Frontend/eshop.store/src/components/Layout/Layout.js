@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../Home/Home";
 import "./Layout.css";
 import Footer from "../Footer/Footer";
+import Shop from "../Shop/Shop";
+import ProductContainer from "../Shop/ProductContainer/ProductContainer";
 const Layout = () => {
   return (
     <>
@@ -12,7 +14,9 @@ const Layout = () => {
         <div className="main-container">
           <Routes>
             <Route exact path="/" element={<Home />} />
-            {/* <Route exact path="/DNICH_TFT/champions" element={<Champions />} />
+            <Route exact path="/Shop" element={<Shop />} />
+            <Route exact path="/Shop/:hashId" element={<ProductContainer/>}/>
+            {/*
         <Route path="/DNICH_TFT/champions/:champ" element={<ChampionView />} />
         <Route exact path="/DNICH_TFT/items" element={<Items />} />
         <Route path="/DNICH_TFT/items/:item" element={<ItemView />} />
