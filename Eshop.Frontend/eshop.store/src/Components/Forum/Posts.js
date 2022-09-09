@@ -5,6 +5,7 @@ import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ForumApiService from "../../api/ForumApiService";
 
 import AddPost from "./AddPost";
+import TrustedUserIcon from "../Core/TrustedUserIcon";
 
 import "./style.css";
 
@@ -52,7 +53,10 @@ const Posts = () => {
         <hr className="post-text" />
         <div className="row d-flex">
           <div className="col-md-4 justify-content-start">
-            Posted by: {post.username}
+            <span>
+              <TrustedUserIcon username={post.username} />
+              {post.username}
+            </span>
           </div>
           <div className="col-md-8 justify-content-end">
             Time of post: {getDisplayDate(post.timeOfPost)}

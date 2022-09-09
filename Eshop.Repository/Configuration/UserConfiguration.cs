@@ -25,7 +25,6 @@ namespace Eshop.Repository.Configuration
                 .HasForeignKey<PCBuild>(x => x.UserId);
 
             builder.OwnsOne(x => x.Address);
-
         }
     }
 }

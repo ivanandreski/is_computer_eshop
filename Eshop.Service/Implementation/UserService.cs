@@ -23,11 +23,13 @@ namespace Eshop.Service.Implementation
     {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<EshopUser> _userManager;
+        private readonly ICommentRepository _commentRepository;
 
-        public UserService(IUserRepository userRepository, UserManager<EshopUser> userManager)
+        public UserService(IUserRepository userRepository, UserManager<EshopUser> userManager, ICommentRepository commentRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
+            _commentRepository = commentRepository;
         }
 
         public async Task<List<EshopUserProjection>> GetEshopUsers(string? param)
@@ -94,6 +96,14 @@ namespace Eshop.Service.Implementation
             return null;
         }
 
+        public async Task<UserDetailsDto?> GetUserDetails(EshopUser user)
+        {
+            var userDetails = new UserDetailsDto(user);
+            userDetails.ForumScore = await _commentRepository.GetUserScoreFromComments(user);
+
+            return userDetails;
+        }
+
         public async Task<UserDetailsDto?> EditDetails(EshopUser user, UserDetailsDto dto)
         {
             user.UserName = dto.Username;
@@ -105,6 +115,14 @@ namespace Eshop.Service.Implementation
 
             await _userManager.UpdateAsync(user);
             return new UserDetailsDto(user);
+        }
+
+        public async Task<bool> IsUserTrusted(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return false;
+
+            return await _commentRepository.GetUserScoreFromComments(user) > 1000;
         }
     }
 }

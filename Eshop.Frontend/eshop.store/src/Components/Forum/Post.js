@@ -8,9 +8,10 @@ import useGetRoles from "../../Hooks/useGetRoles";
 
 import AddComment from "./AddComment";
 import EditPost from "./EditPost";
+import TrustedUserIcon from "../Core/TrustedUserIcon";
+import PostComments from "./PostComments";
 
 import "./style.css";
-import PostComments from "./PostComments";
 
 const Post = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const Post = () => {
       try {
         const response = await forumApi.getPost(hashId);
         setPost(response.data);
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -78,6 +80,15 @@ const Post = () => {
     }
   };
 
+  const getDisplayDate = (dateString) => {
+    if (dateString === undefined || "") return "";
+
+    const date = dateString.split("T")[0];
+    const timeSplit = dateString.split("T")[1].split(":");
+
+    return `${date} at ${timeSplit[0]}:${timeSplit[1]}`;
+  };
+
   return (
     <div className="row">
       <div className="col-md-3"></div>
@@ -88,6 +99,19 @@ const Post = () => {
           </div>
           <div className="col-md-12 p-3 mb-2 mt-1 card post-card">
             <pre className="post-text">{post.text}</pre>
+            <hr />
+            <div className="row d-flex">
+              <div className="col-md-6 justify-content-start">
+                <span>
+                  <TrustedUserIcon username={post.username} />
+                  <strong>{post.username}</strong>
+                </span>
+              </div>
+              <div className="col-md-6 justify-content-end">
+                Time of post: {getDisplayDate(post.timeOfPost)}
+              </div>
+            </div>
+            <hr />
             <div className="row">
               <div className="col-md-6">{renderEdit()}</div>
               <div className="col-md-6">{renderDelete()}</div>

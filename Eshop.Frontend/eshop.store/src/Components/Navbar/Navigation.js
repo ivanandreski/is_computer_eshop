@@ -44,58 +44,6 @@ const Navigation = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-
-      {/* <div className="navbar-container">
-        <div className="navbar-left">
-          <img src={logo} alt="" className="logo"></img>
-          <ul className="navbar-list">
-            <li className="navbar-item">
-              <Link
-                // onClick={changeActive}
-                // className={`link-${activeLink === "Home" ? "active" : ""}`}
-                to={"/"}
-              >
-                HOME
-              </Link>
-            </li>
-            <li className="navbar-item">
-              <Link
-                // onClick={changeActive}
-                // className={`link-${activeLink === "Champions" ? "active" : ""}`}
-                to={"/Shop"}
-              >
-                SHOP
-              </Link>
-            </li>
-            <li className="navbar-item">
-              <Link
-                // onClick={changeActive}
-                // className={`link-${activeLink === "Items" ? "active" : ""}`}
-                to={"/Builder"}
-              >
-                BUILDER
-              </Link>
-            </li>
-            <li className="navbar-item">
-              <Link
-                // onClick={changeActive}
-                // className={`link-${activeLink === "Final Comps" ? "active" : ""}`}
-                to={"/Forum"}
-              >
-                FORUM
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div className="navbar-right">
-          <div style={{ marginTop: "10%" }}>
-            <Link to={"/Cart"}>
-              <img src={cart} alt="" className="shopping-cart"></img>
-            </Link>
-          </div>
-          <Authenticate />
-        </div>
-      </div> */}
     </>
   );
 };

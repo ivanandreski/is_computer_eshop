@@ -22,6 +22,10 @@ namespace Eshop.Service.Interface
 
         Task<EshopUser?> GetUser(ClaimsIdentity identity);
 
+        Task<UserDetailsDto?> GetUserDetails(EshopUser user);
+
         Task<UserDetailsDto?> EditDetails(EshopUser user, UserDetailsDto dto);
+
+        Task<bool> IsUserTrusted(string username);
     }
 }

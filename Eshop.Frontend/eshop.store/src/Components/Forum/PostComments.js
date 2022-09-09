@@ -4,6 +4,8 @@ import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ForumApiService from "../../api/ForumApiService";
 import useGetUsername from "../../Hooks/useGetUsername";
 import useGetRoles from "../../Hooks/useGetRoles";
+
+import TrustedUserIcon from "../Core/TrustedUserIcon";
 import Vote from "./Vote";
 
 const PostComments = ({ post, setRender }) => {
@@ -56,7 +58,12 @@ const PostComments = ({ post, setRender }) => {
           <pre className="post-text">{comment.text}</pre>
           <hr className="post-text" />
           <div className="row">
-            <div className="col-md-4">Posted by: {comment.username}</div>
+            <div className="col-md-4">
+              <span>
+                <TrustedUserIcon username={comment.username} />
+                {comment.username}
+              </span>
+            </div>
             <div className="col-md-6">
               Time of post: {getDisplayDate(post.timeOfPost)}
             </div>

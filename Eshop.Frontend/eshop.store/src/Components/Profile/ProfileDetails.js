@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import UserApiService from "../../api/UserApiService";
+import TrustedUserIcon from "../Core/TrustedUserIcon";
 
 const ProfileDetails = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -39,10 +40,15 @@ const ProfileDetails = () => {
     );
   };
 
+  //   console.log(profileDetails);
+
   return (
     <div className="card p-4">
       <div className="form-group">
-        <strong>Username:</strong>
+        <span>
+          <TrustedUserIcon username={profileDetails?.username} />
+          <strong>Username:</strong>
+        </span>
         <p>{profileDetails.username}</p>
       </div>
       <div className="form-group">
@@ -64,6 +70,10 @@ const ProfileDetails = () => {
       <div className="form-group">
         <strong>Address:</strong>
         {renderAddress()}
+      </div>
+      <div className="form-group">
+        <strong>Forum score:</strong>
+        <p>{profileDetails.forumScore}</p>
       </div>
     </div>
   );
