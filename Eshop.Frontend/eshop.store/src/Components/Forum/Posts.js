@@ -6,8 +6,10 @@ import ForumApiService from "../../api/ForumApiService";
 
 import AddPost from "./AddPost";
 import TrustedUserIcon from "../Core/TrustedUserIcon";
+import PostPagination from "./PostPagination";
 
 import "./style.css";
+import PostDateFilter from "./PostDateFilter";
 
 const Posts = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -16,26 +18,38 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({
     currentPage: 1,
-    pageSze: 20,
+    pageSize: 20,
     searchParams: "",
-    // TODO: add from and to date
+    totalPages: 0,
+    fromDate: {},
+    toDate: {},
   });
   const [render, setRender] = useState(0);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await forumApi.getPosts();
-        console.log(response.data);
-        setPosts(response.data.items);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const fetchPosts = async () => {
+    try {
+      const response = await forumApi.getPosts(filter);
+      setPosts(response.data.items);
+      setFilter({
+        ...filter,
+        totalPages: response.data.totalPages,
+        pageSize: response.data.pageSize,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [render]);
+  }, [
+    render,
+    filter.currentPage,
+    filter.pageSize,
+    filter.toDate,
+    filter.fromDate,
+  ]);
 
   const getDisplayDate = (dateString) => {
     const date = dateString.split("T")[0];
@@ -66,13 +80,47 @@ const Posts = () => {
     ));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchPosts();
+  };
+
   return (
     <div className="row">
-      <div className="col-md-3"></div>
+      <div className="col-md-3">
+        <div className="row">
+          <PostDateFilter filter={filter} setFilter={setFilter} />
+        </div>
+      </div>
       <div className="col-md-6">
+        <div className="row">
+          <div className="col-md-12 p-3 card post-card mb-2 mt-2">
+            <form style={{ display: "inline-block" }} onSubmit={handleSubmit}>
+              <div className="row">
+                <div className="col-md-10">
+                  <input
+                    type="text"
+                    className="form-control w-100"
+                    placeholder="Search"
+                    value={filter.searchParams}
+                    onChange={(e) =>
+                      setFilter({ ...filter, searchParams: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="col-md-2">
+                  <button className="btn btn-secondary w-100">Search</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
         <div className="row">
           <AddPost setRender={setRender} />
           {renderPosts()}
+        </div>
+        <div className="row">
+          <PostPagination filter={filter} setFilter={setFilter} />
         </div>
       </div>
     </div>

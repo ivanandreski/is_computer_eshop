@@ -73,6 +73,17 @@ namespace Eshop.Repository.Implementation
             else if (!string.IsNullOrEmpty(filter.SearchParams))
                 query = _entities
                     .Where(post => post.Title.ToLower().Contains(filter.SearchParams.ToLower()));
+            else if (filter.FromDate != null && filter.ToDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
+                        && post.TimeOfPost.Date <= filter.ToDate.Value.Date);
+            else if (filter.FromDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
+                        && post.TimeOfPost.Date <= DateTime.Today.Date);
+            else if (filter.ToDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date <= filter.ToDate.Value.Date);
 
             var items = query.OrderByDescending(post => post.TimeOfPost).Select(item => new UserPostDto(item));
 

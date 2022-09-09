@@ -62,7 +62,7 @@ namespace Eshop.Web.Controllers
 
             var result = await _postService.GetAll(filter);
 
-            return Ok(new { Items = result, PageSize = result.PageSize, TotalPages = result.TotalPages });
+            return Ok(new { Items = result, PageSize = result.PageSize, TotalPages = result.TotalPages, SearchParams = filter.SearchParams});
         }
 
         [HttpGet]

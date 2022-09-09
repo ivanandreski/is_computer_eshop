@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ForumApiService from "../../api/ForumApiService";
@@ -35,7 +35,7 @@ const AddPost = ({ setRender }) => {
   };
 
   return canAdd() ? (
-    <div className="card post-card p-3 mb-2 mt-3">
+    <div className="card post-card p-3 mb-2">
       <div className="row mb-2">
         <div className="col-md-3">
           <strong>TITLE: </strong>

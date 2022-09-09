@@ -8,7 +8,7 @@ export default class ForumApiService {
   }
 
   getPosts = (filter) => {
-    return axios.get(`${baseUrl}/post/`, filter);
+    return axios.get(`${baseUrl}/post`, { params: filter });
   };
 
   createPost = (post) => {
