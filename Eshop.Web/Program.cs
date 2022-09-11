@@ -92,6 +92,7 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IPostRepository, PostRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddTransient<IPcBuildRepository, PcBuildRepository>();
 
 builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
@@ -106,6 +107,7 @@ builder.Services.AddTransient<ITagService, TagService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IPcBuildService, PcBuildService>();
 
 var app = builder.Build();
 
