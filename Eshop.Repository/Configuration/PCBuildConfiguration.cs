@@ -17,6 +17,7 @@ namespace Eshop.Repository.Configuration
             builder.HasKey(x => x.Id);
 
             builder.Navigation(x => x.User).AutoInclude();
+            builder.Navigation(x => x.Products).AutoInclude();
         }
     }
 }

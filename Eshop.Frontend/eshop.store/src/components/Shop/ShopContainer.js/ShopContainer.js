@@ -23,26 +23,27 @@ const ShopContainer = ({
           previousLabel="Previous"
           renderOnZeroPageCount={null}
           containerClassName="pagination justify-content-center"
-          pageClassName="page-item"
-          pageLinkClassName="page-link"
-          previousClassName="page-item"
-          previousLinkClassName="page-link"
-          nextClassName="page-item"
-          nextLinkClassName="page-link"
-          breakClassName="page-item"
-          breakLinkClassName="page-link"
+          pageClassName="page-item-paginate"
+          pageLinkClassName="page-link-paginate"
+          previousClassName="page-item-paginate"
+          previousLinkClassName="page-link-paginate"
+          nextClassName="page-item-paginate"
+          nextLinkClassName="page-link-paginate"
+          breakClassName="page-item-paginate"
+          breakLinkClassName="page-link-paginate"
           activeClassName="active"
         />
         <div className="pagination-search">
           Search:{" "}
           <input
-            className="search"
+            className="form-control"
             type="text"
             onChange={handleQueryChange}
+            placeholder="Type something..."
           ></input>
         </div>
         <div className="pagination-right">
-          <span>Display on site:</span>
+          <span>Page size:</span>
           <select
             className="per-page-select"
             onChange={(e) => handlePerPageChange(e)}
@@ -54,15 +55,15 @@ const ShopContainer = ({
           </select>
         </div>
       </div>
-      {products.length == 0 ? (
+      {products.length === 0 ? (
         <div className="no-products">
           Ooops looks like we do not have any products that match the search
           criteria...Try searching for something else.
         </div>
       ) : (
         <div className="cards-container">
-          {products.map((product) => (
-            <ProductCard item={product}></ProductCard>
+          {products.map((product, key) => (
+            <ProductCard key={key} item={product}></ProductCard>
           ))}
         </div>
       )}

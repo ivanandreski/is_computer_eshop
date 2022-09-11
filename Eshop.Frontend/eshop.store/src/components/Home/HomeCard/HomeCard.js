@@ -4,9 +4,9 @@ import "./HomeCard.css";
 const HomeCard = ({ image, description, buttonText, destination }) => {
   return (
     <div className="home-card">
-      <img className="home-card-img" src={image}></img>
-      <div className="home-card-description">{description}</div>
-      <div className="home-card-button">
+      <img className="home-card-img" src={image} alt=""></img>
+      <div className="home-card-description text-center">{description}</div>
+      <div className="home-card-button text-center">
         <Link to={`/${destination}`}>{buttonText}</Link>
       </div>
     </div>

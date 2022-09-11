@@ -1,7 +1,5 @@
 import React from "react";
 
-import { useState } from "react";
-
 const Sidebar = ({ categories, handleCategoryChange }) => {
   return (
     <div className="sidebar">

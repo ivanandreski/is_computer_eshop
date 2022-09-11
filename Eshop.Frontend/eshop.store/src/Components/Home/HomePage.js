@@ -9,10 +9,10 @@ const HomePage = () => {
   return (
     <div className="container">
       <div>
-        <img src={home} className="home-img"></img>
+        <img src={home} className="home-img" alt=""></img>
         <div className="home-text">
-          <div className="home-title">Level UP! your setup</div>
-          <div className="home-description">
+          <div className="home-title text-center">Level UP! your setup</div>
+          <div className="home-description text-center">
             Let us be your first choice when it comes to elevating your work,
             gaming or overall computer experience
           </div>

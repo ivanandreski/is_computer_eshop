@@ -42,6 +42,7 @@ namespace Eshop.Domain.Identity
 
         [JsonIgnore]
         public long PCBuildId { get; set; }
+        [JsonIgnore]
         public PCBuild? PCBuild { get; set; }
 
         [JsonIgnore]

@@ -26,6 +26,7 @@ namespace Eshop.Repository
         public virtual DbSet<ProductInOrder> ProductsInOrders { get; set; }
         public virtual DbSet<ProductInShoppingCart> ProductsInShoppingCarts { get; set; }
         public virtual DbSet<ProductInStore> ProductsInStores { get; set; }
+        public virtual DbSet<ProductInPcBuild> ProductsInPcBuilds { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<UserVoteComment> UserVotes { get; set; }
 

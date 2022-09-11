@@ -29,7 +29,11 @@ const ProductContainer = () => {
             <div>Manufacturer: {}</div>
             <div>
               On stock:
-              {product ? <img src={tick}></img> : <img src={cross}></img>}
+              {product ? (
+                <img src={tick} alt=""></img>
+              ) : (
+                <img src={cross} alt=""></img>
+              )}
             </div>
           </div>
         </div>

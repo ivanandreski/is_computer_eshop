@@ -30,7 +30,10 @@ namespace Eshop.Domain.Model
         public Category? Category { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Tag> Tags { get; set; } = new Collection<Tag>();
+        public virtual IList<ProductInPcBuild> PcBuildProducts { get; set; } = new List<ProductInPcBuild>();
+
+        [JsonIgnore]
+        public virtual IList<Tag> Tags { get; set; } = new List<Tag>();
 
         [JsonIgnore]
         public virtual IEnumerable<ProductInShoppingCart>? ProductsInShoppingCart { get; set; }
