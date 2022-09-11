@@ -8,11 +8,12 @@ import Login from "./components/Authentication/Login";
 import Register from "./components/Authentication/Register";
 import Unauthorized from "./components/Error/Unauthorized";
 import ErrorPage from "./components/Error/ErrorPage";
-import Home from "./components/Home/Home";
+import Home from "./components/Home/HomePage";
 import Profile from "./components/Profile/Profile";
 import PageNotDeveloped from "./components/Error/PageNotDeveloped";
 import Posts from "./components/Forum/Posts";
 import Post from "./components/Forum/Post";
+import Shop from "./components/Shop/Shop";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="Shop" element={<Shop />} />
         <Route index element={<Home />} />
         <Route exact path="forum/post" element={<Posts />} />
         <Route path="forum/post/:hashId" element={<Post />} />

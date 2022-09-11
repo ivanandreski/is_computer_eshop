@@ -1,11 +1,16 @@
 .home-card {
-  background: red;
+  background: red !important;
   width: 20%;
   padding: 10px;
-  color: white;
+  color: white !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.home-card-button > a {
+  color: white !important;
+  text-decoration: none;
 }
 .home-card-img {
   height: 50px;

@@ -9,6 +9,7 @@ import { AuthProvider } from "./Context/AuthProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "bootstrap/js/src/collapse.js";
+import "./index.css";
 
 import "./index.css";
 

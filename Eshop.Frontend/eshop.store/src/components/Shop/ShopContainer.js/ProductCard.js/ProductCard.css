@@ -1,0 +1,11 @@
+.product-card{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.product-price{
+    font-size: large;
+}
+.double-o{
+    font-size: x-small;
+}
