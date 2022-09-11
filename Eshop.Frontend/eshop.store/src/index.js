@@ -11,6 +11,8 @@ import "bootstrap/dist/js/bootstrap.js";
 import "bootstrap/js/src/collapse.js";
 import "./index.css";
 
+import "./index.css";
+
 if (process.env.NODE_ENV === "production") {
   disableReactDevTools();
 }

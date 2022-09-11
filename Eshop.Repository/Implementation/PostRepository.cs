@@ -63,6 +63,7 @@ namespace Eshop.Repository.Implementation
 
         public PagedList<UserPostDto> GetPaged(PagingParameters pagingParams, PostFilter filter)
         {
+            // If search is empty but dates are not, it will still ignore them, pls fix
             IQueryable<ForumPost> query = _entities;
             if (!string.IsNullOrEmpty(filter.SearchParams) && filter.FromDate != null && filter.ToDate != null)
                 query = _entities
@@ -72,8 +73,19 @@ namespace Eshop.Repository.Implementation
             else if (!string.IsNullOrEmpty(filter.SearchParams))
                 query = _entities
                     .Where(post => post.Title.ToLower().Contains(filter.SearchParams.ToLower()));
+            else if (filter.FromDate != null && filter.ToDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
+                        && post.TimeOfPost.Date <= filter.ToDate.Value.Date);
+            else if (filter.FromDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
+                        && post.TimeOfPost.Date <= DateTime.Today.Date);
+            else if (filter.ToDate != null)
+                query = _entities
+                    .Where(post => post.TimeOfPost.Date <= filter.ToDate.Value.Date);
 
-            var items = query.OrderBy(post => post.TimeOfPost).Select(item => new UserPostDto(item));
+            var items = query.OrderByDescending(post => post.TimeOfPost).Select(item => new UserPostDto(item));
 
             return PagedList<UserPostDto>.ToPagedList(items, pagingParams.PageNumber, pagingParams.PageSize);
         }

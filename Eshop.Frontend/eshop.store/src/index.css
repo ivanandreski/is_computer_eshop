@@ -15,3 +15,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.trusted-user-icon {
+  width: 23px;
+  padding-bottom: 5px;
+  padding-right: 3px;
+}

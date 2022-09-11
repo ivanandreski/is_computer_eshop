@@ -1,6 +1,7 @@
 ﻿using Eshop.Domain.Dto;
 using Eshop.Domain.Identity;
 using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Eshop.Repository.Interface;
 using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +29,7 @@ namespace Eshop.Service.Implementation
         public async Task<Comment?> Create(CommentDto dto, EshopUser user)
         {
             var comment = new Comment();
-            comment.Text = comment.Text;
+            comment.Text = dto.Text;
             comment.UserId = user.Id;
             comment.TimeOfPost = DateTime.Now;
             comment.LastModified = comment.TimeOfPost;
@@ -37,7 +38,6 @@ namespace Eshop.Service.Implementation
             if (post == null) return null;
 
             comment.ForumPostId = post.Id;
-            comment.Score = 0;
 
             return await _commentRepository.Create(comment);
         }
@@ -78,6 +78,34 @@ namespace Eshop.Service.Implementation
                 return await _commentRepository.Update(comment);
 
             return null;
+        }
+
+        public async Task<Comment?> Vote(long commentId, EshopUser user, int score)
+        {
+            var comment = await _commentRepository.Get(commentId);
+            if (comment == null) return null;
+
+            var userVote = comment.UserVotes.FirstOrDefault(vote => vote.UserId == user.Id);
+            if(userVote == null)
+            {
+                userVote = new UserVoteComment();
+                userVote.UserId = user.Id;
+                userVote.User = user;
+                userVote.CommentId = commentId;
+                userVote.Comment = comment;
+                userVote.Score = 0;
+
+                comment.UserVotes.Add(userVote);
+            }
+            
+            if(userVote.Score == 0) userVote.Score = score;
+            else
+            {
+                if (userVote.Score == score) userVote.Score = 0;
+                else userVote.Score = score;
+            }
+
+            return await _commentRepository.Update(comment);
         }
     }
 }

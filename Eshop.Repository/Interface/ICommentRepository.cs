@@ -13,6 +13,8 @@ namespace Eshop.Repository.Interface
     {
         Task<List<UserCommentDto>> GetCommentsForUser(EshopUser user);
 
+        Task<int> GetUserScoreFromComments(EshopUser user);
+
         Task<Comment?> Get(long id);
 
         Task<Comment> Create(Comment post);

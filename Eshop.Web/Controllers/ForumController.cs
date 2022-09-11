@@ -41,7 +41,9 @@ namespace Eshop.Web.Controllers
             filter.SearchParams = Request.Query["searchParams"];
             try
             {
-                filter.FromDate = DateTime.Parse(Request.Query["fromDate"]);
+                var temp = Request.Query["fromDate"].ToString();
+                if (temp == null) temp = "";
+                filter.FromDate = DateTime.Parse(temp);
             } catch (FormatException)
             {
                 filter.FromDate = null;
@@ -49,7 +51,9 @@ namespace Eshop.Web.Controllers
 
             try
             {
-                filter.ToDate = DateTime.Parse(Request.Query["toDate"]);
+                var temp = Request.Query["toDate"].ToString();
+                if (temp == null) temp = "";
+                filter.ToDate = DateTime.Parse(temp);
             }
             catch (FormatException)
             {
@@ -58,7 +62,7 @@ namespace Eshop.Web.Controllers
 
             var result = await _postService.GetAll(filter);
 
-            return Ok(new { Items = result, PageSize = result.PageSize, TotalPages = result.TotalPages });
+            return Ok(new { Items = result, PageSize = result.PageSize, TotalPages = result.TotalPages, SearchParams = filter.SearchParams});
         }
 
         [HttpGet]
@@ -201,6 +205,29 @@ namespace Eshop.Web.Controllers
             if (user != null)
             {
                 return Ok(await _commentService.Create(dto, user));
+            }
+
+            return Unauthorized("User not found");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("comment/{hashId}/vote")]
+        public async Task<IActionResult> Vote([FromRoute] string hashId, [FromBody] int score)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var rawId = _hashService.GetRawId(hashId);
+            if (rawId == null) return NotFound("Comment not found.");
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var post = await _commentService.Vote(rawId.Value, user, score);
+                return Ok(post);
             }
 
             return Unauthorized("User not found");

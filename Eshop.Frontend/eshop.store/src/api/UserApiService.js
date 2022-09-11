@@ -24,4 +24,10 @@ export default class UserApiService {
       withCredentials: true,
     });
   };
+
+  isUserTrusted = (username) => {
+    return this.axiosPrivate.get(
+      `${baseUrl}/isUserTrusted?username=${username}`
+    );
+  };
 }

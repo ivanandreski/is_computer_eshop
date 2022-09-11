@@ -8,7 +8,7 @@ namespace Eshop.Domain.Dto
 {
     public class PagingParameters
     {
-        const int maxPageSize = 48;
+        const int maxPageSize = 64;
         public int PageNumber { get; set; } = 1;
         private int _pageSize = 12;
         public int PageSize

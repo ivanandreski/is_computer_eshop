@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Identity;
+using Eshop.Domain.Model;
 using Eshop.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ namespace Eshop.Domain.Dto
         public Address Address { get; set; } = new Address("", "", "", "");
 
         public string Phone { get; set; } = "";
+
+        public int ForumScore { get; set; }
+
+        public bool IsTrusted { get { return ForumScore > 1000; } }
 
         public UserDetailsDto(EshopUser user)
         {

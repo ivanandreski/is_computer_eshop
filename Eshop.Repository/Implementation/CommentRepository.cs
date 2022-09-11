@@ -58,5 +58,18 @@ namespace Eshop.Repository.Implementation
 
             return comment;
         }
+
+        public async Task<int> GetUserScoreFromComments(EshopUser user)
+        {
+            int score = 0;
+            var userVotesByComment = _entities.Where(x => x.UserId == user.Id)
+                .Select(x => x.UserVotes);
+            foreach(var userVote in userVotesByComment)
+            {
+                score += userVote.Select(x => x.Score).Sum();
+            }
+
+            return score;
+        }
     }
 }

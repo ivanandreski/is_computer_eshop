@@ -27,6 +27,7 @@ namespace Eshop.Repository
         public virtual DbSet<ProductInShoppingCart> ProductsInShoppingCarts { get; set; }
         public virtual DbSet<ProductInStore> ProductsInStores { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<UserVoteComment> UserVotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -45,6 +46,7 @@ namespace Eshop.Repository
             builder.ApplyConfiguration(new StoreConfiguration());
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new TagConfiguration());
+            builder.ApplyConfiguration(new UserVoteCommentConfiguration());
         }
     }
 }

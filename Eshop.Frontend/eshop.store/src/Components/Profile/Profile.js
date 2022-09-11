@@ -6,7 +6,8 @@ import ProfileDetails from "./ProfileDetails";
 import ChangePassword from "./ChangePassword";
 import EditDetails from "./EditDetails";
 import Orders from "./Orders";
-import PageNotDeveloped from "../Error/PageNotDeveloped";
+import UserPosts from "./UserPosts";
+import UserComments from "./UserComments";
 
 const Profile = () => {
   const [activeMenu, setActiveMenu] = useState(menuItems.details);
@@ -20,9 +21,9 @@ const Profile = () => {
       case menuItems.orders:
         return <Orders />;
       case menuItems.forumPosts:
-        return <PageNotDeveloped />;
+        return <UserPosts />;
       case menuItems.forumComments:
-        return <PageNotDeveloped />;
+        return <UserComments />;
       default:
         return <ProfileDetails />;
     }

@@ -20,5 +20,7 @@ namespace Eshop.Service.Interface
         Task<Comment?> Update(CommentDto dto, long id, EshopUser user);
 
         Task<Comment?> Remove(long id, EshopUser user);
+
+        Task<Comment?> Vote(long commentId, EshopUser user, int score);
     }
 }

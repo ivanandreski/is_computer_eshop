@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 
@@ -7,11 +7,27 @@ import cart from "../../resources/images/shopping-cart.png";
 
 import useLogout from "../../Hooks/useLogout";
 import useAuth from "../../Hooks/useAuth";
+import useRefreshToken from "../../Hooks/useRefreshToken";
 
 const Authenticate = () => {
   const logout = useLogout();
   const { auth } = useAuth();
   const navigate = useNavigate();
+  const refresh = useRefreshToken();
+
+  useEffect(() => {
+    const checkToken = async () => {
+      if (auth.accessToken === undefined) {
+        try {
+          await refresh();
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    checkToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const signOut = async () => {
     await logout();

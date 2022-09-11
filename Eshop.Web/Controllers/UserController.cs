@@ -185,10 +185,19 @@ namespace Eshop.APIs.AuthenticationService.Controllers
 
             if (user != null)
             {
-                return Ok(new UserDetailsDto(user));
+                return Ok(await _userService.GetUserDetails(user));
             }
 
             return NotFound("User not found");
+        }
+
+        [HttpGet]
+        [Route("isUserTrusted")]
+        public async Task<IActionResult> IsUserTrusted()
+        {
+            string username = Request.Query["username"];
+
+            return Ok(await _userService.IsUserTrusted(username));
         }
 
         [Authorize]
