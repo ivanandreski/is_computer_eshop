@@ -85,6 +85,14 @@
   border-radius: 10px;
   padding: 0px 5px 4px 5px;
 }
+
+.product-cart-button {
+  background-color: gray;
+  width: 40%;
+  margin: 0px auto;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
 .product-button > a {
   margin-top: -6px;
   color: white !important;

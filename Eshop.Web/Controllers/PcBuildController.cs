@@ -32,7 +32,7 @@ namespace Eshop.Web.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null)
-                return BadRequest();
+                return Unauthorized();
 
             var user = await _userService.GetUser(identity);
 

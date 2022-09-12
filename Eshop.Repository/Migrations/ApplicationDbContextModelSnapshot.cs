@@ -122,7 +122,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Comment", b =>
@@ -154,7 +154,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.ForumPost", b =>
@@ -184,7 +184,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ForumPosts");
+                    b.ToTable("ForumPosts", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Order", b =>
@@ -213,7 +213,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.PCBuild", b =>
@@ -232,7 +232,7 @@ namespace Eshop.Repository.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("PCBuilds");
+                    b.ToTable("PCBuilds", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Product", b =>
@@ -262,7 +262,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.ShoppingCart", b =>
@@ -292,7 +292,7 @@ namespace Eshop.Repository.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Store", b =>
@@ -309,7 +309,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stores");
+                    b.ToTable("Stores", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Model.Tag", b =>
@@ -333,7 +333,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductImages", b =>
@@ -354,7 +354,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductInOrder", b =>
@@ -380,7 +380,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsInOrders");
+                    b.ToTable("ProductsInOrders", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductInPcBuild", b =>
@@ -409,7 +409,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsInPcBuilds");
+                    b.ToTable("ProductsInPcBuilds", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductInShoppingCart", b =>
@@ -435,7 +435,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("ProductsInShoppingCarts");
+                    b.ToTable("ProductsInShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.ProductInStore", b =>
@@ -461,7 +461,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("ProductsInStores");
+                    b.ToTable("ProductsInStores", (string)null);
                 });
 
             modelBuilder.Entity("Eshop.Domain.Relationships.UserVoteComment", b =>
@@ -487,7 +487,7 @@ namespace Eshop.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserVotes");
+                    b.ToTable("UserVotes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -624,7 +624,7 @@ namespace Eshop.Repository.Migrations
 
             modelBuilder.Entity("Eshop.Domain.Identity.EshopUser", b =>
                 {
-                    b.OwnsOne("Eshop.Domain.ValueObjects.Address", "Address", b1 =>
+                    b.OwnsOne("Eshop.Domain.Identity.EshopUser.Address#Eshop.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<string>("EshopUserId")
                                 .HasColumnType("text");
@@ -651,7 +651,7 @@ namespace Eshop.Repository.Migrations
 
                             b1.HasKey("EshopUserId");
 
-                            b1.ToTable("AspNetUsers");
+                            b1.ToTable("AspNetUsers", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("EshopUserId");
@@ -698,7 +698,20 @@ namespace Eshop.Repository.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
-                    b.OwnsOne("Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
+                    b.OwnsOne("Eshop.Domain.Model.Order.Status#Eshop.Domain.ValueObjects.OrderStatus", "Status", b1 =>
+                        {
+                            b1.Property<long>("OrderId")
+                                .HasColumnType("bigint");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
+                    b.OwnsOne("Eshop.Domain.Model.Order.TotalPrice#Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
                         {
                             b1.Property<long>("OrderId")
                                 .HasColumnType("bigint");
@@ -708,20 +721,7 @@ namespace Eshop.Repository.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderId");
-                        });
-
-                    b.OwnsOne("Eshop.Domain.ValueObjects.OrderStatus", "Status", b1 =>
-                        {
-                            b1.Property<long>("OrderId")
-                                .HasColumnType("bigint");
-
-                            b1.HasKey("OrderId");
-
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -754,7 +754,7 @@ namespace Eshop.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Eshop.Domain.ValueObjects.Money", "Price", b1 =>
+                    b.OwnsOne("Eshop.Domain.Model.Product.Price#Eshop.Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<long>("ProductId")
                                 .HasColumnType("bigint");
@@ -764,7 +764,7 @@ namespace Eshop.Repository.Migrations
 
                             b1.HasKey("ProductId");
 
-                            b1.ToTable("Products");
+                            b1.ToTable("Products", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
@@ -785,7 +785,7 @@ namespace Eshop.Repository.Migrations
                         .WithOne("ShoppingCart")
                         .HasForeignKey("Eshop.Domain.Model.ShoppingCart", "UserId");
 
-                    b.OwnsOne("Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
+                    b.OwnsOne("Eshop.Domain.Model.ShoppingCart.TotalPrice#Eshop.Domain.ValueObjects.Money", "TotalPrice", b1 =>
                         {
                             b1.Property<long>("ShoppingCartId")
                                 .HasColumnType("bigint");
@@ -795,7 +795,7 @@ namespace Eshop.Repository.Migrations
 
                             b1.HasKey("ShoppingCartId");
 
-                            b1.ToTable("ShoppingCarts");
+                            b1.ToTable("ShoppingCarts", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ShoppingCartId");
@@ -810,7 +810,7 @@ namespace Eshop.Repository.Migrations
 
             modelBuilder.Entity("Eshop.Domain.Model.Store", b =>
                 {
-                    b.OwnsOne("Eshop.Domain.ValueObjects.Address", "Address", b1 =>
+                    b.OwnsOne("Eshop.Domain.Model.Store.Address#Eshop.Domain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<long>("StoreId")
                                 .HasColumnType("bigint");
@@ -837,7 +837,7 @@ namespace Eshop.Repository.Migrations
 
                             b1.HasKey("StoreId");
 
-                            b1.ToTable("Stores");
+                            b1.ToTable("Stores", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("StoreId");

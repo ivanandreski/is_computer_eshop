@@ -14,6 +14,7 @@ import PageNotDeveloped from "./components/Error/PageNotDeveloped";
 import Posts from "./components/Forum/Posts";
 import Post from "./components/Forum/Post";
 import Shop from "./components/Shop/Shop";
+import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 
 function App() {
   return (
@@ -46,7 +47,7 @@ function App() {
           >
             <Route path="profile" element={<Profile />} />
             <Route path="builder" element={<PageNotDeveloped />} />
-            <Route path="cart" element={<PageNotDeveloped />} />
+            <Route path="cart" element={<ShoppingCart />} />
           </Route>
         </Route>
 

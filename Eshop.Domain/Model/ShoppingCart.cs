@@ -31,6 +31,6 @@ namespace Eshop.Domain.Model
         public long? StoreId { get; set; }
         public Store? Store { get; set; }
 
-        public virtual IEnumerable<ProductInShoppingCart>? Products { get; set; }
+        public virtual IList<ProductInShoppingCart> Products { get; set; } = new List<ProductInShoppingCart>();
     }
 }

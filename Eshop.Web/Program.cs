@@ -93,6 +93,7 @@ builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IPostRepository, PostRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<IPcBuildRepository, PcBuildRepository>();
+builder.Services.AddTransient<IShoppingCartRepository, ShoppingCartRepository>();
 
 builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 
@@ -108,6 +109,7 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IPcBuildService, PcBuildService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
 var app = builder.Build();
 
