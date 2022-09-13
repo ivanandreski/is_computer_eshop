@@ -71,6 +71,12 @@ namespace Eshop.Repository.Implementation
         {
             return await _entities.CountAsync();
         }
+
+        public async Task<IEnumerable<ProductPcBuildDto>> GetAllFromCategory(long categoryId)
+        {
+            return _entities.Where(x => x.CategoryId == categoryId)
+                .Select(x => new ProductPcBuildDto(x));
+        }
     }
 }
 

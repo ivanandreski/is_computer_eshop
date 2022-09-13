@@ -39,7 +39,10 @@ const ProductCard = ({ item }) => {
       </div>
       <div className="product-price text-center">
         Price: {price.amount}.<span className="double-o">00</span> den
-        <span className="product-cart-button text-center ms-4 pt-2 pb-2">
+        <span
+          className="product-cart-button text-center ms-4 pt-2 pb-2"
+          onClick={() => handleAddToCart(key)}
+        >
           <img src={cart} alt="" height="25px" width="25px" />
         </span>
       </div>

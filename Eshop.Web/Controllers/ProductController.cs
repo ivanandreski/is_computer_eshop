@@ -56,6 +56,13 @@ namespace Eshop.Web.Controllers
             return Ok(product);
         }
 
+        [HttpGet]
+        [Route("pcBuild/{type}")]
+        public async Task<IActionResult> GetAllFromType(string type)
+        {
+            return Ok(await _productService.GetAllFromType(type));
+        }
+
         [HttpGet("{hashId}/availability")]
         public async Task<ActionResult> GetAvailability(string hashId)
         {

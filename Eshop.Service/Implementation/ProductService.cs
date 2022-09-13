@@ -131,6 +131,8 @@ namespace Eshop.Service.Implementation
             if (product == null)
                 return null;
 
+            //return await _productRepository.Remove(product);
+
             product.Discontinued = true;
             return await _productRepository.Update(product);
         }
@@ -302,6 +304,14 @@ namespace Eshop.Service.Implementation
             };
 
             return await _productRepository.Update(product);
+        }
+
+        public async Task<IEnumerable<ProductPcBuildDto>> GetAllFromType(string type)
+        {
+            var category = (await _categoryRepository.GetAll())
+                .FirstOrDefault(x => x.Name == type);
+
+            return await _productRepository.GetAllFromCategory(category.Id);
         }
     }
 }

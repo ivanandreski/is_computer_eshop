@@ -18,7 +18,7 @@ export default class PCBuildApiService {
       count: count || 1,
     };
 
-    return this.axiosPrivate.post(`${baseUrl}`, payload, {
+    return this.axiosPrivate.post(`${baseUrl}/update`, payload, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });

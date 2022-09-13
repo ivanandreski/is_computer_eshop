@@ -16,6 +16,8 @@ namespace Eshop.Repository.Interface
 
         Task<IEnumerable<Product>> GetAll();
 
+        Task<IEnumerable<ProductPcBuildDto>> GetAllFromCategory(long categoryId);
+
         Task<Product?> Get(long id);
 
         Task<Product> Create(Product entity);
