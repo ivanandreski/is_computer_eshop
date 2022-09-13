@@ -23,4 +23,10 @@ export default class PCBuildApiService {
       withCredentials: true,
     });
   };
+
+  getPCBuildForForumQuestion = () => {
+    return this.axiosPrivate.get(`${baseUrl}/forumQuestion`, {
+      withCredentials: true,
+    });
+  };
 }

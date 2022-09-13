@@ -30,6 +30,8 @@ namespace Eshop.Service.Implementation
             var post = new ForumPost();
             post.Text = dto.Text;
             post.Title = dto.Title;
+            if (post.Title == "")
+                post.Title = "/";
             post.User = user;
             post.UserId = user.Id;
             post.TimeOfPost = DateTime.Now;

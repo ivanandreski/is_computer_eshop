@@ -4,6 +4,7 @@ import Select from "react-select";
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ProductApiService from "../../api/ProductApService";
 import PCBuildApiService from "../../api/PCBuildApiService";
+import QuantitySelector from "./QuantitySelector";
 
 const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
   const axiosPrivate = useAxiosPrivate();
@@ -57,6 +58,8 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
       if (pcBuild.motherboardRamCompatibility === 1) {
         return "bg-success";
       }
+    } else if (item?.key) {
+      return "bg-success";
     }
 
     return "";
@@ -82,8 +85,20 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
       <th className="pc-build-text" scope="row">
         {type}:
       </th>
+      <td className="pcbuild-image-col">
+        <img
+          className="pcbuild-product-image"
+          src={`data:image/jpeg;base64,${
+            item?.product?.images.length > 0 && item?.product?.images[0]?.image
+          }`}
+          alt=""
+        ></img>
+      </td>
       <td className="pc-build-text">{item?.product?.name || "/"}</td>
       <td className="pc-build-text">{`${item?.price || 0}.00 den`}</td>
+      <td>
+        <QuantitySelector setRender={setRender} item={item} />
+      </td>
       <td>
         <Select
           className="w-100"

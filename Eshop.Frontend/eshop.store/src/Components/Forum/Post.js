@@ -32,7 +32,6 @@ const Post = () => {
       try {
         const response = await forumApi.getPost(hashId);
         setPost(response.data);
-        console.log(response.data);
       } catch (error) {
         console.log(error);
       }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
 
 namespace Eshop.Web.Controllers
 {
@@ -62,6 +63,40 @@ namespace Eshop.Web.Controllers
             {
                 var pcBuild = await _pcBuildService.ChangeProduct(user, productRawId.Value, dto);
                 return pcBuild == null ? NotFound("Some value was invalid") : Ok(pcBuild);
+            }
+
+            return NotFound("User not found");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("forumQuestion")]
+        public async Task<IActionResult> GetPCBuildForQuestion()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var pcBuild = await _pcBuildService.GetUserPcBuild(user);
+                if (pcBuild == null) return Ok("");
+
+                var stringBuilder = new StringBuilder();
+                stringBuilder.AppendLine($"* Motherboard: \n{pcBuild.Motherboard?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* Processor: \n{pcBuild.Processor?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* RAM: \n{pcBuild.Ram?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"     Number of sticks: {pcBuild.Ram?.Count ?? 0}");
+                stringBuilder.AppendLine($"* Graphics Card: \n{pcBuild.GraphicsCard?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* Power Supply: \n{pcBuild.PowerSupply?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* PC Case: \n{pcBuild.PcCase?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* Hard Drive: \n{pcBuild.Hdd?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine($"* Solid state drive: \n{pcBuild.Ssd?.Product?.Name ?? "/"}");
+                stringBuilder.AppendLine();
+                stringBuilder.AppendLine($"* Total price: \n{pcBuild.TotalPrice}.00 den");
+                return Ok(stringBuilder.ToString());
             }
 
             return NotFound("User not found");

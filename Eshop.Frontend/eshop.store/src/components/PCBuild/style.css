@@ -1,3 +1,11 @@
 .pc-build-text {
   color: white !important;
 }
+
+.pcbuild-product-image {
+  width: 100%;
+}
+
+.pcbuild-image-col {
+  width: 15%;
+}

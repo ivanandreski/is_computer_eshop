@@ -36,23 +36,22 @@ const PCBuild = () => {
 
     if (pcBuild.motherboardRamCompatibility === -1) {
       return `${htmlTagCompatibility}="text-danger">X</b>`;
-      // return htmlTagCompatibility + "=\"text-danger\">" + "X</ b > ";
     }
 
     return `${htmlTagCompatibility}="text-success">✓</b>`;
-    // return htmlTagCompatibility + "=\"text-success\">" + "✓</ b > ";
   };
 
   return (
-    <div className="container">
-      <table className="table">
+    <div className="container mt-2">
+      <table className="table table-bordered">
         <thead>
           <tr className="pc-build-text">
             <th scope="col">Type</th>
+            <th scope="col">Image</th>
             <th scope="col">Name</th>
             <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
             <th scope="col">Select</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -105,15 +104,22 @@ const PCBuild = () => {
             setRender={setRender}
           />
           <tr className="pc-build-text">
-            <th>Total Price:</th>
-            <td></td>
+            <th colSpan="3">Total Price:</th>
             <td>{pcBuild.totalPrice}</td>
-            <td></td>
-            <th dangerouslySetInnerHTML={{ __html: getCompatible() }}></th>
-            <td></td>
+            <th>Compatibility:</th>
+            <th>
+              <strong
+                dangerouslySetInnerHTML={{ __html: getCompatible() }}
+              ></strong>
+            </th>
           </tr>
         </tbody>
       </table>
+      <div className="row mt-2">
+        <div className="col-md-2">
+          <button className="btn btn-primary w-100">Order now!</button>
+        </div>
+      </div>
     </div>
   );
 };
