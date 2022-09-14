@@ -27,13 +27,54 @@ namespace Eshop.Web.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null)
-                return BadRequest();
+                return Unauthorized();
 
             var user = await _userService.GetUser(identity);
 
             if (user != null)
             {
                 return Ok(await _orderService.GetOrdersForUser(user));
+            }
+
+            return Unauthorized("User not found");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("{hashId}")]
+        public async Task<IActionResult> GetOrder(string hashId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            long? rawOrderId = _hashService.GetRawId(hashId);
+            if (rawOrderId == null) return NotFound("Order not found");
+
+            if (user != null)
+            {
+                return Ok(await _orderService.Get(user, rawOrderId.Value));
+            }
+
+            return Unauthorized("User not found");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> MakeOrder([FromBody] string storeHashId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+            long? storeRawId = _hashService.GetRawId(storeHashId);
+
+            if (user != null)
+            {
+                return Ok(await _orderService.MakeOrder(user, storeRawId));
             }
 
             return Unauthorized("User not found");

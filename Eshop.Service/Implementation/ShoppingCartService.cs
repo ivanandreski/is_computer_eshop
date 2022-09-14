@@ -14,10 +14,7 @@ namespace Eshop.Service.Implementation
 {
     public class ShoppingCartService : IShoppingCartService
     {
-        //private readonly IRepository<ShoppingCart> _shoppingCartRepository;
-        //private readonly IRepository<ProductInShoppingCart> _productInShoppingCartRepository;
         private readonly IRepository<Store> _storeRepository;
-        //private readonly IRepository<Product> _productRepository;
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IProductRepository _productRepository;
 
@@ -160,6 +157,29 @@ namespace Eshop.Service.Implementation
             return cart;
         }
 
+        public async Task<ShoppingCart> OrderPc(EshopUser user, PCBuild pcBuild)
+        {
+            var cart = await _shoppingCartRepository.Get(user);
+            if (cart == null)
+            {
+                await this.Create(user);
+                cart = await _shoppingCartRepository.Get(user);
+            }
+
+            cart.Products = new List<ProductInShoppingCart>();
+            foreach(var product in pcBuild.Products)
+            {
+                var productInShoppingCart = new ProductInShoppingCart();
+                productInShoppingCart.ProductId = product.ProductId;
+                productInShoppingCart.ShoppingCartId = cart.Id;
+                productInShoppingCart.Quantity = product.Count;
+
+                cart.Products.Add(productInShoppingCart);
+            }
+
+            return await _shoppingCartRepository.Update(cart);
+        }
+
         // Helper methods
 
         private double CalculateTotalPrice(IEnumerable<ProductInShoppingCart> products)
@@ -169,9 +189,6 @@ namespace Eshop.Service.Implementation
                 .Sum();
         }
 
-        private bool productExists(long productId, List<ProductInShoppingCart> products)
-        {
-            return products.Exists(p => p.ProductId.Equals(productId));
-        }
+
     }
 }

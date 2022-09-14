@@ -18,8 +18,8 @@ const PostDateFilter = ({ filter, setFilter }) => {
   const clearFilter = () => {
     setFilter({
       ...filter,
-      toDate: "",
-      fromDate: "",
+      fromDate: {},
+      toDate: {},
     });
   };
 

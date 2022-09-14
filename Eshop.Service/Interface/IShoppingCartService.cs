@@ -23,5 +23,7 @@ namespace Eshop.Service.Interface
         Task<ShoppingCart?> RemoveProduct(EshopUser user, long productInCartId);
 
         Task<ShoppingCart?> Edit(EshopUser user, long storeId, bool delivery);
+
+        Task<ShoppingCart> OrderPc(EshopUser user, PCBuild pcBuild);
     }
 }

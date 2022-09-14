@@ -17,13 +17,15 @@ namespace Eshop.Web.Controllers
         private readonly IHashService _hashService;
         private readonly IPcBuildService _pcBuildService;
         private readonly IUserService _userService;
+        private readonly IShoppingCartService _shoppingCartService;
         private readonly UserManager<EshopUser> _userManager;
 
-        public PcBuildController(IHashService hashService, IPcBuildService pcBuildService, IUserService userService, UserManager<EshopUser> userManager)
+        public PcBuildController(IHashService hashService, IPcBuildService pcBuildService, IUserService userService, IShoppingCartService shoppingCartService, UserManager<EshopUser> userManager)
         {
             _hashService = hashService;
             _pcBuildService = pcBuildService;
             _userService = userService;
+            _shoppingCartService = shoppingCartService;
             _userManager = userManager;
         }
 
@@ -97,6 +99,29 @@ namespace Eshop.Web.Controllers
                 stringBuilder.AppendLine();
                 stringBuilder.AppendLine($"* Total price: \n{pcBuild.TotalPrice}.00 den");
                 return Ok(stringBuilder.ToString());
+            }
+
+            return NotFound("User not found");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("order")]
+        public async Task<IActionResult> OrderPC([FromBody] OrderDetailsDto dto)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var pcBuild = await _pcBuildService.GetUserPcBuild(user);
+                if (pcBuild == null) return NotFound("This user has no pc build");
+
+                var cart = await _shoppingCartService.OrderPc(user, pcBuild);
+                return Ok(cart);
             }
 
             return NotFound("User not found");

@@ -63,27 +63,20 @@ namespace Eshop.Repository.Implementation
 
         public PagedList<UserPostDto> GetPaged(PagingParameters pagingParams, PostFilter filter)
         {
-            // If search is empty but dates are not, it will still ignore them, pls fix
-            IQueryable<ForumPost> query = _entities;
-            if (!string.IsNullOrEmpty(filter.SearchParams) && filter.FromDate != null && filter.ToDate != null)
-                query = _entities
-                    .Where(post => post.Title.ToLower().Contains(filter.SearchParams.ToLower())
-                        && post.TimeOfPost.Date > filter.FromDate.Value.Date
-                        && post.TimeOfPost.Date <= filter.ToDate.Value.Date);
-            else if (!string.IsNullOrEmpty(filter.SearchParams))
-                query = _entities
-                    .Where(post => post.Title.ToLower().Contains(filter.SearchParams.ToLower()));
-            else if (filter.FromDate != null && filter.ToDate != null)
-                query = _entities
-                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
-                        && post.TimeOfPost.Date <= filter.ToDate.Value.Date);
-            else if (filter.FromDate != null)
-                query = _entities
-                    .Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date
-                        && post.TimeOfPost.Date <= DateTime.Today.Date);
-            else if (filter.ToDate != null)
-                query = _entities
-                    .Where(post => post.TimeOfPost.Date <= filter.ToDate.Value.Date);
+            IQueryable<ForumPost> query = _entities.AsQueryable();
+
+            if(!string.IsNullOrEmpty(filter.SearchParams))
+            {
+                query = query.Where(x => x.Title.ToLower().Contains(filter.SearchParams.ToLower()));
+            }
+            if (filter.FromDate != null)
+            {
+                query = query.Where(post => post.TimeOfPost.Date > filter.FromDate.Value.Date);
+            }
+            if (filter.ToDate != null)
+            {
+                query = query.Where(post => post.TimeOfPost.Date < filter.ToDate.Value.Date);
+            }
 
             var items = query.OrderByDescending(post => post.TimeOfPost).Select(item => new UserPostDto(item));
 

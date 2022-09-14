@@ -25,14 +25,14 @@ namespace Eshop.Domain.Model
 
         // Relatonships
 
-        public virtual IEnumerable<ProductInOrder> Products { get; set; } = Enumerable.Empty<ProductInOrder>();
+        public virtual List<ProductInOrder> Products { get; set; } = new List<ProductInOrder>();
 
         [JsonIgnore]
         public string? UserId { get; set; }
         public EshopUser? User { get; set; }
 
         [JsonIgnore]
-        public long StoreId { get; set; }
+        public long? StoreId { get; set; }
         public Store? Store { get; set; }
     }
 }
