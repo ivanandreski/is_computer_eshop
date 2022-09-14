@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Eshop.Web.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class ShoppingCartController : ControllerBase
@@ -31,7 +31,7 @@ namespace Eshop.Web.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null)
-                return BadRequest();
+                return Unauthorized();
 
             var user = await _userService.GetUser(identity);
 
@@ -44,6 +44,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut]
+        [Route("clear")]
         public async Task<ActionResult> Clear()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -62,7 +63,7 @@ namespace Eshop.Web.Controllers
             return NotFound("User not found");
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm] string productHashId)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -111,6 +112,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut]
+        [Route("edit")]
         public async Task<ActionResult> Edit([FromForm] string storeHashId, [FromForm] bool delivery)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -136,6 +138,7 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPut]
+        [Route("removeProduct")]
         public async Task<ActionResult> RemoveProduct([FromForm] string productInCartHashId)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;

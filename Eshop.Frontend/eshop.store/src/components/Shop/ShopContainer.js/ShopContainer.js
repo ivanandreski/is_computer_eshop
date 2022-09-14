@@ -22,7 +22,7 @@ const ShopContainer = ({
           pageCount={pageCount}
           previousLabel="Previous"
           renderOnZeroPageCount={null}
-          containerClassName="pagination justify-content-center"
+          containerClassName="pagination-paginate justify-content-center"
           pageClassName="page-item-paginate"
           pageLinkClassName="page-link-paginate"
           previousClassName="page-item-paginate"
@@ -31,7 +31,7 @@ const ShopContainer = ({
           nextLinkClassName="page-link-paginate"
           breakClassName="page-item-paginate"
           breakLinkClassName="page-link-paginate"
-          activeClassName="active"
+          activeClassName="active-paginate"
         />
         <div className="pagination-search">
           Search:{" "}

@@ -16,11 +16,14 @@ namespace Eshop.Domain.Dto
 
         public int Items { get; set; }
 
+        public string Username { get; set; } = "/";
+
         public OrderDto(Order order)
         {
             TimeOfPurchase = order.TimeOfPurcahse;
             TotalPrice = order.TotalPrice;
             Items = order.Products.Count();
+            Username = order.User?.UserName ?? "/";
         }
 
         public OrderDto()

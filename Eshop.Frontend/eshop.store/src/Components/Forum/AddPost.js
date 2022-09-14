@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ForumApiService from "../../api/ForumApiService";
+import PCBuildApiService from "../../api/PCBuildApiService";
 import useCanAdd from "../../Hooks/Forum/useCanAdd";
 
 import "./style.css";
@@ -9,6 +10,7 @@ import "./style.css";
 const AddPost = ({ setRender }) => {
   const axiosPrivate = useAxiosPrivate();
   const forumApi = new ForumApiService(axiosPrivate);
+  const pcBuildApi = new PCBuildApiService(axiosPrivate);
   const canAdd = useCanAdd();
 
   const clearForm = () => {
@@ -21,7 +23,15 @@ const AddPost = ({ setRender }) => {
   const [post, setPost] = useState(clearForm());
 
   const handleAddPcClick = async () => {
-    console.log("PC");
+    try {
+      const response = await pcBuildApi.getPCBuildForForumQuestion();
+      setPost({
+        ...post,
+        text: `${post.text}\n\nPC Build:\n${response.data}`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handlePostClick = async () => {

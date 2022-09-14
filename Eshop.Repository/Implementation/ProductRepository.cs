@@ -21,12 +21,11 @@ namespace Eshop.Repository.Implementation
         public PagedList<ProductCardDto> GetPaged(PagingParameters pagingParams, ProductFilter filter)
         {
             IQueryable<Product> query = _entities.Where(product => !product.Discontinued);
-            if (!string.IsNullOrEmpty(filter.CategoryHash) && !string.IsNullOrEmpty(filter.SearchParams))
-                query = _entities.Where(product => product.CategoryId == Convert.ToInt64(filter.CategoryHash) && product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
-            else if (!string.IsNullOrEmpty(filter.CategoryHash))
-                query = _entities.Where(product => product.CategoryId == Convert.ToInt64(filter.CategoryHash));
-            else if (!string.IsNullOrEmpty(filter.SearchParams))
-                query = _entities.Where(product => product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
+
+            if (!string.IsNullOrEmpty(filter.CategoryHash))
+                query = query.Where(product => product.CategoryId == Convert.ToInt64(filter.CategoryHash));
+            if (!string.IsNullOrEmpty(filter.SearchParams))
+                query = query.Where(product => product.Name.ToLower().Contains(filter.SearchParams.ToLower()));
 
             var items = query.Select(item => new ProductCardDto(item));
 
@@ -70,6 +69,12 @@ namespace Eshop.Repository.Implementation
         public async Task<int> Count()
         {
             return await _entities.CountAsync();
+        }
+
+        public async Task<IEnumerable<ProductPcBuildDto>> GetAllFromCategory(long categoryId)
+        {
+            return _entities.Where(x => x.CategoryId == categoryId)
+                .Select(x => new ProductPcBuildDto(x));
         }
     }
 }

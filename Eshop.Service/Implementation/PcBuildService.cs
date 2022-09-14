@@ -29,17 +29,19 @@ namespace Eshop.Service.Implementation
             if (pcBuild == null) return null;
 
             var product = await _productRepository.Get(productId);
-            if(product == null) return null;
+            if (product == null) return null;
 
             var productInPcBuild = pcBuild.Products.FirstOrDefault(x => x.Key == dto.ProductType);
-            if(productInPcBuild == null)
+            if (productInPcBuild == null)
             {
                 productInPcBuild = new ProductInPcBuild();
                 productInPcBuild.ProductId = productId;
                 productInPcBuild.Product = product;
                 productInPcBuild.PcBuildId = pcBuild.Id;
                 productInPcBuild.PcBuild = pcBuild;
-                productInPcBuild.Count = dto.Count;
+                if (dto.Count > 1)
+                    productInPcBuild.Count = dto.Count;
+                else productInPcBuild.Count = 1;
                 productInPcBuild.Key = dto.ProductType;
                 pcBuild.Products.Add(productInPcBuild);
             }
@@ -47,7 +49,9 @@ namespace Eshop.Service.Implementation
             {
                 productInPcBuild.ProductId = productId;
                 productInPcBuild.Product = product;
-                productInPcBuild.Count = dto.Count;
+                if (dto.Count > 1)
+                    productInPcBuild.Count = dto.Count;
+                else productInPcBuild.Count = 1;
             }
 
             return await _pcBuildRepository.Update(pcBuild);
@@ -56,7 +60,7 @@ namespace Eshop.Service.Implementation
         public async Task<PCBuild?> GetUserPcBuild(EshopUser user)
         {
             var pcBuild = await _pcBuildRepository.GetUserPcBuild(user);
-            if(pcBuild == null)
+            if (pcBuild == null)
             {
                 pcBuild = new PCBuild();
                 pcBuild.User = user;

@@ -33,6 +33,15 @@ namespace Eshop.Domain.ValueObjects
         [JsonIgnore]
         public double? BasePrice { get; set; }
 
+        public Money()
+        {
+        }
+
+        public Money(double? basePrice)
+        {
+            BasePrice = basePrice;
+        }
+
         protected override IEnumerable<object> GetAtomicValues()
         {
 #pragma warning disable CS8603 // Possible null reference return.

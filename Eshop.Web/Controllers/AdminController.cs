@@ -1,4 +1,5 @@
 ﻿using Eshop.Domain.Dto;
+using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Identity;
 using Eshop.Domain.Projections;
 using Eshop.Service.Interface;
@@ -16,11 +17,13 @@ namespace Eshop.Web.Controllers
     {
         private readonly IUserService _userService;
         private readonly UserManager<EshopUser> _userManager;
+        private readonly IOrderService _orderService;
 
-        public AdminController(IUserService userService, UserManager<EshopUser> userManager)
+        public AdminController(IUserService userService, UserManager<EshopUser> userManager, IOrderService orderService)
         {
             _userService = userService;
             _userManager = userManager;
+            _orderService = orderService;
         }
 
         [HttpGet]
@@ -47,5 +50,22 @@ namespace Eshop.Web.Controllers
                 ? NotFound("Username not found")
                 : Ok(result);
         }
+
+
+        [HttpGet]
+        [Route("orders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            var filter = new ExportOrdersFilter(Request.Query);
+
+            return Ok(await _orderService.GetOrdersAdmin(filter));
+        }
+
+        //[HttpPost]
+        //[Route("orders/export")]
+        //public async Task<IActionResult> ExportOrders([FromBody] ExportOrdersDto dto)
+        //{
+
+        //}
     }
 }

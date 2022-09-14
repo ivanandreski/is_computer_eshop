@@ -13,7 +13,7 @@ namespace Eshop.Domain.Model
 {
     public class ShoppingCart : BaseEntity
     {
-        public Money? TotalPrice { get; set; }
+        public Money TotalPrice { get; set; } = new Money(0);
 
         [DataType(DataType.DateTime)]
         public DateTime LastModified { get; set; }
@@ -31,6 +31,6 @@ namespace Eshop.Domain.Model
         public long? StoreId { get; set; }
         public Store? Store { get; set; }
 
-        public virtual IEnumerable<ProductInShoppingCart>? Products { get; set; }
+        public virtual IList<ProductInShoppingCart> Products { get; set; } = new List<ProductInShoppingCart>();
     }
 }

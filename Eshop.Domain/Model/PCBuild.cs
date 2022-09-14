@@ -148,13 +148,13 @@ namespace Eshop.Domain.Model
 
     public static class PcBuildKeys
     {
-        public const string Processor = "Processor";
+        public const string Processor = "Processors";
         public const string RAM = "RAM";
-        public const string SSD = "SSD";
-        public const string HDD = "HDD";
-        public const string Motherboard = "Motherboard";
-        public const string PcCase = "PcCase";
-        public const string GraphicsCard = "GraphicsCard";
-        public const string PowerSupply = "PowerSupply";
+        public const string SSD = "Solid State Drives";
+        public const string HDD = "Hard Drives";
+        public const string Motherboard = "Motherboards";
+        public const string PcCase = "PP Cases";
+        public const string GraphicsCard = "Graphics Cards";
+        public const string PowerSupply = "Power Supplies";
     }
 }

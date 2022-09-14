@@ -31,12 +31,19 @@ namespace Eshop.Repository.Implementation
 
         public async Task<PCBuild?> Get(long id)
         {
-            return await _entities.FirstOrDefaultAsync(x => x.Id == id);
+            return await _entities
+                .Include(x => x.Products)
+                    .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<PCBuild?> GetUserPcBuild(EshopUser user)
         {
-            return await _entities.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            return await _entities
+                .Include(x => x.Products)
+                    .ThenInclude(x => x.Product)
+                        .ThenInclude(x => x.Tags)
+                .FirstOrDefaultAsync(x => x.UserId == user.Id);
         }
 
         public async Task<PCBuild> Remove(PCBuild pcBuild)

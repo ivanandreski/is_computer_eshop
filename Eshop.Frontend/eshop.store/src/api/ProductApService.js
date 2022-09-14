@@ -76,4 +76,10 @@ export default class ProductApiService {
       withCredentials: true,
     });
   };
+
+  getItemsForType = (type) => {
+    return this.axiosPrivate.get(`${baseUrl}/pcBuild/${type}`, {
+      withCredentials: true,
+    });
+  };
 }

@@ -31,5 +31,7 @@ namespace Eshop.Service.Interface
         Task<Product?> Remove(long id);
 
         Task<Product> ImportScrapedProduct(ProductScrapedDto dto);
+
+        Task<IEnumerable<ProductPcBuildDto>> GetAllFromType(string type);
     }
 }
