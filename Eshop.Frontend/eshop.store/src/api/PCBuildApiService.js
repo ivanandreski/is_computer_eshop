@@ -29,4 +29,10 @@ export default class PCBuildApiService {
       withCredentials: true,
     });
   };
+
+  orderPc = () => {
+    return this.axiosPrivate.post(`${baseUrl}/order`, {
+      withCredentials: true,
+    });
+  };
 }

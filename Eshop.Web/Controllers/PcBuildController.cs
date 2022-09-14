@@ -107,7 +107,7 @@ namespace Eshop.Web.Controllers
         [HttpPost]
         [Authorize]
         [Route("order")]
-        public async Task<IActionResult> OrderPC([FromBody] OrderDetailsDto dto)
+        public async Task<IActionResult> OrderPC()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null)

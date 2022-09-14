@@ -171,11 +171,13 @@ namespace Eshop.Service.Implementation
             {
                 var productInShoppingCart = new ProductInShoppingCart();
                 productInShoppingCart.ProductId = product.ProductId;
+                productInShoppingCart.Product = product.Product;
                 productInShoppingCart.ShoppingCartId = cart.Id;
                 productInShoppingCart.Quantity = product.Count;
 
                 cart.Products.Add(productInShoppingCart);
             }
+            cart.TotalPrice = new Money(CalculateTotalPrice(cart.Products));
 
             return await _shoppingCartRepository.Update(cart);
         }

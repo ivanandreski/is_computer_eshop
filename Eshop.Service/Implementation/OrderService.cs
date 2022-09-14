@@ -49,16 +49,17 @@ namespace Eshop.Service.Implementation
                 .ToList();
         }
 
-        public async Task<bool> MakeOrder(EshopUser user, long? storeRawId)
+        public async Task<Order?> MakeOrder(EshopUser user, long? storeRawId)
         {
             var cart = await _shoppingCartRepository.Get(user);
-            if (cart == null) return false;
+            if (cart == null) return null;
+            if (cart.Products.Count < 0) return null;
 
             var order = new Order();
             if(storeRawId != null)
             {
                 var store = await _storeRepository.Get(storeRawId.Value);
-                if (store == null) return false;
+                if (store == null) return null;
 
                 order.StoreId = store.Id;
                 order.Delivery = false;
@@ -84,7 +85,7 @@ namespace Eshop.Service.Implementation
 
             await _orderRepository.Update(order);
 
-            return true;
+            return order;
         }
     }
 }

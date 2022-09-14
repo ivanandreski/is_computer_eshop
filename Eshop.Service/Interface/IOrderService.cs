@@ -17,7 +17,7 @@ namespace Eshop.Service.Interface
 
         Task<IEnumerable<OrderDto>> GetOrdersAdmin(ExportOrdersFilter filter);
 
-        Task<bool> MakeOrder(EshopUser user, long? storeHashId);
+        Task<Order?> MakeOrder(EshopUser user, long? storeHashId);
 
         Task<Order?> Get(EshopUser user, long orderId); 
     }

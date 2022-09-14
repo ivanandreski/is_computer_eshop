@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ShoppingCartApiService from "../../api/ShoppingCartApiService";
 
 import ShoppingCartItem from "./ShoppingCartItem";
+import ConfirmOrder from "../Order/ConfirmOrder";
 
 import "./style.css";
 
 const ShoppingCart = () => {
   const axiosPrivate = useAxiosPrivate();
   const cartApi = new ShoppingCartApiService(axiosPrivate);
+  const navigate = useNavigate();
 
   const [cart, setCart] = useState({});
+  const [confirm, setConfirm] = useState(false);
   const [render, setRender] = useState(0);
 
   useEffect(() => {
@@ -42,16 +46,32 @@ const ShoppingCart = () => {
       console.log(error);
     }
   };
-
-  return (
+  return confirm ? (
+    <ConfirmOrder setConfirm={setConfirm} />
+  ) : (
     <div className="row ms-3 me-3 mt-3" style={{ color: "white" }}>
       <div className="col-md-10" style={{ backgroundColor: "#1a0000" }}>
         <div className="row">
           <div className="col-md-12">
             <div className="row">
-              <div className="col-md-5 product-price">Item:</div>
-              <div className="col-md-2 product-price">Quantity</div>
-              <div className="col-md-3 product-price text-center">Sum</div>
+              <div
+                className="col-md-5 product-price"
+                style={{ fontWeight: "bold", fontSize: "x-large" }}
+              >
+                Item:
+              </div>
+              <div
+                className="col-md-2 product-price"
+                style={{ fontWeight: "bold", fontSize: "x-large" }}
+              >
+                Quantity
+              </div>
+              <div
+                className="col-md-3 product-price text-center"
+                style={{ fontWeight: "bold", fontSize: "x-large" }}
+              >
+                Sum
+              </div>
               <div className="col-md-2"></div>
             </div>
           </div>
@@ -78,7 +98,10 @@ const ShoppingCart = () => {
         </div>
         <div className="row pt-3" style={{ backgroundColor: "#303135" }}>
           <div className="col-md-3">
-            <button className="btn btn-danger w-100">
+            <button
+              className="btn btn-danger w-100"
+              onClick={() => setConfirm(true)}
+            >
               Proceed to checkout
             </button>
           </div>
