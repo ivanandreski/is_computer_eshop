@@ -21,3 +21,12 @@ code {
   padding-bottom: 5px;
   padding-right: 3px;
 }
+main {
+  min-height: 87vh;
+}
+.navbar {
+  background-color: black !important;
+}
+.navbar-item-text:hover {
+  color: red !important;
+}
