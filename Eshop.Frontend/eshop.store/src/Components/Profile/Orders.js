@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import OrderApiService from "../../api/OrderApiService";
@@ -6,6 +7,7 @@ import OrderApiService from "../../api/OrderApiService";
 const Orders = () => {
   const axiosPrivate = useAxiosPrivate();
   const orderApi = new OrderApiService(axiosPrivate);
+  const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
 
@@ -23,20 +25,29 @@ const Orders = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleClick = (e) => {
+    navigate("/orderDetails/" + e.currentTarget.id);
+  };
+
   const renderOrders = () => {
     return orders?.map((order, key) => (
-      <tr key={key}>
+      <tr
+        key={key}
+        onClick={handleClick}
+        className="order-item"
+        id={order.hashId}
+      >
         <th>{key + 1}</th>
-        <td>{order.TimeOfPurchase}</td>
-        <td>{order.Items}</td>
-        <td>{order.money?.amount || 0}</td>
+        <td>{order.timeOfPurchase}</td>
+        <td>{order.items}</td>
+        <td>{order.totalPrice?.amount || 0}.00 den</td>
       </tr>
     ));
   };
 
   return (
     <div className="card p-4">
-      <table className="table table-striped">
+      <table className="table table-striped table-hover">
         <thead>
           <tr>
             <th>#</th>

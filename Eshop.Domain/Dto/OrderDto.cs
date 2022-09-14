@@ -18,12 +18,15 @@ namespace Eshop.Domain.Dto
 
         public string Username { get; set; } = "/";
 
+        public string HashId { get; set; }
+
         public OrderDto(Order order)
         {
             TimeOfPurchase = order.TimeOfPurcahse;
             TotalPrice = order.TotalPrice;
             Items = order.Products.Count();
             Username = order.User?.UserName ?? "/";
+            HashId = order.HashId;
         }
 
         public OrderDto()

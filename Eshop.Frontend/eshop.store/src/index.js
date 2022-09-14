@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  <>
     <Elements stripe={stripePromise}>
       <BrowserRouter>
         <AuthProvider>
@@ -36,5 +36,5 @@ root.render(
         </AuthProvider>
       </BrowserRouter>
     </Elements>
-  </React.StrictMode>
+  </>
 );

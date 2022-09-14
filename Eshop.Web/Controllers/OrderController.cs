@@ -1,4 +1,5 @@
-﻿using Eshop.Service.Interface;
+﻿using Eshop.Domain.Relationships;
+using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,6 @@ namespace Eshop.Web.Controllers
         private readonly IHashService _hashService;
         private readonly IUserService _userService;
         private readonly IShoppingCartService _shoppingCartService;
-
-        // Stripe
-        //private readonly IOptions<StripeOptions> options;
-        //private readonly IStripeClient client;
 
         public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService)
         {
@@ -69,14 +66,6 @@ namespace Eshop.Web.Controllers
             return Unauthorized("User not found");
         }
 
-        //[HttpPost]
-        //[Authorize]
-        //[Route("checkout")]
-        //public async Task<IActionResult> Checkout()
-        //{
-        //    return Ok();
-        //}
-
         [HttpPost]
         [Authorize]
         [Route("create-payment-intent")]
@@ -88,9 +77,6 @@ namespace Eshop.Web.Controllers
 
             var user = await _userService.GetUser(identity);
             if (user == null) return Unauthorized();
-
-            //var storeRawId = _hashService.GetRawId(storeHashId);
-            //if (storeRawId == null) return NotFound("Store not found!");
 
             var cart = await _shoppingCartService.Get(user);
 
@@ -135,25 +121,6 @@ namespace Eshop.Web.Controllers
             await _shoppingCartService.Clear(user);
 
             return Ok(order.HashId);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> MakeOrder([FromBody] string storeHashId)
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-                return Unauthorized();
-
-            var user = await _userService.GetUser(identity);
-            long? storeRawId = _hashService.GetRawId(storeHashId);
-
-            if (user != null)
-            {
-                return Ok(await _orderService.MakeOrder(user, storeRawId));
-            }
-
-            return Unauthorized("User not found");
         }
     }
 }
