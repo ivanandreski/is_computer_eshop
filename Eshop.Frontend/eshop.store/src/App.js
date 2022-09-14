@@ -16,6 +16,7 @@ import Post from "./components/Forum/Post";
 import Shop from "./components/Shop/Shop";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 import PCBuild from "./components/PCBuild/PCBuild";
+import ProductContainer from "./components/Shop/ProductContainer/ProductContainer";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route path="Shop" element={<Shop />} />
         <Route index element={<Home />} />
+        <Route path="Shop/:hashId" element={<ProductContainer/>}/>
         <Route exact path="forum/post" element={<Posts />} />
         <Route path="forum/post/:hashId" element={<Post />} />
         <Route path="shop" element={<PageNotDeveloped />} />
