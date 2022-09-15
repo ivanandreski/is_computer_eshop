@@ -25,5 +25,7 @@ namespace Eshop.Service.Interface
         Task<ShoppingCart?> Edit(EshopUser user, long storeId, bool delivery);
 
         Task<ShoppingCart> OrderPc(EshopUser user, PCBuild pcBuild);
+
+        Task<ShoppingCart> OrderPc(EshopUser user, string type);
     }
 }

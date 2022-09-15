@@ -7,6 +7,7 @@ import ProductApiService from "../../api/ProductApService";
 import ShopContainer from "./ShopContainer.js/ShopContainer";
 import Sidebar from "./Sidebar/Sidebar";
 import ProductContainer from "./ProductContainer/ProductContainer";
+import CustomPcBuilds from "./CustomPCBuilds/CustomPcBuilds";
 
 import "./Shop.css";
 
@@ -23,6 +24,7 @@ const Shop = () => {
   const [page, setPage] = useState(1);
   const [searchParam, setSearchParam] = useState("");
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [showBuilds, setShowBuilds] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -72,6 +74,7 @@ const Shop = () => {
 
   const handleCategoryChange = (e) => {
     setCurrentCategory(e.target.id);
+    setShowBuilds(false);
   };
 
   const handleSearchSubmit = (e) => {
@@ -79,12 +82,12 @@ const Shop = () => {
     fetchProducts();
   };
 
-  return (
-    <div className="shop-container">
-      <Sidebar
-        categories={categories}
-        handleCategoryChange={handleCategoryChange}
-      ></Sidebar>
+  const renderProductsComponent = () => {
+    if (showBuilds) {
+      return <CustomPcBuilds />;
+    }
+
+    return (
       <ShopContainer
         products={products}
         itemsPerPage={itemsPerPage}
@@ -95,6 +98,17 @@ const Shop = () => {
         handleQueryChange={handleQueryChange}
         handleSearchSubmit={handleSearchSubmit}
       />
+    );
+  };
+
+  return (
+    <div className="shop-container">
+      <Sidebar
+        categories={categories}
+        handleCategoryChange={handleCategoryChange}
+        setShowBuilds={setShowBuilds}
+      ></Sidebar>
+      {renderProductsComponent()}
     </div>
   );
 };

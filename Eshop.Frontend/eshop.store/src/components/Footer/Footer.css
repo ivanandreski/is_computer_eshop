@@ -1,6 +1,6 @@
-.footer {
+.footer-custom {
   background-color: black;
-  text-align: center;
+  text-align: center !important;
   height: 20px;
   width: 100%;
   color: white;

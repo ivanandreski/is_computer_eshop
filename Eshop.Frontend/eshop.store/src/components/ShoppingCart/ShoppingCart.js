@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import ShoppingCartApiService from "../../api/ShoppingCartApiService";
@@ -12,7 +11,6 @@ import "./style.css";
 const ShoppingCart = () => {
   const axiosPrivate = useAxiosPrivate();
   const cartApi = new ShoppingCartApiService(axiosPrivate);
-  const navigate = useNavigate();
 
   const [cart, setCart] = useState({});
   const [confirm, setConfirm] = useState(false);

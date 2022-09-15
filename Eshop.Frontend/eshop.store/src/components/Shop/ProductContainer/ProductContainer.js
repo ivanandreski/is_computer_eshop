@@ -31,6 +31,7 @@ const ProductContainer = () => {
           <img
             className="product-description-image"
             src={`data:image/jpeg;base64,${product?.images[0].image}`}
+            alt=""
           ></img>
         </div>
         <div className="product-main-right">
@@ -45,10 +46,10 @@ const ProductContainer = () => {
               )}
             </div>
             <div className="add-to-basket">
-              Add to Basket <img src={cart}></img>
+              Add to Basket <img src={cart} alt=""></img>
             </div>
             <div className="add-to-build">
-              Add to Build <img src={hammer}></img>
+              Add to Build <img src={hammer} alt=""></img>
             </div>
           </div>
         </div>

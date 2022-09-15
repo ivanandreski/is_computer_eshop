@@ -20,6 +20,8 @@ namespace Eshop.Repository.Interface
 
         Task<Product?> Get(long id);
 
+        Task<Product?> GetProductByName(string title);
+
         Task<Product> Create(Product entity);
 
         Task<Product> Update(Product entity);

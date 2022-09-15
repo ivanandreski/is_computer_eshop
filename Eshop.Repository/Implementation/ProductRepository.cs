@@ -76,6 +76,11 @@ namespace Eshop.Repository.Implementation
             return _entities.Where(x => x.CategoryId == categoryId)
                 .Select(x => new ProductPcBuildDto(x));
         }
+
+        public async Task<Product?> GetProductByName(string title)
+        {
+            return await _entities.FirstOrDefaultAsync(x => x.Name == title);
+        }
     }
 }
 

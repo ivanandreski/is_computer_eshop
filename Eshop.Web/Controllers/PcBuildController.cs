@@ -107,7 +107,7 @@ namespace Eshop.Web.Controllers
         [HttpPost]
         [Authorize]
         [Route("order")]
-        public async Task<IActionResult> OrderPC()
+        public async Task<IActionResult> OrderPC([FromBody] OrderDetailsDto dto)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null)
@@ -121,6 +121,26 @@ namespace Eshop.Web.Controllers
                 if (pcBuild == null) return NotFound("This user has no pc build");
 
                 var cart = await _shoppingCartService.OrderPc(user, pcBuild);
+                return Ok(cart);
+            }
+
+            return NotFound("User not found");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("order/{type}")]
+        public async Task<IActionResult> OrderPreBuildPC(string type)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var cart = await _shoppingCartService.OrderPc(user, type);
                 return Ok(cart);
             }
 

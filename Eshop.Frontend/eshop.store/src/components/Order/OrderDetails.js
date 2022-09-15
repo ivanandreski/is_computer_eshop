@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { PDFExport, savePDF } from "@progress/kendo-react-pdf";
+import { PDFExport } from "@progress/kendo-react-pdf";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import OrderApiService from "../../api/OrderApiService";
 
-import excel from "../../resources/images/excel.png";
 import pdf from "../../resources/images/pdf.png";
 
 const OrderDetails = () => {

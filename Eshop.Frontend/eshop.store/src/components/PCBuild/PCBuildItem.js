@@ -12,10 +12,6 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
   const pcBuildApi = new PCBuildApiService(axiosPrivate);
 
   const [items, setItems] = useState([]);
-  const [selected, setSelected] = useState({
-    value: item?.product?.hashId,
-    label: item?.product?.name,
-  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -88,7 +84,6 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
     return (
       <Select
         className="w-100"
-        selectedOptions={selected}
         onChange={handleChange}
         options={getOptions()}
       />
