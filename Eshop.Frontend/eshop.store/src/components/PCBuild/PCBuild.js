@@ -14,12 +14,14 @@ const PCBuild = () => {
 
   const [pcBuild, setPcBuild] = useState({});
   const [render, setRender] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPcBuild = async () => {
       try {
         const response = await pcBuildApi.getUserPcBuild();
         setPcBuild(response.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -51,7 +53,9 @@ const PCBuild = () => {
     }
   };
 
-  return (
+  return loading ? (
+    <h1 className="text-light">Loading...</h1>
+  ) : (
     <div className="container mt-2">
       <table className="table table-bordered">
         <thead>

@@ -24,6 +24,21 @@ const Shop = () => {
   const [searchParam, setSearchParam] = useState("");
   const [currentProduct, setCurrentProduct] = useState(null);
 
+  const fetchProducts = async () => {
+    try {
+      const response = await productApi.getProducts({
+        categoryHash: currentCategory,
+        pageSize: itemsPerPage,
+        currentPage: page,
+        searchParams: searchParam,
+      });
+      setProducts(response.data.items);
+      setPageCount(response.data.totalPages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -33,29 +48,10 @@ const Shop = () => {
         console.log(error);
       }
     };
-    const fetchProducts = async (
-      currentCategory,
-      pageSize,
-      page,
-      searchParam
-    ) => {
-      try {
-        const response = await productApi.getProducts({
-          categoryHash: currentCategory,
-          pageSize,
-          currentPage: page,
-          searchParams: searchParam,
-        });
-        setProducts(response.data.items);
-        setPageCount(response.data.totalPages);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchCategories();
-    fetchProducts(currentCategory, itemsPerPage, page, searchParam);
+    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCategory, itemsPerPage, page, searchParam]);
+  }, [currentCategory, itemsPerPage, page]);
 
   const handleQueryChange = (e) => {
     setSearchParam(e.target.value);
@@ -78,6 +74,11 @@ const Shop = () => {
     setCurrentCategory(e.target.id);
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    fetchProducts();
+  };
+
   return (
     <div className="shop-container">
       <Sidebar
@@ -92,6 +93,7 @@ const Shop = () => {
         handlePerPageChange={handlePerPageChange}
         handlePageClick={handlePageClick}
         handleQueryChange={handleQueryChange}
+        handleSearchSubmit={handleSearchSubmit}
       />
     </div>
   );

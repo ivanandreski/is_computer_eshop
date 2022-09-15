@@ -10,6 +10,7 @@ const ShopContainer = ({
   handlePageClick,
   handlePerPageChange,
   handleQueryChange,
+  handleSearchSubmit,
 }) => {
   return (
     <div>
@@ -33,15 +34,21 @@ const ShopContainer = ({
           breakLinkClassName="page-link-paginate"
           activeClassName="active-paginate"
         />
-        <div className="pagination-search">
-          Search:{" "}
-          <input
-            className="form-control"
-            type="text"
-            onChange={handleQueryChange}
-            placeholder="Type something..."
-          ></input>
-        </div>
+        <form onSubmit={handleSearchSubmit} style={{ display: "inline-block" }}>
+          <div className="pagination-search row">
+            <div className="col-md-10">
+              <input
+                className="form-control"
+                type="text"
+                onChange={handleQueryChange}
+                placeholder="Search..."
+              ></input>
+            </div>
+            <div className="col-md-2">
+              <button className="btn btn-danger">Search</button>
+            </div>
+          </div>
+        </form>
         <div className="pagination-right">
           <span>Page size:</span>
           <select

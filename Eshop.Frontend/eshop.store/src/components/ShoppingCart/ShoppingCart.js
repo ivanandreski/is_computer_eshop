@@ -17,12 +17,14 @@ const ShoppingCart = () => {
   const [cart, setCart] = useState({});
   const [confirm, setConfirm] = useState(false);
   const [render, setRender] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const response = await cartApi.getUserCart();
         setCart(response.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -46,7 +48,16 @@ const ShoppingCart = () => {
       console.log(error);
     }
   };
-  return confirm ? (
+
+  const handleConfirm = () => {
+    if (cart?.products?.length < 1) return;
+
+    setConfirm(true);
+  };
+
+  return loading ? (
+    <div>Loading...</div>
+  ) : confirm ? (
     <ConfirmOrder setConfirm={setConfirm} />
   ) : (
     <div className="row ms-3 me-3 mt-3" style={{ color: "white" }}>
@@ -98,10 +109,7 @@ const ShoppingCart = () => {
         </div>
         <div className="row pt-3" style={{ backgroundColor: "#303135" }}>
           <div className="col-md-3">
-            <button
-              className="btn btn-danger w-100"
-              onClick={() => setConfirm(true)}
-            >
+            <button className="btn btn-danger w-100" onClick={handleConfirm}>
               Proceed to checkout
             </button>
           </div>
