@@ -22,4 +22,10 @@ export default class OrderApiService {
       withCredentials: true,
     });
   };
+
+  getOrder = (hashId) => {
+    return this.axiosPrivate.get(`${baseUrl}/${hashId}`, {
+      withCredentials: true,
+    });
+  };
 }

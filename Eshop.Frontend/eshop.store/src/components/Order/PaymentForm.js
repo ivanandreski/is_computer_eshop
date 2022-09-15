@@ -43,7 +43,6 @@ const PaymentForm = () => {
 
     try {
       const response = await orderApi.createPaymentIntent();
-      console.log(response.data);
       const clientSecret = response.data.clientSecret;
       addMessage("Payment intent created");
 

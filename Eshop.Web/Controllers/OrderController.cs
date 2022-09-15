@@ -17,13 +17,15 @@ namespace Eshop.Web.Controllers
         private readonly IHashService _hashService;
         private readonly IUserService _userService;
         private readonly IShoppingCartService _shoppingCartService;
+        private readonly IDocumentService _documentService;
 
-        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService)
+        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService, IDocumentService documentService)
         {
             _orderService = orderService;
             _hashService = hashService;
             _userService = userService;
             _shoppingCartService = shoppingCartService;
+            _documentService = documentService;
         }
 
         [Authorize]
@@ -119,6 +121,30 @@ namespace Eshop.Web.Controllers
             if (order == null) return BadRequest("Something went wrong");
 
             await _shoppingCartService.Clear(user);
+
+            return Ok(order.HashId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("{hashId}/export")]
+        public async Task<IActionResult> ExportOrder(string hashId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+            if (user == null) return Unauthorized();
+
+            var orderRawId = _hashService.GetRawId(hashId);
+            if (orderRawId == null) return NotFound("Order doesnt exist");
+
+            var order = await _orderService.Get(user, orderRawId.Value);
+            if (order == null) return BadRequest("Something went wrong");
+            if (order.UserId != user.Id) return Unauthorized("This order does not belong to this user");
+
+            
 
             return Ok(order.HashId);
         }

@@ -24,8 +24,8 @@ const OrderSuccess = () => {
   }, []);
 
   return (
-    <div className="container">
-      <div className="p-4 card w-25 border">
+    <div className="mt-3 d-flex justify-content-center">
+      <div className="card bg-light border p-4 w-50">
         <h5>Order with id: {orderId}, successfully created!</h5>
         <Link className="btn btn-success" to={`/order/${orderId}`}>
           Details
