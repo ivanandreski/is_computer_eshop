@@ -69,6 +69,7 @@ namespace Eshop.Service.Implementation
             }
             order.TotalPrice = new Money(cart.TotalPrice.Amount);
             order.UserId = user.Id;
+            order.User = user;
             order.TimeOfPurcahse = DateTime.Now;
 
             order = await _orderRepository.Create(order);

@@ -103,6 +103,7 @@ builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IPcBuildService, PcBuildService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddTransient<IDocumentService, DocumentService>();
+builder.Services.AddTransient<IMailService, MailService>();
 
 // Stripe
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));

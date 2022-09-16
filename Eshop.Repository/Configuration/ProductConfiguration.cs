@@ -23,6 +23,7 @@ namespace Eshop.Repository.Configuration
 
             builder.Navigation(x => x.Category).AutoInclude();
             builder.Navigation(x => x.Images).AutoInclude();
+            //builder.Navigation(x => x.ProductsInStore).AutoInclude();
 
         }
     }

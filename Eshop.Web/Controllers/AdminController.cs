@@ -19,24 +19,26 @@ namespace Eshop.Web.Controllers
         private readonly IUserService _userService;
         private readonly UserManager<EshopUser> _userManager;
         private readonly IOrderService _orderService;
-        private readonly RoleManager<EshopUser> _roleManager;
         private readonly IHashService _hashService;
+        private readonly IMailService _mailService;
 
         private static Random random = new Random();
 
-        public AdminController(IUserService userService, UserManager<EshopUser> userManager, IOrderService orderService, RoleManager<EshopUser> roleManager, IHashService hashService)
+        public AdminController(IUserService userService, UserManager<EshopUser> userManager, IOrderService orderService, IHashService hashService, IMailService mailService)
         {
             _userService = userService;
             _userManager = userManager;
             _orderService = orderService;
-            _roleManager = roleManager;
             _hashService = hashService;
+            _mailService = mailService;
         }
 
         [HttpGet]
         [Route("users")]
-        public async Task<IActionResult> GetEshopUsers(string? param)
+        public async Task<IActionResult> GetEshopUsers()
         {
+            string param = Request.Query["param"];
+
             return Ok(await _userService.GetEshopUsers(param));
         }
 
@@ -68,32 +70,47 @@ namespace Eshop.Web.Controllers
         }
 
         [HttpPost]
+        [DisableRequestSizeLimit]
         [Authorize(Roles = UserRoles.Admin)]
         [Route("importUsers")]
-        public async Task<IActionResult> ImportUsers([FromBody] IFormFile userTable)
+        public async Task<IActionResult> ImportUsers([FromForm] IFormFile file)
         {
+            //var file = Request.Form["file"];
+
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             int counter = 0;
             using (var stream = new MemoryStream())
             {
-                userTable.CopyTo(stream);
+                file.CopyTo(stream);
                 stream.Position = 0;
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
                     while (reader.Read()) //Each row of the file
                     {
                         string email = reader.GetValue(0).ToString();
+                        string role = reader.GetValue(1).ToString();
+                        EshopUser user = await _userManager.FindByEmailAsync(email);
+                        if (user != null)
+                        {
+                            if (UserRoles.GetRoles().Contains(role))
+                                await _userManager.AddToRoleAsync(user, role);
+                            else
+                                await _userManager.AddToRoleAsync(user, UserRoles.User);
+                            counter++;
+                            continue;
+                        }
 
                         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                         string password = new string(Enumerable.Repeat(chars, 10)
                             .Select(s => s[random.Next(s.Length)]).ToArray());
-                        string role = reader.GetValue(1).ToString();
+                        password += "1Aa!";
 
-                        EshopUser user = new()
+
+                        user = new()
                         {
                             Email = email,
                             SecurityStamp = Guid.NewGuid().ToString(),
-                            UserName = email.Split("@")[0],
+                            UserName = email,
                             FirstName = email.Split("@")[0],
                             LastName = role,
                         };
@@ -103,11 +120,13 @@ namespace Eshop.Web.Controllers
 
                         user = await _userManager.FindByEmailAsync(email);
 
-                        if(UserRoles.GetRoles().Contains(role))
+                        if (UserRoles.GetRoles().Contains(role))
                             await _userManager.AddToRoleAsync(user, role);
                         else
                             await _userManager.AddToRoleAsync(user, UserRoles.User);
                         counter++;
+
+                        _mailService.SendAddedUserMail(user, password);
                     }
                 }
             }

@@ -18,14 +18,16 @@ namespace Eshop.Web.Controllers
         private readonly IUserService _userService;
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IDocumentService _documentService;
+        private readonly IMailService _mailService;
 
-        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService, IDocumentService documentService)
+        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService, IDocumentService documentService, IMailService mailService)
         {
             _orderService = orderService;
             _hashService = hashService;
             _userService = userService;
             _shoppingCartService = shoppingCartService;
             _documentService = documentService;
+            _mailService = mailService;
         }
 
         [Authorize]
@@ -121,32 +123,11 @@ namespace Eshop.Web.Controllers
             if (order == null) return BadRequest("Something went wrong");
 
             await _shoppingCartService.Clear(user);
+            _mailService.SendOrderMail(order);
 
             return Ok(order.HashId);
         }
 
-        [HttpPost]
-        [Authorize]
-        [Route("{hashId}/export")]
-        public async Task<IActionResult> ExportOrder(string hashId)
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-                return Unauthorized();
-
-            var user = await _userService.GetUser(identity);
-            if (user == null) return Unauthorized();
-
-            var orderRawId = _hashService.GetRawId(hashId);
-            if (orderRawId == null) return NotFound("Order doesnt exist");
-
-            var order = await _orderService.Get(user, orderRawId.Value);
-            if (order == null) return BadRequest("Something went wrong");
-            if (order.UserId != user.Id) return Unauthorized("This order does not belong to this user");
-
-            
-
-            return Ok(order.HashId);
-        }
+        
     }
 }

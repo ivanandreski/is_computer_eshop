@@ -4,6 +4,7 @@ using Eshop.Domain.Projections;
 using Microsoft.EntityFrameworkCore;
 using Eshop.Domain.Model;
 using Eshop.Domain.Dto.Filters;
+using Eshop.Domain.Relationships;
 
 namespace Eshop.Repository.Implementation
 {
@@ -80,6 +81,16 @@ namespace Eshop.Repository.Implementation
         public async Task<Product?> GetProductByName(string title)
         {
             return await _entities.FirstOrDefaultAsync(x => x.Name == title);
+        }
+
+        public async Task<IEnumerable<ProductInStore>> GetProductAvailability(long productId)
+        {
+            var product = await _entities
+                .Include(x => x.ProductsInStore)
+                .FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null) return Enumerable.Empty<ProductInStore>();
+
+            return product.ProductsInStore;
         }
     }
 }

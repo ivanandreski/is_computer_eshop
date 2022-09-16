@@ -66,7 +66,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <PDFExport ref={pdfExportComponent} paperSize={"A4"}>
+      <PDFExport ref={pdfExportComponent} paperSize={"A4"} fileName={`order-${id}.pdf`}>
         <div className="m-3">
           <div className="card bg-light border p-4">
             <h3>

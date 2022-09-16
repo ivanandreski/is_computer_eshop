@@ -32,4 +32,27 @@ export default class AdminApiService {
       }
     );
   };
+
+  getOrders = (filter) => {
+    return this.axiosPrivate.get(
+      `${baseUrl}/orders`,
+      { params: filter },
+      {
+        withCredentials: true,
+      }
+    );
+  };
+
+  uploadUserFile = (file) => {
+    console.log(file);
+    let formData = new FormData();
+    formData.append("file", file, file.name);
+
+    return this.axiosPrivate.post(`${baseUrl}/importUsers`, formData, {
+      //   headers: {
+      //     "Content-Type": "application/x-www-url-formencoded",
+      //   },
+      withCredentials: true,
+    });
+  };
 }

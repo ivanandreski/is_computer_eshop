@@ -42,7 +42,7 @@ namespace Eshop.Repository.Implementation
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _entities.ToListAsync();
+            return _entities;
         }
 
         public async Task<T> Remove(T entity)

@@ -120,9 +120,7 @@ namespace Eshop.Service.Implementation
 
         public async Task<IEnumerable<ProductInStore>> GetAvailability(long id)
         {
-            return (await _productInStoreRepository.GetAll())
-                .Where(x => x.ProductId == id)
-                .ToList();
+            return await _productRepository.GetProductAvailability(id);
         }
 
         public async Task<Product?> Remove(long id)

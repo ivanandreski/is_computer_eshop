@@ -20,14 +20,17 @@ const Products = () => {
     categoryHash: "",
   });
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEntities = async () => {
+      setLoading(true);
       try {
         const response = await productApi.getProducts(queryString);
         console.log(response.data);
         setEntities(response.data.items);
         setTotalPages(response.data.totalPages);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -54,7 +57,9 @@ const Products = () => {
     ));
   };
 
-  return (
+  return loading ? (
+    <div>Loading...</div>
+  ) : (
     <>
       <div className="container">
         <Pagination
