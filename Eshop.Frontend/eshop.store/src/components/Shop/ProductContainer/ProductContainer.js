@@ -7,23 +7,26 @@ import "./ProductContainer.css";
 import cart from "../../../resources/images/shopping-cart.png";
 import hammer from "../../../resources/images/hammer.png";
 import productService from "../../../api/ProductApService";
+import ShoppingCartApiService from "../../../api/ShoppingCartApiService";
+import PCBuildApiService from "../../../api/PCBuildApiService";
+
 import { axiosPrivate } from "../../../api/axios";
 const ProductContainer = () => {
   const [product, setProduct] = useState(null);
   const { hashId } = useParams();
+  const cartApi = new ShoppingCartApiService(axiosPrivate);
   const productApi = new productService(axiosPrivate);
+  const builderApi = new PCBuildApiService(axiosPrivate);
 
-  // const fetchProduct = async () => {
-  //   console.log("called");
-  //   const product = await axios
-  //     .get(`https://localhost:7158/api/Product/${hashId}`)
-  //     .then((resp) => resp.data);
-  //   console.log(product);
-  //   setProduct(product);
-  // };
   const fetchProduct = async () => {
     const resp = await productApi.getProduct(hashId);
-    setProduct(resp.data)
+    setProduct(resp.data);
+  };
+  const handleAddToCart = async () => {
+    await cartApi.addProductToCart(hashId);
+  };
+  const handleAddToBuild = async () => {
+    await builderApi.updateProduct(product.type, hashId, 1);
   };
 
   useEffect(() => {
@@ -50,10 +53,10 @@ const ProductContainer = () => {
                 <img className="sign" src={cross} alt=""></img>
               )}
             </div>
-            <div className="add-to-basket">
+            <div className="add-to-basket" onClick={handleAddToCart}>
               Add to Basket <img src={cart}></img>
             </div>
-            <div className="add-to-build">
+            <div className="add-to-build" onClick={handleAddToBuild}>
               Add to Build <img src={hammer}></img>
             </div>
           </div>
