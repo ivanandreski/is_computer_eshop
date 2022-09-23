@@ -1,11 +1,15 @@
-.product-card{
-    display:flex;
-    flex-direction: column;
-    justify-content: space-around;
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
-.product-price{
-    font-size: large;
+.product-price {
+  font-size: large;
 }
-.double-o{
-    font-size: x-small;
+.double-o {
+  font-size: x-small;
+}
+.product-cart-button:hover {
+  background-color: rgb(6, 72, 130);
+  cursor: pointer;
 }
