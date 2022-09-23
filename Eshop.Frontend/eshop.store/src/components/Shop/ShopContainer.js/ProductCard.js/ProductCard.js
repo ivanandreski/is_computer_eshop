@@ -13,10 +13,9 @@ const ProductCard = ({ item }) => {
 
   const { hashId: key, name, price, image } = item;
 
-  const handleAddToCart = async (e) => {
-    const productHashId = e.target.value;
+  const handleAddToCart = async () => {
     try {
-      await cartApi.addProductToCart(productHashId);
+      await cartApi.addProductToCart(key);
     } catch (error) {
       console.log(error);
     }

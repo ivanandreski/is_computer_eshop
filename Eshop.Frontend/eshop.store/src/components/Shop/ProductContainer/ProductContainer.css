@@ -57,3 +57,10 @@
 .add-to-build > img {
   height: 35px;
 }
+
+.add-to-basket:hover,
+.add-to-build:hover {
+  color: black;
+  background-color: rgb(153, 0, 0);
+  cursor: pointer;
+}
