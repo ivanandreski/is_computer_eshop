@@ -10,4 +10,22 @@ export default class OrderApiService {
       withCredentials: true,
     });
   };
+
+  createPaymentIntent = () => {
+    return this.axiosPrivate.post(`${baseUrl}/create-payment-intent`, {
+      withCredentials: true,
+    });
+  };
+
+  createOrder = () => {
+    return this.axiosPrivate.post(`${baseUrl}/createOrder`, {
+      withCredentials: true,
+    });
+  };
+
+  getOrder = (hashId) => {
+    return this.axiosPrivate.get(`${baseUrl}/${hashId}`, {
+      withCredentials: true,
+    });
+  };
 }

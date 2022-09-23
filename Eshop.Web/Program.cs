@@ -3,23 +3,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Eshop.Repository.Interface;
 using Eshop.Repository.Implementation;
 using Eshop.Service.Interface;
 using Eshop.Service.Implementation;
 using HashidsNet;
 using Eshop.Domain.Identity;
+using Stripe;
+using Eshop.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,7 +92,7 @@ builder.Services.AddSingleton<IHashids>(_ => new Hashids("rakish", 11));
 // Services
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IProductService, Eshop.Service.Implementation.ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IStoreService, StoreService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
@@ -110,6 +102,11 @@ builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IPcBuildService, PcBuildService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddTransient<IDocumentService, DocumentService>();
+builder.Services.AddTransient<IMailService, MailService>();
+
+// Stripe
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 var app = builder.Build();
 
@@ -120,6 +117,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// Stripe
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
 
 //app.UseHttpsRedirection();
 app.UseStaticFiles();

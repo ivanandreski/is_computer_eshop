@@ -10,13 +10,14 @@ import Unauthorized from "./components/Error/Unauthorized";
 import ErrorPage from "./components/Error/ErrorPage";
 import Home from "./components/Home/HomePage";
 import Profile from "./components/Profile/Profile";
-import PageNotDeveloped from "./components/Error/PageNotDeveloped";
 import Posts from "./components/Forum/Posts";
 import Post from "./components/Forum/Post";
 import Shop from "./components/Shop/Shop";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 import PCBuild from "./components/PCBuild/PCBuild";
 import ProductContainer from "./components/Shop/ProductContainer/ProductContainer";
+import PaymentForm from "./components/Order/PaymentForm";
+import OrderDetails from "./components/Order/OrderDetails";
 
 function App() {
   return (
@@ -28,10 +29,9 @@ function App() {
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route path="Shop" element={<Shop />} />
         <Route index element={<Home />} />
-        <Route path="Shop/:hashId" element={<ProductContainer/>}/>
+        <Route path="Shop/:hashId" element={<ProductContainer />} />
         <Route exact path="forum/post" element={<Posts />} />
         <Route path="forum/post/:hashId" element={<Post />} />
-        <Route path="shop" element={<PageNotDeveloped />} />
 
         <Route element={<PersistLogin />}>
           {/* PLACE ROUTES WHICH REQUIRE LOGIN HERE */}
@@ -51,6 +51,8 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="builder" element={<PCBuild />} />
             <Route path="cart" element={<ShoppingCart />} />
+            <Route path="checkout" element={<PaymentForm />} />
+            <Route path="orderDetails/:id" element={<OrderDetails />} />
           </Route>
         </Route>
 

@@ -12,16 +12,14 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
   const pcBuildApi = new PCBuildApiService(axiosPrivate);
 
   const [items, setItems] = useState([]);
-  const [selected, setSelected] = useState({
-    value: item?.product?.hashId,
-    label: item?.product?.name,
-  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await productApi.getItemsForType(type);
         setItems(response.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -80,6 +78,18 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
     });
   };
 
+  const renderSelect = () => {
+    if (loading) return <p className="text-light">Loading...</p>;
+
+    return (
+      <Select
+        className="w-100"
+        onChange={handleChange}
+        options={getOptions()}
+      />
+    );
+  };
+
   return (
     <tr className={getClass()}>
       <th className="pc-build-text" scope="row">
@@ -99,14 +109,7 @@ const PCBuildItem = ({ item, type, pcBuild, setRender }) => {
       <td>
         <QuantitySelector setRender={setRender} item={item} />
       </td>
-      <td>
-        <Select
-          className="w-100"
-          selectedOptions={selected}
-          onChange={handleChange}
-          options={getOptions()}
-        />
-      </td>
+      <td>{renderSelect()}</td>
     </tr>
   );
 };

@@ -30,7 +30,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container mt-3">
       <div className="row">
         <div className="col-md-4">
           <ProfileMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />

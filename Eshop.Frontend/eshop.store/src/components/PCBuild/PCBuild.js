@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useAxiosPrivate from "../../Hooks/useAxiosPrivate";
 import PCBuildApiService from "../../api/PCBuildApiService";
@@ -9,16 +10,18 @@ import "./style.css";
 const PCBuild = () => {
   const axiosPrivate = useAxiosPrivate();
   const pcBuildApi = new PCBuildApiService(axiosPrivate);
+  const navigate = useNavigate();
 
   const [pcBuild, setPcBuild] = useState({});
   const [render, setRender] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPcBuild = async () => {
       try {
         const response = await pcBuildApi.getUserPcBuild();
         setPcBuild(response.data);
-        console.log(response.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -41,7 +44,18 @@ const PCBuild = () => {
     return `${htmlTagCompatibility}="text-success">✓</b>`;
   };
 
-  return (
+  const handleOrderClick = async () => {
+    try {
+      await pcBuildApi.orderPc();
+      navigate("/cart");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return loading ? (
+    <h1 className="text-light">Loading...</h1>
+  ) : (
     <div className="container mt-2">
       <table className="table table-bordered">
         <thead>
@@ -117,7 +131,9 @@ const PCBuild = () => {
       </table>
       <div className="row mt-2">
         <div className="col-md-2">
-          <button className="btn btn-primary w-100">Order now!</button>
+          <button className="btn btn-primary w-100" onClick={handleOrderClick}>
+            Order now!
+          </button>
         </div>
       </div>
     </div>

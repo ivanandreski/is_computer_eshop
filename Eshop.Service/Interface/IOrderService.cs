@@ -2,6 +2,7 @@
 using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Identity;
 using Eshop.Domain.Model;
+using Eshop.Domain.Relationships;
 using Eshop.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Eshop.Service.Interface
 
         Task<IEnumerable<OrderDto>> GetOrdersAdmin(ExportOrdersFilter filter);
 
-        Task<bool> MakeOrder(EshopUser user, long? storeHashId);
+        Task<Order?> MakeOrder(EshopUser user, long? storeRawId);
 
         Task<Order?> Get(EshopUser user, long orderId); 
     }

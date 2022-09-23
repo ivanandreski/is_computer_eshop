@@ -31,6 +31,9 @@
   width: 80%;
   text-align: left;
 }
+.builds:hover {
+  cursor: pointer;
+}
 .sidebar-items-buttons:hover,
 .builds:hover {
   color: red;

@@ -1,0 +1,19 @@
+.custom-pc-item {
+  background-color: #621212 !important;
+}
+.custom-pc-item > h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "geom-graphic", sans-serif;
+  font-weight: 600;
+}
+.expendable:hover {
+  cursor: pointer;
+}
+
+.builds-container {
+  background-color: rgb(31, 31, 31);
+  border-radius: 2%;
+}

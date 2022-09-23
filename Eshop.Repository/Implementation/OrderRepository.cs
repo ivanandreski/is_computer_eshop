@@ -56,7 +56,10 @@ namespace Eshop.Repository.Implementation
 
         public async Task<List<Order>> GetOrdersForUser(EshopUser user)
         {
-            return await _entities.Where(order => order.UserId == user.Id).ToListAsync();
+            return await _entities
+                .Where(order => order.UserId == user.Id)
+                .OrderByDescending(order => order.TimeOfPurcahse)
+                .ToListAsync();
         }
 
         public async Task<Order> Update(Order order)

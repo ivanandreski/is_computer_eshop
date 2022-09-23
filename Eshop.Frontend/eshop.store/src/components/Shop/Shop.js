@@ -6,7 +6,7 @@ import ProductApiService from "../../api/ProductApService";
 
 import ShopContainer from "./ShopContainer.js/ShopContainer";
 import Sidebar from "./Sidebar/Sidebar";
-import ProductContainer from "./ProductContainer/ProductContainer";
+import CustomPcBuilds from "./CustomPCBuilds/CustomPcBuilds";
 
 import "./Shop.css";
 
@@ -22,7 +22,23 @@ const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const [searchParam, setSearchParam] = useState("");
-  const [currentProduct, setCurrentProduct] = useState(null);
+//   const [currentProduct, setCurrentProduct] = useState(null);
+  const [showBuilds, setShowBuilds] = useState(false);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await productApi.getProducts({
+        categoryHash: currentCategory,
+        pageSize: itemsPerPage,
+        currentPage: page,
+        searchParams: searchParam,
+      });
+      setProducts(response.data.items);
+      setPageCount(response.data.totalPages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -33,29 +49,10 @@ const Shop = () => {
         console.log(error);
       }
     };
-    const fetchProducts = async (
-      currentCategory,
-      pageSize,
-      page,
-      searchParam
-    ) => {
-      try {
-        const response = await productApi.getProducts({
-          categoryHash: currentCategory,
-          pageSize,
-          currentPage: page,
-          searchParams: searchParam,
-        });
-        setProducts(response.data.items);
-        setPageCount(response.data.totalPages);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchCategories();
-    fetchProducts(currentCategory, itemsPerPage, page, searchParam);
+    fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCategory, itemsPerPage, page, searchParam]);
+  }, [currentCategory, itemsPerPage, page]);
 
   const handleQueryChange = (e) => {
     setSearchParam(e.target.value);
@@ -76,14 +73,20 @@ const Shop = () => {
 
   const handleCategoryChange = (e) => {
     setCurrentCategory(e.target.id);
+    setShowBuilds(false);
   };
 
-  return (
-    <div className="shop-container">
-      <Sidebar
-        categories={categories}
-        handleCategoryChange={handleCategoryChange}
-      ></Sidebar>
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    fetchProducts();
+  };
+
+  const renderProductsComponent = () => {
+    if (showBuilds) {
+      return <CustomPcBuilds />;
+    }
+
+    return (
       <ShopContainer
         products={products}
         itemsPerPage={itemsPerPage}
@@ -92,7 +95,19 @@ const Shop = () => {
         handlePerPageChange={handlePerPageChange}
         handlePageClick={handlePageClick}
         handleQueryChange={handleQueryChange}
+        handleSearchSubmit={handleSearchSubmit}
       />
+    );
+  };
+
+  return (
+    <div className="shop-container">
+      <Sidebar
+        categories={categories}
+        handleCategoryChange={handleCategoryChange}
+        setShowBuilds={setShowBuilds}
+      ></Sidebar>
+      {renderProductsComponent()}
     </div>
   );
 };

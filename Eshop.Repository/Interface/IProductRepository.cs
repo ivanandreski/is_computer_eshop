@@ -2,6 +2,7 @@
 using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Model;
 using Eshop.Domain.Projections;
+using Eshop.Domain.Relationships;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,10 @@ namespace Eshop.Repository.Interface
         Task<IEnumerable<ProductPcBuildDto>> GetAllFromCategory(long categoryId);
 
         Task<Product?> Get(long id);
+
+        Task<IEnumerable<ProductInStore>> GetProductAvailability(long productId);
+
+        Task<Product?> GetProductByName(string title);
 
         Task<Product> Create(Product entity);
 

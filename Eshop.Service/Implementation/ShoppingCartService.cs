@@ -1,4 +1,5 @@
-﻿using Eshop.Domain.Identity;
+﻿using Eshop.Domain;
+using Eshop.Domain.Identity;
 using Eshop.Domain.Model;
 using Eshop.Domain.Relationships;
 using Eshop.Domain.ValueObjects;
@@ -171,11 +172,56 @@ namespace Eshop.Service.Implementation
             {
                 var productInShoppingCart = new ProductInShoppingCart();
                 productInShoppingCart.ProductId = product.ProductId;
+                productInShoppingCart.Product = product.Product;
                 productInShoppingCart.ShoppingCartId = cart.Id;
                 productInShoppingCart.Quantity = product.Count;
 
                 cart.Products.Add(productInShoppingCart);
             }
+            cart.TotalPrice = new Money(CalculateTotalPrice(cart.Products));
+
+            return await _shoppingCartRepository.Update(cart);
+        }
+
+        public async Task<ShoppingCart> OrderPc(EshopUser user, string type)
+        {
+            var pcType = PreBuiltComputerSpecs.EntryLevelComputer;
+            var price = 61990;
+
+            if (type == "mid")
+            {
+                pcType = PreBuiltComputerSpecs.MidRangeComputer;
+                price = 84990;
+            }
+            else if (type == "high")
+            {
+                pcType = PreBuiltComputerSpecs.HighEndComputer;
+                price = 102990;
+            }
+
+            var cart = await _shoppingCartRepository.Get(user);
+            if (cart == null)
+            {
+                await this.Create(user);
+                cart = await _shoppingCartRepository.Get(user);
+            }
+
+            cart.Products = new List<ProductInShoppingCart>();
+            foreach (var entry in pcType)
+            {
+                var product = await _productRepository.GetProductByName(entry.Value);
+                if (product == null) continue;
+                var productInShoppingCart = new ProductInShoppingCart();
+                productInShoppingCart.ProductId = product.Id;
+                productInShoppingCart.Product = product;
+                productInShoppingCart.ShoppingCartId = cart.Id;
+                productInShoppingCart.Quantity = 1;
+                if (entry.Key == PcBuildKeys.RAM)
+                    productInShoppingCart.Quantity = 2;
+
+                cart.Products.Add(productInShoppingCart);
+            }
+            cart.TotalPrice = new Money(price);
 
             return await _shoppingCartRepository.Update(cart);
         }
@@ -188,7 +234,5 @@ namespace Eshop.Service.Implementation
                 .Select(p => (p.Product?.Price?.Amount ?? 0.0) * p.Quantity)
                 .Sum();
         }
-
-
     }
 }

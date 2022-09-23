@@ -1,6 +1,6 @@
 import React from "react";
 
-const Sidebar = ({ categories, handleCategoryChange }) => {
+const Sidebar = ({ categories, handleCategoryChange, setShowBuilds }) => {
   return (
     <div className="sidebar">
       <div className="sidebar-title">Categories:</div>
@@ -18,7 +18,7 @@ const Sidebar = ({ categories, handleCategoryChange }) => {
             </li>
           ))}
       </ul>
-      <div className="builds">Builds</div>
+      <div className="builds" onClick={() => setShowBuilds(true)}>Builds</div>
     </div>
   );
 };

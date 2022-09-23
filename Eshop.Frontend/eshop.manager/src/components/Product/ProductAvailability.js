@@ -23,7 +23,7 @@ const ProductAvailability = ({ product }) => {
       }
     };
     fetch();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.hashId, jsonProduct]);
 
   const renderStores = () => {
