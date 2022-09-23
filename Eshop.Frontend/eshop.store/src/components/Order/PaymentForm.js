@@ -18,15 +18,15 @@ const PaymentForm = () => {
   const elements = useElements();
   const [messages, addMessage] = useMessages();
 
-  const [cart, setCart] = useState({});
+  //   const [cart, setCart] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await cartApi.getUserCart();
-        setCart(response.data);
+        await cartApi.getUserCart();
+        // setCart(response.data);
         setIsLoading(false);
       } catch (error) {
         console.log(error);

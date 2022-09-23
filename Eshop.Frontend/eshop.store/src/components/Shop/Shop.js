@@ -6,7 +6,6 @@ import ProductApiService from "../../api/ProductApService";
 
 import ShopContainer from "./ShopContainer.js/ShopContainer";
 import Sidebar from "./Sidebar/Sidebar";
-import ProductContainer from "./ProductContainer/ProductContainer";
 import CustomPcBuilds from "./CustomPCBuilds/CustomPcBuilds";
 
 import "./Shop.css";
@@ -23,7 +22,7 @@ const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const [searchParam, setSearchParam] = useState("");
-  const [currentProduct, setCurrentProduct] = useState(null);
+//   const [currentProduct, setCurrentProduct] = useState(null);
   const [showBuilds, setShowBuilds] = useState(false);
 
   const fetchProducts = async () => {

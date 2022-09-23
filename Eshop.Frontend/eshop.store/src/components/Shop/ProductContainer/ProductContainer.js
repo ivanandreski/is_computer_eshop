@@ -10,28 +10,44 @@ import productService from "../../../api/ProductApService";
 import ShoppingCartApiService from "../../../api/ShoppingCartApiService";
 import PCBuildApiService from "../../../api/PCBuildApiService";
 
-import { axiosPrivate } from "../../../api/axios";
+import useAxiosPrivate from "../../../Hooks/useAxiosPrivate";
 const ProductContainer = () => {
   const [product, setProduct] = useState(null);
   const { hashId } = useParams();
+
+  const axiosPrivate = useAxiosPrivate();
   const cartApi = new ShoppingCartApiService(axiosPrivate);
   const productApi = new productService(axiosPrivate);
   const builderApi = new PCBuildApiService(axiosPrivate);
 
-  const fetchProduct = async () => {
-    const resp = await productApi.getProduct(hashId);
-    setProduct(resp.data);
-  };
   const handleAddToCart = async () => {
-    await cartApi.addProductToCart(hashId);
+    try {
+      await cartApi.addProductToCart(hashId);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleAddToBuild = async () => {
-    await builderApi.updateProduct(product.type, hashId, 1);
+    try {
+      await builderApi.updateProduct(product?.category?.name, hashId, 1);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const resp = await productApi.getProduct(hashId);
+        setProduct(resp.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div className="product-container">
       <div className="product-title">{product?.name}</div>
@@ -55,10 +71,10 @@ const ProductContainer = () => {
               )}
             </div>
             <div className="add-to-basket" onClick={handleAddToCart}>
-              Add to Basket <img src={cart}></img>
+              Add to Basket <img src={cart} alt=""></img>
             </div>
             <div className="add-to-build" onClick={handleAddToBuild}>
-              Add to Build <img src={hammer}></img>
+              Add to Build <img src={hammer} alt=""></img>
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@ import Unauthorized from "./components/Error/Unauthorized";
 import ErrorPage from "./components/Error/ErrorPage";
 import Home from "./components/Home/HomePage";
 import Profile from "./components/Profile/Profile";
-import PageNotDeveloped from "./components/Error/PageNotDeveloped";
 import Posts from "./components/Forum/Posts";
 import Post from "./components/Forum/Post";
 import Shop from "./components/Shop/Shop";
