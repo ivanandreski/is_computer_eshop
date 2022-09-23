@@ -153,7 +153,7 @@ namespace Eshop.Domain.Model
         public const string SSD = "Solid State Drives";
         public const string HDD = "Hard Drives";
         public const string Motherboard = "Motherboards";
-        public const string PcCase = "PP Cases";
+        public const string PcCase = "PC Cases";
         public const string GraphicsCard = "Graphics Cards";
         public const string PowerSupply = "Power Supplies";
     }

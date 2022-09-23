@@ -27,7 +27,7 @@ export default class ProductApiService {
   };
 
   getProduct = (id) => {
-    return this.axiosPrivate.get(`${baseUrl}/${id}`);
+    return  this.axiosPrivate.get(`${baseUrl}/${id}`);
   };
 
   getProductAvailability = (id) => {
