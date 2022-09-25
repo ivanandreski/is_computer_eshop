@@ -13,6 +13,7 @@ import PCBuildApiService from "../../../api/PCBuildApiService";
 import useAxiosPrivate from "../../../Hooks/useAxiosPrivate";
 const ProductContainer = () => {
   const [product, setProduct] = useState(null);
+  const [availability, setAvailability] = useState([]);
   const { hashId } = useParams();
 
   const axiosPrivate = useAxiosPrivate();
@@ -34,20 +35,31 @@ const ProductContainer = () => {
       console.log(error);
     }
   };
+  const fetchProduct = () => {
+    try {
+      productApi.getProduct(hashId).then((resp) => setProduct(resp.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAvailability = () => {
+    try {
+      productApi
+        .getProductAvailability(hashId)
+        .then((resp) => setAvailability(resp.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const resp = await productApi.getProduct(hashId);
-        setProduct(resp.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchProduct();
+    fetchAvailability();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  console.log(availability);
+  console.log(availability.some((a) => a.quantity > 0));
   return (
     <div className="product-container">
       <div className="product-title">{product?.name}</div>
@@ -64,7 +76,9 @@ const ProductContainer = () => {
             <div>Manufacturer: {product?.manufacturer}</div>
             <div>
               On stock:
-              {!product?.discontinued ? (
+              {availability?.some((a) => {
+                return a.quantity > 0;
+              }) ? (
                 <img className="sign" src={tick} alt=""></img>
               ) : (
                 <img className="sign" src={cross} alt=""></img>
@@ -80,8 +94,20 @@ const ProductContainer = () => {
         </div>
       </div>
       <div className="product-bottom">
-        Product Description:
-        <div id="product-description">{product?.description}</div>
+        <div className="product-bottom-left">
+          <span className="description-title">Product Description:</span>
+          <pre id="product-description">{product?.description}</pre>
+        </div>
+        <div className="product-bottom-right">
+          <span className="description-title">Availability per store:</span>
+          {availability?.map((a) => {
+            return (
+              <div className="availability">
+                {a.store.name}: <img src={a.available ? tick : cross}></img>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

@@ -64,3 +64,32 @@
   background-color: rgb(153, 0, 0);
   cursor: pointer;
 }
+.product-bottom {
+  display: grid;
+  grid-template-columns: 60% 35%;
+  justify-content: space-around;
+  flex-grow: 1;
+}
+.availability {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  font-size: large;
+  font-weight: 500;
+}
+.availability > img {
+  margin-top: -10px;
+}
+.description-title {
+  font-size: larger;
+  font-weight: 500;
+  margin-bottom: 20px;
+  border-bottom: white solid 1px;
+}
+#product-description {
+  margin-top: 20px;
+}
+.product-bottom-right {
+  border-left: 1px white solid;
+  padding-left: 40px;
+}
