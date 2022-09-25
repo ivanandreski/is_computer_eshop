@@ -49,6 +49,49 @@ namespace Eshop.Service.Implementation
                 .ToList();
         }
 
+        public async Task<IEnumerable<OrderDto>> GetOrdersManager(string role, string searchParams)
+        {
+            return (await _orderRepository.GetOrdersManager(role, searchParams))
+                .Select(order => new OrderDto(order));
+        }
+
+        public async Task<string> SetOrderStatus(string role, long orderId)
+        {
+            var order = await _orderRepository.Get(orderId);
+            if (role == "Driver")
+            {
+                order.Status = OrderStatuses.COMPLETED;
+            }
+            if (role == "StoreClerk")
+            {
+                if (order.Delivery)
+                {
+                    if (order.Status == OrderStatuses.PROCESSED)
+                    {
+                        order.Status = OrderStatuses.READY_FOR_SHIPMENT;
+                    }
+                    else if (order.Status == OrderStatuses.READY_FOR_SHIPMENT)
+                    {
+                        order.Status = OrderStatuses.SHIPPED;
+                    }
+                }
+                else
+                {
+                    if (order.Status == OrderStatuses.PROCESSED)
+                    {
+                        order.Status = OrderStatuses.READY_FOR_PICKUP_IN_STORE;
+                    }
+                    else if (order.Status == OrderStatuses.READY_FOR_PICKUP_IN_STORE)
+                    {
+                        order.Status = OrderStatuses.COMPLETED;
+                    }
+                }
+            }
+
+            await _orderRepository.Update(order);
+            return order.Status;
+        }
+
         public async Task<Order?> MakeOrder(EshopUser user, long? storeRawId)
         {
             var cart = await _shoppingCartRepository.Get(user);
@@ -56,7 +99,7 @@ namespace Eshop.Service.Implementation
             if (cart.Products.Count < 0) return null;
 
             var order = new Order();
-            if(storeRawId != null)
+            if (storeRawId != null)
             {
                 var store = await _storeRepository.Get(storeRawId.Value);
                 if (store == null) return null;
@@ -64,17 +107,19 @@ namespace Eshop.Service.Implementation
                 order.StoreId = store.Id;
                 order.Delivery = false;
             }
-            else {
+            else
+            {
                 order.Delivery = true;
             }
             order.TotalPrice = new Money(cart.TotalPrice.Amount);
             order.UserId = user.Id;
             order.User = user;
             order.TimeOfPurcahse = DateTime.Now;
+            order.Status = OrderStatuses.PROCESSED;
 
             order = await _orderRepository.Create(order);
 
-            foreach(var product in cart.Products)
+            foreach (var product in cart.Products)
             {
                 var productInOrder = new ProductInOrder();
                 productInOrder.ProductId = product.ProductId;

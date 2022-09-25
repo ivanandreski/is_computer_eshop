@@ -20,5 +20,7 @@ namespace Eshop.Repository.Interface
         Task<Order> Update(Order order);
 
         Task<Order?> Get(long orderId);
+
+        Task<IEnumerable<Order>> GetOrdersManager(string role, string searchParams);
     }
 }

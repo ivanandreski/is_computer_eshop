@@ -20,6 +20,10 @@ namespace Eshop.Service.Interface
 
         Task<Order?> MakeOrder(EshopUser user, long? storeRawId);
 
-        Task<Order?> Get(EshopUser user, long orderId); 
+        Task<Order?> Get(EshopUser user, long orderId);
+
+        Task<IEnumerable<OrderDto>> GetOrdersManager(string role, string searchParams);
+
+        Task<string> SetOrderStatus(string role, long orderId);
     }
 }

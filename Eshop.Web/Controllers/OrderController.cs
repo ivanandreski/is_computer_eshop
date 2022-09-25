@@ -1,11 +1,14 @@
-﻿using Eshop.Domain.Relationships;
+﻿using Eshop.Domain.Identity;
+using Eshop.Domain.Relationships;
 using Eshop.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Stripe;
 using System.Security.Claims;
+using System.Linq;
 
 namespace Eshop.Web.Controllers
 {
@@ -19,8 +22,9 @@ namespace Eshop.Web.Controllers
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IDocumentService _documentService;
         private readonly IMailService _mailService;
+        private readonly UserManager<EshopUser> _userManager;
 
-        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService, IDocumentService documentService, IMailService mailService)
+        public OrderController(IOrderService orderService, IHashService hashService, IUserService userService, IShoppingCartService shoppingCartService, IDocumentService documentService, IMailService mailService, UserManager<EshopUser> userManager)
         {
             _orderService = orderService;
             _hashService = hashService;
@@ -28,6 +32,60 @@ namespace Eshop.Web.Controllers
             _shoppingCartService = shoppingCartService;
             _documentService = documentService;
             _mailService = mailService;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin,Driver,StoreClerk")]
+        [Route("manager")]
+        public async Task<IActionResult> GetOrdersManager()
+        {
+            string searchParams = Request.Query["searchParams"];
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var role = (await _userManager.GetRolesAsync(user))
+                    .Where(role => role != "User")
+                    .FirstOrDefault();
+                if (role == null) return Unauthorized();
+
+                return Ok(await _orderService.GetOrdersManager(role, searchParams));
+            }
+
+            return Unauthorized("User not found");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Driver,StoreClerk")]
+        [Route("manager/{hashId}")]
+        public async Task<IActionResult> GetOrdersManager(string hashId)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return Unauthorized();
+
+            var user = await _userService.GetUser(identity);
+
+            if (user != null)
+            {
+                var role = (await _userManager.GetRolesAsync(user))
+                    .Where(role => role != "User")
+                    .FirstOrDefault();
+                if (role == null) return Unauthorized();
+
+                var rawOrderId = _hashService.GetRawId(hashId);
+                if (rawOrderId == null) return NotFound("Order not found!");
+
+                return Ok(await _orderService.SetOrderStatus(role, rawOrderId.Value));
+            }
+
+            return Unauthorized("User not found");
         }
 
         [Authorize]

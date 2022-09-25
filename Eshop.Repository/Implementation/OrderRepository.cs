@@ -1,6 +1,7 @@
 ﻿using Eshop.Domain.Dto.Filters;
 using Eshop.Domain.Identity;
 using Eshop.Domain.Model;
+using Eshop.Domain.ValueObjects;
 using Eshop.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -60,6 +61,28 @@ namespace Eshop.Repository.Implementation
                 .Where(order => order.UserId == user.Id)
                 .OrderByDescending(order => order.TimeOfPurcahse)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersManager(string role, string searchParams)
+        {
+            var query = _entities
+                .Where(order => order.User.UserName.ToLower().Contains(searchParams.ToLower()))
+                .Where(order => order.Status != OrderStatuses.COMPLETED)
+                .OrderBy(order => order.TimeOfPurcahse)
+                .AsQueryable();
+            
+            if(role == "Driver")
+            {
+                query = query.Where(order => order.Status == OrderStatuses.SHIPPED);
+            }
+            if(role == "StoreClerk")
+            {
+                query = query.Where(order => order.Status == OrderStatuses.PROCESSED
+                    || order.Status == OrderStatuses.READY_FOR_PICKUP_IN_STORE
+                    || order.Status == OrderStatuses.READY_FOR_SHIPMENT);
+            }
+
+            return query;
         }
 
         public async Task<Order> Update(Order order)
