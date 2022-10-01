@@ -39,7 +39,7 @@ const Orders = () => {
       >
         <th>{key + 1}</th>
         <td>{order.timeOfPurchase}</td>
-        <td>{order.items}</td>
+        <td>{order.status}</td>
         <td>{order.totalPrice?.amount || 0}.00 den</td>
       </tr>
     ));
@@ -52,7 +52,7 @@ const Orders = () => {
           <tr>
             <th>#</th>
             <th>Time of purchase</th>
-            <th>Number of products</th>
+            <th>Status</th>
             <th>Total Price</th>
           </tr>
         </thead>

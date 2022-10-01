@@ -15,6 +15,7 @@ import Login from "./components/Authentication/Login";
 import Register from "./components/Authentication/Register";
 import Unauthorized from "./components/Error/Unauthorized";
 import Admin from "./components/Admin/Admin";
+import Orders from "./components/Orders/Orders";
 
 function App() {
   return (
@@ -29,7 +30,13 @@ function App() {
             <Route index element={<Home />} />
           </Route>
 
-          <Route element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={["Admin", "Manager", "StoreClerk", "Driver"]}
+              />
+            }
+          >
             <Route path="category" element={<Categories />} />
 
             <Route exact path="product/:hashId" element={<ProductDetails />} />
@@ -37,6 +44,8 @@ function App() {
 
             <Route exact path="store/:hashId" element={<StoreDetails />} />
             <Route path="store" element={<Stores />} />
+
+            <Route path="orders" element={<Orders />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={["Admin"]} />}>

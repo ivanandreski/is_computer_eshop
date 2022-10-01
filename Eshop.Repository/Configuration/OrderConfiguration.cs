@@ -20,7 +20,7 @@ namespace Eshop.Repository.Configuration
                 .HasForeignKey(x => x.UserId);
 
             builder.OwnsOne(x => x.TotalPrice);
-            builder.OwnsOne(x => x.Status);
+            //builder.OwnsOne(x => x.Status);
 
             builder.Navigation(x => x.User).AutoInclude();
             builder.Navigation(x => x.Store).AutoInclude();

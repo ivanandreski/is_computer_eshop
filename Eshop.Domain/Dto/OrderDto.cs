@@ -20,6 +20,8 @@ namespace Eshop.Domain.Dto
 
         public string HashId { get; set; }
 
+        public string Status { get; set; }
+
         public OrderDto(Order order)
         {
             TimeOfPurchase = order.TimeOfPurcahse;
@@ -27,6 +29,7 @@ namespace Eshop.Domain.Dto
             Items = order.Products.Count();
             Username = order.User?.UserName ?? "/";
             HashId = order.HashId;
+            Status = order.Status;
         }
 
         public OrderDto()

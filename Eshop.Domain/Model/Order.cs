@@ -18,8 +18,7 @@ namespace Eshop.Domain.Model
 
         public Money? TotalPrice { get; set; }
 
-        [Required]
-        public OrderStatus? Status { get; set; }
+        public string Status { get; set; } = "";
 
         public bool Delivery { get; set; }
 
