@@ -26,5 +26,5 @@
     a foaf:Person ;
     foaf:name "Andrej" ;
     foaf:mbox_sha1sum "fae5517ee4a3c1fdbb80b9a2444ec736f7631c0c" ;
-    rdfs:seeAlso <https://www.dropbox.com/s/b78ba1xkcfvnb2q/foaf.ttl?dl=1>
+    rdfs:seeAlso <https://raw.githubusercontent.com/andrejTavchioski/DNICH_TFT/main/foaf.ttl>
   ] .
