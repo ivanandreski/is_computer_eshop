@@ -21,7 +21,6 @@
   foaf:depiction <https://cdn-icons-png.flaticon.com/512/25/25231.png> ;
   foaf:phone <tel:0759999999> ;
   foaf:workplaceHomepage <https://www.payten.com/> ;
-  foaf:workInfoHomepage <https://raw.githubusercontent.com/ivanandreski/is_computer_eshop/master/Web developer> ;
   foaf:schoolHomepage <https://finki.ukim.mk/> ;
   foaf:knows [
     a foaf:Person ;
